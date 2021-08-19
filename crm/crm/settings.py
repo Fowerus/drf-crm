@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -132,6 +133,19 @@ STATIC_ROOT = BASE_DIR / 'static'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTHENTICATION_BACKENDS = ('Users.CustomAuthBackend.AuthBackend',)
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',) #'Users.CustomAuthBackend.AuthBackend'
 
 AUTH_USER_MODEL = "Users.User"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=13),
+    'USER_ID_FIELD': 'id',
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY':SECRET_KEY
+}
