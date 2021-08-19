@@ -9,6 +9,8 @@ django-rest-framework = "*"
 django-resized = "*"
 pillow = "*"
 django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}
+djangorestframework-simplejwt = "*"
+pyjwt = "*"
 
 [dev-packages]
 
