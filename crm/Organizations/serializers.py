@@ -78,7 +78,7 @@ class Organization_linkSerializer(serializers.ModelSerializer):
 class PermissionSerializer(serializers.ModelSerializer):
 
 	class Meta:
-		model = Permission
+		model = CustomPermission
 		fields = ['id', 'official_perm_name', 'name']
 
 
@@ -88,7 +88,7 @@ class RoleSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Role
-		fields = ['id''name','permissions', 'organization']
+		fields = ['id','name','permissions', 'organization']
 
 
 	class RoleCSerializer(serializers.ModelSerializer):
@@ -107,13 +107,13 @@ class RoleSerializer(serializers.ModelSerializer):
 
 
 class Organization_memberSerializer(serializers.ModelSerializer):
-	organization = OrganizationSerializer()
+	user = OrganizationSerializer()
 	role = RoleSerializer()
 	organization = OrganizationSerializer()
 
 	class Meta:
 		model = Organization_member
-		fields = ['id''user','role', 'organization']
+		fields = ['id', 'user','role', 'organization']
 
 
 	class Organization_memberCSerializer(serializers.ModelSerializer):
@@ -126,7 +126,7 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Organization_member
-			fields = ['name','permissions', 'organization']
+			fields = ['user','role', 'organization']
 
 
 
@@ -135,7 +135,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Service
-		fields = ['name', 'address', 'number', 'organization']
+		fields = ['id', 'name', 'address', 'number', 'organization']
 
 
 	class ServiceCSerializer(serializers.ModelSerializer):
@@ -149,3 +149,20 @@ class ServiceSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = Service
 			fields = ['name', 'address', 'number', 'organization']
+
+
+class OrderSerializer(serializers.ModelSerializer):
+	creator = UserSerializer()
+	executor = UserSerializer()
+	service = ServiceSerializer
+
+	class Meta:
+		model = Order
+		fields = ['id', 'order_code', 'description', 'creator', 'executor', 'client', 'done', 'service']
+
+
+	class OrderCSerializer(serializers.ModelSerializer):
+
+		class Meta:
+			model = Order
+			fields = ['order_code', 'description', 'creator', 'executor', 'client', 'service']

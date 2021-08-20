@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Organizations',
     'Users',
+    'Clients',
     'rest_framework',
     'phonenumber_field',
     'django_resized'
@@ -129,7 +130,7 @@ STATIC_ROOT = BASE_DIR / 'static'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigIntegerField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',) #'Users.CustomAuthBackend.AuthBackend'
 
