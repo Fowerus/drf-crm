@@ -10,27 +10,27 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserManager(BaseUserManager):
-	def _create_user(self, surname, name, patronymic, email, address= None, password = None, is_client = False, **extra_fields):
+	def _create_user(self, surname, name, patronymic, email, address= None, password = None, **extra_fields):
 		email = self.normalize_email(email)
-		user = self.model(surname = surname, name = name, patronymic = patronymic, address = address, email = email, is_client = is_client, **extra_fields)
+		user = self.model(surname = surname, name = name, patronymic = patronymic, address = address, email = email, **extra_fields)
 		user.set_password(password)
 		user.save(using = self._db)
 
 		return user
 
 
-	def create_user(self, surname, name, patronymic, email, address= None, password = None, is_client = False, **extra_fields):
+	def create_user(self, surname, name, patronymic, email, address= None, password = None, **extra_fields):
 		extra_fields.setdefault('is_staff', False)
 		extra_fields.setdefault('is_superuser', False)
 
-		return self._create_user(surname = surname, name = name, patronymic = patronymic, address = address, email = email, is_client = is_client, password = password, **extra_fields)
+		return self._create_user(surname = surname, name = name, patronymic = patronymic, address = address, email = email, password = password, **extra_fields)
 
 
-	def create_superuser(self, surname, name, patronymic, email, address= None, password = None, is_client = False, **extra_fields):
+	def create_superuser(self, surname, name, patronymic, email, address= None, password = None, **extra_fields):
 		extra_fields.setdefault('is_staff', True)
 		extra_fields.setdefault('is_superuser', True)
 
-		return self._create_user(surname = surname, name = name, patronymic = patronymic, address = address, email = email, is_client = is_client, password = password, **extra_fields)
+		return self._create_user(surname = surname, name = name, patronymic = patronymic, address = address, email = email, password = password, **extra_fields)
 
 
 
