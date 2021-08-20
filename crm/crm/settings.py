@@ -129,7 +129,7 @@ STATIC_ROOT = BASE_DIR / 'static'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigIntegerField'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',) #'Users.CustomAuthBackend.AuthBackend'
 
