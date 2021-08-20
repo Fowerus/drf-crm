@@ -5,14 +5,26 @@ from rest_framework import status
 from django.conf import settings
 from rest_framework.response import Response
 
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenViewBase
 
 from .serializers import *
 
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
+class MyCustomToken(TokenViewBase):
+
+    def post(self, requests, *args, **kwargs):
+        serializer = self.get_serializer(data=requests.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response(serializer.validated_data | {'expire_at': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].seconds}, status=status.HTTP_200_OK)
+
+
+class MyTokenObtainPairView(MyCustomToken):
     serializer_class = MyTokenObtainPairSerializer
 
 
