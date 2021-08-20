@@ -7,6 +7,8 @@ from rest_framework.response import Response
 
 from .serializers import *
 from crm.views import *
+from Clients.serializers import ClientSerializer
+
 # {
 #     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYyOTUxNTczMSwianRpIjoiZmIxMWEzZTNjZGI2NDI0MTk2YWI0OGQ5MmFmMWQxYjkiLCJ1c2VyX2lkIjoyfQ.NpqsAxf2vhMS57xMOBV3g1GN4Xm2oWH-dGl0Clo3uBg",
 #     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMwNTUyNTMxLCJqdGkiOiI1NThmNDE0MjgxMGE0MDBiODI2OGIxNTE0Yzc2ODQyYSIsInVzZXJfaWQiOjJ9.ZGG4NtbrpH-Srz7oEapSoWIQ8z_c_BiOYra5ed2cKhw",
@@ -27,13 +29,13 @@ class OrganizationAPIView(APIView):
 			except:
 				return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def post(self, requests):
 		if check_authHeader(requests):
 			user_data = get_userData(requests)
-			if not check_memberships(user_data['user_id']):
+			if not check_memberships(user_data['user_id']) and not check_UsrClient(user_data['user_id']):
 				serializer = self.serializer_class.OrganizationCSerializer(data = requests.data)
 				if serializer.is_valid():
 					serializer.save()
@@ -53,7 +55,8 @@ class OrganizationAPIView(APIView):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization-PATCH']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'organization_change']):
 	
 					current_org = Organization.objects.get(id = 1)
 
@@ -100,7 +103,8 @@ class OrganizationAPIView(APIView):
 	def delete(self, requests):
 		if check_authHeader(requests):
 			user_data = get_userData(requests)
-			if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization-DELETE']):
+			if is_valid_member(user_data['user_id'], requests.data['organization'],
+				['organization_creator', 'organization_delete']):
 				try:
 					Organization.objects.get(id = requests.data['organization']).delete()
 
@@ -116,7 +120,7 @@ class OrganizationAPIView(APIView):
 
 
 
-class Organization_numberAPIView(ViewSet):
+class Organization_numberViewSet(ViewSet):
 	serializer_class = Organization_numberSerializer
 
 	def list_organizations_numbers(self, requests):
@@ -129,7 +133,7 @@ class Organization_numberAPIView(ViewSet):
 			except:
 				return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def list_organization_numbers(self, requests, org_id):
@@ -143,7 +147,7 @@ class Organization_numberAPIView(ViewSet):
 
 			return Response(serializer.data, status = status.HTTP_200_OK)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def create_organization_number(self, requests):
@@ -151,7 +155,8 @@ class Organization_numberAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization_number-POST', 'Organization_number-GURU']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'organization_number_create', 'organization_number_guru']):
 					serializer = self.serializer_class.Organization_numberCSerializer(data = requests.data)
 					if serializer.is_valid():
 						serializer.save()
@@ -174,19 +179,18 @@ class Organization_numberAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization_number-PATCH', 'Organization_number-GURU']):
-					if check_orgNumber(requests.data['number_id'], requests.data['organization']):
-						current_number = Organization_number.objects.get(id = requests.data['number_id'])
-						if 'new_number' in requests.data:
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'organization_number_change', 'organization_number_guru']):
+					if check_orgNumber(requests.data['number'], requests.data['organization']):
+						current_number = Organization_number.objects.get(id = requests.data['number'])
 
-							try:
-								current_number.number = requests.data['new_number']
-								current_number.save()
+						try:
+							current_number.number = requests.data['new_number']
+							current_number.save()
+							return Response(status = status.HTTP_200_OK)
 
-								return Response(status = status.HTTP_200_OK)
-
-							except:
-								return Response({'error':'Bad new number'}, status = status.HTTP_400_BAD_REQUEST)
+						except:
+							return Response({'error':'Bad new number'}, status = status.HTTP_400_BAD_REQUEST)
 
 				return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -201,11 +205,12 @@ class Organization_numberAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization_number-DELETE', 'Organization_number-GURU']):
-					if check_orgNumber(requests.data['number_id'], requests.data['organization']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'organization_number_delete', 'organization_number_guru']):
+					if check_orgNumber(requests.data['number'], requests.data['organization']):
 
 						try:
-							Organization_number.objects.get(id = requests.data['number_id']).delete()
+							Organization_number.objects.get(id = requests.data['number']).delete()
 
 							return Response(status = status.HTTP_200_OK)
 
@@ -221,7 +226,7 @@ class Organization_numberAPIView(ViewSet):
 
 
 
-class Organization_linkAPIView(ViewSet):
+class Organization_linkViewSet(ViewSet):
 	serializer_class = Organization_linkSerializer
 
 	def list_organizations_links(self, requests):
@@ -234,7 +239,7 @@ class Organization_linkAPIView(ViewSet):
 			except:
 				return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def list_organization_links(self, requests, org_id):
@@ -247,7 +252,7 @@ class Organization_linkAPIView(ViewSet):
 			except:
 				return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def create_organization_link(self, requests):
@@ -255,7 +260,8 @@ class Organization_linkAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization_link-POST', 'Organization_link-GURU']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'organization_link_create', 'organization_link_guru']):
 					serializer = self.serializer_class.Organization_linkCSerializer(data = requests.data)
 					if serializer.is_valid():
 						serializer.save()
@@ -278,19 +284,19 @@ class Organization_linkAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization_link-PATCH', 'Organization_link-GURU']):
-					if check_orgLink(requests.data['link_id'], requests.data['organization']):
-						current_number = Organization_number.objects.get(id = requests.data['link_id'])
-						if 'new_link' in requests.data:
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'organization_link_change', 'organization_link_guru']):
+					if check_orgLink(requests.data['link'], requests.data['organization']):
+						current_number = Organization_number.objects.get(id = requests.data['link'])
 
-							try:
-								current_number.number = requests.data['new_link']
-								current_number.save()
+						try:
+							current_number.number = requests.data['new_link']
+							current_number.save()
 
-								return Response(status = status.HTTP_200_OK)
+							return Response(status = status.HTTP_200_OK)
 
-							except:
-								return Response({'error':'Bad new link'}, status = status.HTTP_400_BAD_REQUEST)
+						except:
+							return Response({'error':'Bad new link'}, status = status.HTTP_400_BAD_REQUEST)
 
 				return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -305,11 +311,12 @@ class Organization_linkAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization_number-DELETE', 'Organization_number-GURU']):
-					if check_orgLink(requests.data['number_id'], requests.data['organization']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'organization_number_delete', 'organization_number_guru']):
+					if check_orgLink(requests.data['link'], requests.data['organization']):
 
 						try:
-							Organization_link.objects.get(id = requests.data['number_id']).delete()
+							Organization_link.objects.get(id = requests.data['link']).delete()
 
 							return Response(status = status.HTTP_200_OK)
 
@@ -325,7 +332,7 @@ class Organization_linkAPIView(ViewSet):
 
 
 
-class Organization_memberAPIView(ViewSet):
+class Organization_memberViewSet(ViewSet):
 	serializer_class = Organization_memberSerializer
 
 	def list_all_organizations_member(self, requests):
@@ -338,7 +345,7 @@ class Organization_memberAPIView(ViewSet):
 			except:
 				return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def list_organization_members(self, requests, org_id):
@@ -351,7 +358,7 @@ class Organization_memberAPIView(ViewSet):
 			except:
 				return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def create_organization_member(self, requests):
@@ -359,15 +366,16 @@ class Organization_memberAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization_member-POST', 'Organization_member-GURU']):
-					serializer = self.serializer_class.Organization_memberCSerializer(data = requests.data)
-					if serializer.is_valid():
-						serializer.save()
+				if is_valid_member(user_data['user_id'], requests.data['organization'], 
+					['organization_creator', 'organization_member_create', 'organization_member_guru']):
+					if Organization.objects.get(id = requests.data['organization']).creator.id == requests.data['user'] and not check_UsrClient(requests.data['user']):
+						serializer = self.serializer_class.Organization_memberCSerializer(data = requests.data)
+						if serializer.is_valid():
+							serializer.save()
 
-						return Response(status = status.HTTP_200_OK)
+							return Response(status = status.HTTP_200_OK)
 
-					else:
-						return Response(status = status.HTTP_400_BAD_REQUEST)
+					return Response(status = status.HTTP_400_BAD_REQUEST)
 				else:
 					return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -382,11 +390,12 @@ class Organization_memberAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization_member-PATCH', 'Organization_member-GURU']):
-					if check_orgMember(requests.data['member_id'], requests.data['organization']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'organization_member_change', 'organization_member_guru']):
+					if check_orgMember(requests.data['user'], requests.data['organization']):
 
 						try:
-							current_member = Organization_member.objects.get(id = requests.data['member_id'])
+							current_member = Organization_member.objects.get(id = requests.data['user'])
 							current_member.role = requests.data['new_role']
 							current_member.save()
 
@@ -408,11 +417,12 @@ class Organization_memberAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Organization_member-DELETE', 'Organization_member-GURU']):
-					if check_orgMember(requests.data['member_id'], requests.data['organization']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'organization_member_delete', 'organization_member_guru']):
+					if check_orgMember(requests.data['member'], requests.data['organization']):
 
 						try:
-							Organization_member.objects.get(id = requests.data['member_id']).delete()
+							Organization_member.objects.get(id = requests.data['member']).delete()
 
 							return Response(status = status.HTTP_200_OK)
 
@@ -428,15 +438,15 @@ class Organization_memberAPIView(ViewSet):
 
 
 
-class RolePermAPIView(ViewSet):
+class RolePermViewSet(ViewSet):
 	serializer_class = RoleSerializer
 
 	def list_permissions(self, requests, org_id):
 		if check_authHeader(requests):
 			user_data = get_userData(requests)
-			if is_valid_member(user_data['user_id'], org_id, ['Organization-CREATOR', 'Role-POST', 'Role-GURU']):
+			if is_valid_member(user_data['user_id'], org_id, ['organization_creator', 'role_create', 'role_guru']):
 				try:
-					all_permissions = Permission.objects.all()
+					all_permissions = CustomPermission.objects.all()
 					serializer = PermissionSerializer(all_permissions, many = True)
 
 					return Response(serializer.data, status = status.HTTP_200_OK)
@@ -445,13 +455,13 @@ class RolePermAPIView(ViewSet):
 
 			return Response(status = status.HTTP_403_FORBIDDEN)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def list_roles(self, requests, org_id):
 		if check_authHeader(requests):
 			user_data = get_userData(requests)
-			if is_valid_member(user_data['user_id'], org_id, ['Organization-CREATOR', 'Role-GET', 'Role-GURU']):
+			if is_valid_member(user_data['user_id'], org_id, ['organization_creator', 'role_view', 'role_guru']):
 				try:
 					all_role = Role.objects.filter(organization = org_id)
 					serializer = self.serializer_class(all_role, many = True)
@@ -462,7 +472,7 @@ class RolePermAPIView(ViewSet):
 
 			return Response(status = status.HTTP_403_FORBIDDEN)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def create_role(self, requests):
@@ -470,7 +480,8 @@ class RolePermAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Role-POST', 'Role-GURU']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'role_create', 'role-_guru']):
 					serializer = self.serializer_class.RoleCSerializer(data = requests.data)
 					if serializer.is_valid():
 						serializer.save()
@@ -494,9 +505,10 @@ class RolePermAPIView(ViewSet):
 
 			try:
 
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Role-PATCH', 'Role-GURU']):
-					if check_orgRole(requests.data['role_id'], requests.data['organization']):
-						current_role = Role.objects.get(id = requests.data['role_id'])
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'role_change', 'role_guru']):
+					if check_orgRole(requests.data['role'], requests.data['organization']):
+						current_role = Role.objects.get(id = requests.data['role'])
 
 						output = {
 							'success':{},
@@ -537,16 +549,17 @@ class RolePermAPIView(ViewSet):
 		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
-	def delete(self, requests):
+	def delete_role(self, requests):
 		if check_authHeader(requests):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Role-DELETE', 'Role-GURU']):
-					if check_orgRole(requests.data['role_id'], requests.data['organization']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'role_delete', 'role_guru']):
+					if check_orgRole(requests.data['role'], requests.data['organization']):
 
 						try:
-							Role.objects.get(id = requests.data['role_id']).delete()
+							Role.objects.get(id = requests.data['role']).delete()
 
 							return Response(status = status.HTTP_200_OK)
 
@@ -562,7 +575,7 @@ class RolePermAPIView(ViewSet):
 
 
 
-class ServiceAPIView(ViewSet):
+class ServiceViewSet(ViewSet):
 	serializer_class = ServiceSerializer
 
 	def list_all_service(self, requests):
@@ -575,7 +588,7 @@ class ServiceAPIView(ViewSet):
 			except:
 				return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def list_organization_services(self, requests, org_id):
@@ -588,7 +601,7 @@ class ServiceAPIView(ViewSet):
 			except:
 				return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-		return Response(status, status = status.HTTP_401_UNAUTHORIZED)
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 	def create_service(self, requests):
@@ -596,7 +609,8 @@ class ServiceAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Service-POST', 'Service-GURU']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'service_create', 'service_guru']):
 					serializer = self.serializer_class.ServiceCSerializer(data = requests.data)
 					if serializer.is_valid():
 						serializer.save()
@@ -619,10 +633,11 @@ class ServiceAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Service-PATCH', 'Service-GURU']):
-					if check_orgService(requests.data['service_id'], requests.data['organization']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'service_change', 'service_guru']):
+					if check_orgService(requests.data['service'], requests.data['organization']):
 
-						current_service = Service.objects.get(id = requests.data['service_id'])
+						current_service = Service.objects.get(id = requests.data['service'])
 
 						output = {
 							'success':{},
@@ -630,8 +645,8 @@ class ServiceAPIView(ViewSet):
 						}
 
 						if 'new_name' in requests.data:
-							if 10 <= len(requests.data['new_name']) <= 150:
-								current_service.name = requests.data['new_name']
+							if 10 <= len(requests.data['name']) <= 150:
+								current_service.name = requests.data['name']
 								output['success']['Name'] = 'Name successfully changed'
 
 							else:
@@ -642,7 +657,7 @@ class ServiceAPIView(ViewSet):
 								current_service.number = requests.data['number']
 								output['success']['Number'] = 'Number successfully changed'
 							except:
-								output['error']['Number'] = 'Wrong format of number'
+								output['error']['Number'] = "Wrong number's format"
 
 						if 'address' in requests.data:
 							if 10 <= requests.data['address'] <= 200:
@@ -672,11 +687,284 @@ class ServiceAPIView(ViewSet):
 			user_data = get_userData(requests)
 
 			try:
-				if is_valid_member(user_data['user_id'], requests.data['organization'], ['Organization-CREATOR', 'Service-DELETE', 'Service-GURU']):
-					if check_orgMember(requests.data['service_id'], requests.data['organization']):
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'service_delete', 'service_guru']):
+					if check_orgMember(requests.data['service'], requests.data['organization']):
 
 						try:
-							Service.objects.get(id = requests.data['service_id']).delete()
+							Service.objects.get(id = requests.data['service']).delete()
+
+							return Response(status = status.HTTP_200_OK)
+
+						except:
+							return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+				return Response(status = status.HTTP_403_FORBIDDEN)
+
+			except:
+				return Response(status = status.HTTP_400_BAD_REQUEST)
+
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+
+class ClientViewSet(ViewSet):
+	serializer_class = ClientSerializer
+
+	def list_clients(self, requests, org_id):
+		if check_authHeader(requests):
+			user_data = get_userData(requests)
+
+			if is_valid_member(user_data['user_id'], org_id,
+				['organization_creator', 'client_view', 'client_guru']):
+				try:
+					all_clients = Organization.objects.get(id = org_id)
+					serializer = self.serializer_class(all_clients, many = True)
+
+					return Response(serializer.data, status = HTTP_200_OK)
+
+				except:
+					return Response(status = status.HTTP_400_BAD_REQUEST)
+
+			return Response(status = status.HTTP_403_FORBIDDEN)
+
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+	def create_client(self, requests):
+
+		if check_authHeader(requests):
+			user_data = get_userData(requests)
+
+			try:
+				if is_valid_member(user_data['user_id'], requests.data['organization'], 
+					['organization_creator', 'client_create', 'client_guru']):
+					serializer = self.serializer_class.ClientCSerializer(data = requests.data)
+					if serializer.is_valid():
+						serializer.save()
+
+						return Response(status = status.HTTP_200_OK)
+
+					return Response(status = status.HTTP_400_BAD_REQUEST)
+				else:
+					return Response(status = status.HTTP_403_FORBIDDEN)
+
+			except:
+				return Response(status = status.HTTP_400_BAD_REQUEST)
+
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+
+	def update_client(self, requests):
+
+		if check_authHeader(requests):
+			user_data = get_userData(requests)
+
+			try:
+				if is_valid_member(user_data['user_id'], requests.data['organization'], 
+					['organization_creator', 'client_change', 'client_guru']):
+					if check_orgClient(requests.data['client'], requests.data['organization']):
+
+						current_client = Client.objects.get(id = requests.data['client'])
+
+						output = {
+							"success":{},
+							"error":{}
+						}
+
+						if 'surname' in requests.data:
+							if 10 <= len(requests.data['surname']) <= 150:
+								current_client.user.surname = requests.data['surname']
+								output['success']['Surname'] = 'Surname successfully changed'
+							else:
+								output['error']['Surname'] = 'Surname is too short or too long'
+
+						if 'name' in requests.data:
+							if 10 <= len(requests.data['name']) <= 150:
+								current_client.user.name = requests.data['name']
+								output['success']['Name'] = 'Name successfully changed'
+							else:
+								output['error']['Name'] = 'Name is too short or too long'
+
+						if 'patronymic' in requests.data:
+							if 10 <= len(requests.data['patronymic']) <= 150:
+								current_client.user.patronymic = requests.data['patronymic']
+								output['success']['Patronymic'] = 'Patronymic successfully changed'
+							else:
+								output['error']['Patronymic'] = 'Patronymic is too short or too long'
+
+						if 'address' in requests.data:
+							if 10 <= len(requests.data['address']) <= 150:
+								current_client.user.address = requests.data['address']
+								output['success']['Address'] = 'Address successfully changed'
+							else:
+								output['error']['Address'] = 'Address is too short or too long'
+
+						if 'email' in requests.data:
+							try:
+								current_client.user.email = requests.data['email']
+								output['success']['Email'] = 'Email successfully changed'
+							except:
+								output['error']['Email'] = 'Wrong email address'
+
+						if len(output['success'] > 0):
+							current_client.save()
+
+						return Response(output, status = status.HTTP_200_OK)
+
+					return Response(status = status.HTTP_400_BAD_REQUEST)
+				else:
+					return Response(status = status.HTTP_403_FORBIDDEN)
+
+			except:
+				return Response(status = status.HTTP_400_BAD_REQUEST)
+
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+	def delete_client(self, requests):
+		if check_authHeader(requests):
+			user_data = get_userData(requests)
+
+			try:
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'client_delete', 'client_guru']):
+					if check_orgClient(requests.data['client'], requests.data['organization']):
+
+						try:
+							Client.objects.get(id = requests.data['client']).delete()
+
+							return Response(status = status.HTTP_200_OK)
+
+						except:
+							return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+				return Response(status = status.HTTP_403_FORBIDDEN)
+
+			except:
+				return Response(status = status.HTTP_400_BAD_REQUEST)
+
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+
+class OrderViewSet(ViewSet):
+	serializer_class = OrderSerializer
+
+	def list_orders(self, requests, org_id):
+		if check_authHeader(requests):
+			user_data = get_userData(requests)
+
+			if is_valid_member(user_data['user_id'], org_id,
+				['organization_creator', 'order_view', 'order_guru']):
+				try:
+					all_orders = Orders.objects.get(id = org_id)
+					serializer = self.serializer_class(all_orders, many = True)
+
+					return Response(serializer.data, status = HTTP_200_OK)
+
+				except:
+					return Response(status = status.HTTP_400_BAD_REQUEST)
+
+			return Response(status = status.HTTP_403_FORBIDDEN)
+
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+	def create_order(self, requests):
+
+		if check_authHeader(requests):
+			user_data = get_userData(requests)
+
+			try:
+				if is_valid_member(user_data['user_id'], requests.data['organization'], 
+					['organization_creator', 'order_create', 'order_guru']):
+					serializer = self.serializer_class.OrderCSerializer(data = requests.data)
+					if serializer.is_valid():
+						serializer.save()
+
+						return Response(status = status.HTTP_200_OK)
+
+					return Response(status = status.HTTP_400_BAD_REQUEST)
+				else:
+					return Response(status = status.HTTP_403_FORBIDDEN)
+
+			except:
+				return Response(status = status.HTTP_400_BAD_REQUEST)
+
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+	def update_order(self, requests):
+		if check_authHeader(requests):
+			user_data = get_userData(requests)
+
+			try:
+
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'order_change', 'order_guru']):
+					if check_orgOrder(requests.data['order_code'], requests.data['organization']):
+						current_order = Order.objects.get(order_code = requests.data['order_code'])
+
+						output = {
+							'success':{},
+							'error':{}
+						}
+
+						if 'description' in requests.data:
+							if 10 <= len(requests.data['description']) <= 500:
+								current_order.description = requests.data['description']
+								output['success']['Description'] = 'Description successfully changed'
+							else:
+								output['error']['Description'] = 'Description is too short or too long'
+
+						if 'executor' in requests.data:
+							try:
+								if not check_UsrClient(requests.data['executor']):
+									current_order.executor = requests.data['executor']
+									output['success']['Executor'] = 'Executor successfully changed'
+								else:
+									output['error']['Executor'] = 'Wrong executor'
+							except:
+								output['error']['Executor'] = 'Wrong executor'
+
+						if 'service' in requests.data:
+							try:
+								if check_orgService(requests.data['service'], requests.data['organization']):
+									current_order.executor = requests.data['service']
+									output['success']['Service'] = 'Service successfully changed'
+								else:
+									output['error']['Service'] = 'Wrong service'
+							except:
+								output['error']['Service'] = 'Wrong service'
+
+
+						if len(output['success']) > 0:
+							current_order.save()
+
+						return Response(output, status = status.HTTP_200_OK)
+
+
+				return Response(status = status.HTTP_403_FORBIDDEN)
+
+			except:
+				return Response(status = status.HTTP_400_BAD_REQUEST)
+
+		return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+	def delete_order(self, requests):
+		if check_authHeader(requests):
+			user_data = get_userData(requests)
+
+			try:
+				if is_valid_member(user_data['user_id'], requests.data['organization'],
+					['organization_creator', 'order_delete', 'order_guru']):
+					if check_orgOrder(requests.data['order_code'], requests.data['organization']):
+
+						try:
+							Order.objects.get(order_code = requests.data['order_code']).delete()
 
 							return Response(status = status.HTTP_200_OK)
 

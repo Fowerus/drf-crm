@@ -3,6 +3,9 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
 
+from Organizations.models import *
+from Clients.models import *
+
 
 
 #Сhecking the Authorization key in requests.headers
@@ -12,8 +15,8 @@ def check_authHeader(requests):
 
 #Get information about user from access token
 def get_userData(requests):
-	token = requests.headers['Authorization'].split(' ')[1]
-	token_decode = jwt.decode(token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
+	access_token = requests.headers['Authorization'].split(' ')[1]
+	access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
 	return access_token_decode
 
 
@@ -42,15 +45,26 @@ def check_ReqPerm(role, permissions:list):
 	return False
 
 
+#Checking the user as a client
+def check_UsrClient(user_id):
+	try:
+		if User.objects.get(user = user_id).user_client:
+			return True
+	except:
+		return False
+
+
 #Member rule confirmation
 def is_valid_member(user_id, org_id, permissions:list):
 	try:
-		current_org = Organization.objects.get(id = org_id)
-		if user_id == current_org.creator.id:
-			return True
+		if not check_UsrClient(user_id):
+			current_org = Organization.objects.get(id = org_id)
+			if user_id == current_org.creator.id:
+				return True
 
-		member_role	= current_org.organization_members.all().get(user = user_id).role
-		return check_ReqPerm(member_role, permissions)
+			member_role	= current_org.organization_members.all().get(user = user_id).role
+			return check_ReqPerm(member_role, permissions)
+		return False
 	except:
 		return False
 
@@ -107,10 +121,37 @@ def check_orgRole(role_id, org_id):
 		return False
 
 
-def check_orgService(role_id, org_id):
+#Checking the service of organizaion
+def check_orgService(service_id, org_id):
 	try:
-		current_service = Organization.objects.get(id = org_id).organization_services.all().filter(id = role_id)
+		current_service = Organization.objects.get(id = org_id).organization_services.all().filter(id = service_id)
 		if current_service:
+			return True
+
+		return False
+
+	except:
+		return False
+
+
+#Checking a user as a client of organization
+def check_orgClient(client_id, org_id):
+	try:
+		current_client = Organization.objects.get(id = org_id).organization_services.all().filter(id = client_id)
+		if current_client:
+			return True
+
+		return False
+
+	except:
+		return False
+
+
+#Checking an organizaions's order
+def check_orgOrder(order_code, org_id):
+	try:
+		current_order = Order.objects.get(order_code = order_code)
+		if current_order.service.organization.id == org_id:
 			return True
 
 		return False

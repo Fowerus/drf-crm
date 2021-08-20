@@ -26,17 +26,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 
-
-
-# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-# 	@classmethod
-# 	def get_token(cls, user):
-# 		token = super().get_token(user)
-
-# 		return token
-
-
-
 class MyTokenRefreshSerializer(serializers.Serializer):
 	refresh = serializers.CharField()
 	access = serializers.ReadOnlyField()
@@ -104,4 +93,4 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = User
-		fields = ['surname', 'name', 'patronymic', 'address', 'email', 'small_image']
+		fields = ['surname', 'name', 'patronymic', 'address', 'email']

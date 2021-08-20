@@ -90,25 +90,25 @@ class Service(MainMixin):
 
 
 
-class Permission(models.Model):
-	official_perm_name = models.CharField(max_length = 60, verbose_name = 'Offical_name')
-	name = models.CharField(max_length = 150, verbose_name = 'Technical_name')
+class CustomPermission(models.Model):
+	name = models.CharField(max_length = 60, verbose_name = 'Offical_name')
+	codename = models.CharField(max_length = 150, verbose_name = 'Technical_name')
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 
 	def __str__(self):
 		return f'id: {self.id} | name: {self.name}'
 
 	class Meta:
-		db_table = 'Permission'
-		verbose_name_plural = 'Permissions'
-		verbose_name = 'Permission'
+		db_table = 'CustomPermission'
+		verbose_name_plural = 'CustomPermissions'
+		verbose_name = 'CustomPermission'
 		ordering = ['-created_at']
 
 
 
 class Role(MainMixin):
 	name = models.CharField(max_length = 100, verbose_name = 'Name')
-	permissions = models.ManyToManyField(Permission, related_name = 'permission_roles', verbose_name = 'Permissions')
+	permissions = models.ManyToManyField(CustomPermission, related_name = 'permission_roles', verbose_name = 'Permissions')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_roles', verbose_name = 'Organization')
 
 
@@ -141,8 +141,8 @@ class Organization_member(MainMixin):
 
 
 class Order(MainMixin):
-	order_code = models.BigIntegerField(verbose_name = 'Order_code')
-	description = models.CharField(max_length = 100, verbose_name = 'Description')
+	order_code = models.BigIntegerField(verbose_name = 'Order_code', unique = True)
+	description = models.CharField(max_length = 500, verbose_name = 'Description')
 	client = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'client_orders', verbose_name = 'Client')
 	executor = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'user_executor', verbose_name = 'Executor')
 	creator = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'user_creator', verbose_name = 'Creator')
