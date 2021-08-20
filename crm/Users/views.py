@@ -6,9 +6,14 @@ from django.conf import settings
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.views import TokenViewBase
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .serializers import *
-
+# {
+#     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYyOTUxNTczMSwianRpIjoiZmIxMWEzZTNjZGI2NDI0MTk2YWI0OGQ5MmFmMWQxYjkiLCJ1c2VyX2lkIjoyfQ.NpqsAxf2vhMS57xMOBV3g1GN4Xm2oWH-dGl0Clo3uBg",
+#     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMwNTUyNTMxLCJqdGkiOiI1NThmNDE0MjgxMGE0MDBiODI2OGIxNTE0Yzc2ODQyYSIsInVzZXJfaWQiOjJ9.ZGG4NtbrpH-Srz7oEapSoWIQ8z_c_BiOYra5ed2cKhw",
+#     "expire_at": 0
+# }
 
 
 class MyCustomToken(TokenViewBase):
@@ -25,17 +30,13 @@ class MyCustomToken(TokenViewBase):
 
 
 class MyTokenObtainPairView(MyCustomToken):
-    serializer_class = MyTokenObtainPairSerializer
+    serializer_class = TokenObtainPairSerializer
 
 
 
-# class Registration(APIView):
-# 	def get(self, requests):
-# 		token = requests.headers['Authorization'].split(' ')[1]
-# 		token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-# 		print(token)
-# 		return Response(status = status.HTTP_200_OK)
-
+class MyTokenRefreshView(MyCustomToken):
+    serializer_class = MyTokenRefreshSerializer
+    
 
 
 # not a client users
@@ -52,13 +53,13 @@ class Registration(APIView):
 
 
 
-class Login(APIView):
-    serializer_class = UserLoginSerializer
+# class Login(APIView):
+#     serializer_class = UserLoginSerializer
 
-    def post(self, requests):
-        serializer = self.serializer_class(data = requests.data)
-        if serializer.is_valid():
+#     def post(self, requests):
+#         serializer = self.serializer_class(data = requests.data)
+#         if serializer.is_valid():
 
-            return Response(serializer.data, status = status.HTTP_200_OK)
+#             return Response(serializer.data, status = status.HTTP_200_OK)
 
-        return Response(status = status.HTTP_400_BAD_REQUEST)
+#         return Response(status = status.HTTP_400_BAD_REQUEST)

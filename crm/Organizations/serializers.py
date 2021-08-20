@@ -20,9 +20,9 @@ class OrganizationSerializer(serializers.ModelSerializer):
 	class OrganizationCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
-			new_organization = Organization.objects.create(**validated_data)
+			organization = Organization.objects.create(**validated_data)
 
-			return new_organization
+			return organization
 
 
 		class Meta:
@@ -127,3 +127,25 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = Organization_member
 			fields = ['name','permissions', 'organization']
+
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+	organization = OrganizationSerializer()
+
+	class Meta:
+		model = Service
+		fields = ['name', 'address', 'number', 'organization']
+
+
+	class ServiceCSerializer(serializers.ModelSerializer):
+
+		def create(self, validated_data):
+			service = Service.objects.create(**validated_data)
+
+			return service
+
+
+		class Meta:
+			model = Service
+			fields = ['name', 'address', 'number', 'organization']

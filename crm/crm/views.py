@@ -12,8 +12,8 @@ def check_authHeader(requests):
 
 #Get information about user from access token
 def get_userData(requests):
-	access_token = requests.headers['Authorization'].split(' ')[1]
-	access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
+	token = requests.headers['Authorization'].split(' ')[1]
+	token_decode = jwt.decode(token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
 	return access_token_decode
 
 
@@ -82,10 +82,10 @@ def check_orgLink(link_id, org_id):
 
 
 #User verification for work in the organization
-def check_memOrg(member_id, org_id):
+def check_orgMember(member_id, org_id):
 	try:
-		current_link = Organization.objects.get(id = org_id).organization_members.all().filter(id = member_id)
-		if current_link:
+		current_member = Organization.objects.get(id = org_id).organization_members.all().filter(id = member_id)
+		if current_member:
 			return True
 
 		return False
@@ -97,8 +97,20 @@ def check_memOrg(member_id, org_id):
 #Checking the role of an organization
 def check_orgRole(role_id, org_id):
 	try:
-		current_link = Organization.objects.get(id = org_id).organization_roles.all().filter(id = role_id)
-		if current_link:
+		current_role = Organization.objects.get(id = org_id).organization_roles.all().filter(id = role_id)
+		if current_role:
+			return True
+
+		return False
+
+	except:
+		return False
+
+
+def check_orgService(role_id, org_id):
+	try:
+		current_service = Organization.objects.get(id = org_id).organization_services.all().filter(id = role_id)
+		if current_service:
 			return True
 
 		return False
