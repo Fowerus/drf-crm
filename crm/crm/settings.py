@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'Organizations',
     'Users',
     'Clients',
+    'Sessions',
     'rest_framework',
     'phonenumber_field',
     'django_resized'

@@ -5,4 +5,3 @@ from Users.models import *
 
 
 admin.site.register(User)
-# admin.site.register(Client)

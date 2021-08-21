@@ -1,14 +1,13 @@
 import jwt
-from django.contrib.auth import authenticate
-from django.contrib.auth import get_user_model
 from django.conf import settings
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, RefreshToken
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.settings import api_settings
 
 from .models import User
+from Sessions.models import Session
 
 
 
@@ -35,57 +34,56 @@ class MyTokenRefreshSerializer(serializers.Serializer):
 		return RefreshToken.for_user(user)
 
 	def validate(self, attrs):
+		device = attrs['device']
+		attrs.pop('device')
 		data = super().validate(attrs)
 
 		refresh_decode = jwt.decode(attrs['refresh'], settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
-		print(refresh_decode)
 		user = get_user_model().objects.get(id = refresh_decode['user_id'])
 
-		refresh = self.get_token(user)
+		try:
+			current_session = Session.objects.filter(id = user.id).get(device = attrs)
+			refresh = self.get_token(user)
 
-		data['refresh'] = str(refresh)
-		data['access'] = str(refresh.access_token)
+			data['refresh'] = str(refresh)
+			data['access'] = str(refresh.access_token)
 
-		if api_settings.UPDATE_LAST_LOGIN:
-			update_last_login(None, self.user)
+			if api_settings.UPDATE_LAST_LOGIN:
+				update_last_login(None, self.user)
 
-		return data
+			return data
 
-
-
-# class UserLoginSerializer(serializers.Serializer):
-# 	email = serializers.EmailField(write_only=True)
-# 	password = serializers.CharField(max_length=128, write_only=True)
-
-# 	access = serializers.CharField(max_length = 250, read_only = True)
-# 	refresh = serializers.CharField(max_length = 250, read_only = True)
-# 	expire = serializers.IntegerField(read_only = True)
+		except:
+			return {'error':'Unauthorized'}
 
 
-# 	def validate(self, data):
-# 		email = data.get('email',None)
-# 		password = data.get('password',None)
+class MyTokenObtainPairSerializer(TokenObtainSerializer):
+	@classmethod
+	def get_token(cls, user):
+		return RefreshToken.for_user(user)
 
-# 		if email is None:
-# 			return Response(status = status.HTTP_404_NOT_FOUND)
+	def validate(self, attrs):
+		device = attrs['device']
+		attrs.pop('device')
 
-# 		if password is None:
-# 			return Response(status = status.HTTP_404_NOT_FOUND)
+		data = super().validate(attrs)
 
-# 		user = authenticate(email = email, password = password)
+		try:
+			Session.objects.filter(user = self.user.id).get(device = device)
 
-# 		if user is None:
-# 			return Response(status = status.HTTP_404_NOT_FOUND)
+			return Response({'error':'Already authorized'})
 
-# 		if not user.is_active:
-# 			return Response(status = status.HTTP_404_NOT_FOUND)
+		except:
+			Session.objects.create(user = self.user, device = device)
+			refresh = self.get_token(self.user)
 
+			data['refresh'] = str(refresh)
+			data['access'] = str(refresh.access_token)
 
-# 		return {
-# 			"expire":settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].seconds,
-# 			"refresh": user.token['refresh'],
-# 			"access": user.token['access']
-# 		}
+			if api_settings.UPDATE_LAST_LOGIN:
+				update_last_login(None, self.user)
+
+			return data
 
 
 
@@ -93,4 +91,4 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = User
-		fields = ['surname', 'name', 'patronymic', 'address', 'email']
+		fields = ['surname', 'name', 'patronymic', 'address', 'email', 'image', 'created_at', 'updated_at']

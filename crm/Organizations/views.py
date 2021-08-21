@@ -35,7 +35,7 @@ class OrganizationAPIView(APIView):
 	def post(self, requests):
 		if check_authHeader(requests):
 			user_data = get_userData(requests)
-			if not check_memberships(user_data['user_id']) and not check_UsrClient(user_data['user_id']):
+			if not check_UsrClient(user_data['user_id']):
 				serializer = self.serializer_class.OrganizationCSerializer(data = requests.data)
 				if serializer.is_valid():
 					serializer.save()
