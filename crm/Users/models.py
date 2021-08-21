@@ -9,27 +9,27 @@ from django_resized import ResizedImageField
 
 
 class UserManager(BaseUserManager):
-	def _create_user(self, surname, name, patronymic, email, address = None, password = None, **extra_fields):
+	def _create_user(self, surname, name, patronymic, email, number, address = None, password = None, **extra_fields):
 		email = self.normalize_email(email)
-		user = self.model(surname = surname, name = name, patronymic = patronymic, address = address, email = email, **extra_fields)
+		user = self.model(surname = surname, name = name, patronymic = patronymic, number = number, address = address, email = email, **extra_fields)
 		user.set_password(password)
 		user.save(using = self._db)
 
 		return user
 
 
-	def create_user(self, surname, name, patronymic, email, address= None, password = None, **extra_fields):
+	def create_user(self, surname, name, patronymic, email, number, address= None, password = None, **extra_fields):
 		extra_fields.setdefault('is_staff', False)
 		extra_fields.setdefault('is_superuser', False)
 
-		return self._create_user(surname = surname, name = name, patronymic = patronymic, address = address, email = email, password = password, **extra_fields)
+		return self._create_user(surname = surname, name = name, patronymic = patronymic, number = number, address = address, email = email, password = password, **extra_fields)
 
 
-	def create_superuser(self, surname, name, patronymic, email, address= None, password = None, **extra_fields):
+	def create_superuser(self, surname, name, patronymic, email, number, address= None, password = None, **extra_fields):
 		extra_fields.setdefault('is_staff', True)
 		extra_fields.setdefault('is_superuser', True)
 
-		return self._create_user(surname = surname, name = name, patronymic = patronymic, address = address, email = email, password = password, **extra_fields)
+		return self._create_user(surname = surname, name = name, patronymic = patronymic, number = number, address = address, email = email, password = password, **extra_fields)
 
 
 
@@ -39,6 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	patronymic = models.CharField(max_length = 150, verbose_name = 'Patronymic')
 
 	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, unique = True, blank = True, verbose_name = 'Email')
+	number = PhoneNumberField(unique = True, blank = True)
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
 
 	image = ResizedImageField(crop=['middle', 'center'], upload_to = '../static/Users/', blank = True, default = '../static/Users/default-user-image.jpeg', verbose_name = 'Image')
@@ -57,6 +58,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 	REQUIRED_FIELDS = ('surname','name', 'patronymic', 'address')
 
 	objects = UserManager()
+
+
+	def __str__(self):
+		return f'id: {self.id} | email: {self.email} | number: {self.number}'
 
 
 	class Meta:
