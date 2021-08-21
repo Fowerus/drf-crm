@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from Users.serializers import UserSerializer
 from Organizations.serializers import OrganizationSerializer
+
 from .models import Client
+from Users.serializers import UserSerializer
+
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -26,7 +29,9 @@ class ClientSerializer(serializers.ModelSerializer):
 
 			client_data = validated_data.pop('organizaion')
 
-			new_user = User.objects.create_user(**validated_data)
+			new_user = get_user_model().objects.create_user(**validated_data)
+			new_user.confirmed = True
+			new_user.save()
 			client_data['user'] = new_user.id
 
 			client = Client.objects.create(**client_data)

@@ -8,11 +8,6 @@ from Clients.models import *
 
 
 
-#Сhecking the Authorization key in requests.headers
-def check_authHeader(requests):
-	return 'Authorization' in requests.headers
-
-
 #Get information about user from access token
 def get_userData(requests):
 	access_token = requests.headers['Authorization'].split(' ')[1]
@@ -54,10 +49,17 @@ def check_UsrClient(user_id):
 		return False
 
 
+def check_confirmed(user_id):
+	try:
+		return User.objects.get(id = user_id).confirmed
+	except:
+		return False
+
+
 #Member rule confirmation
 def is_valid_member(user_id, org_id, permissions:list):
 	try:
-		if not check_UsrClient(user_id):
+		if not check_UsrClient(user_id) and check_confirmed(user_id):
 			current_org = Organization.objects.get(id = org_id)
 			if user_id == current_org.creator.id:
 				return True
