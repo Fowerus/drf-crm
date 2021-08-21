@@ -9,7 +9,7 @@ from django_resized import ResizedImageField
 
 
 class UserManager(BaseUserManager):
-	def _create_user(self, surname, name, patronymic, email, address= None, password = None, **extra_fields):
+	def _create_user(self, surname, name, patronymic, email, address = None, password = None, **extra_fields):
 		email = self.normalize_email(email)
 		user = self.model(surname = surname, name = name, patronymic = patronymic, address = address, email = email, **extra_fields)
 		user.set_password(password)
@@ -41,11 +41,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, unique = True, blank = True, verbose_name = 'Email')
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
 
-	full_image = ResizedImageField(crop=['middle', 'center'], upload_to = '../static/Users/', blank = True, default = '../static/Users/default-user-image.jpeg', verbose_name = 'Image')
-	small_image = ResizedImageField(size = [255,255], crop = ['middle', 'center'], upload_to = '../static/Users/', blank = True, default = '../static/Users/default-user-image.jpeg', verbose_name = 'Image')
+	image = ResizedImageField(crop=['middle', 'center'], upload_to = '../static/Users/', blank = True, default = '../static/Users/default-user-image.jpeg', verbose_name = 'Image')
 
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
+
+	confirmed = models.BooleanField(default = False)
 
 	is_staff = models.BooleanField(default = False)
 	is_superuser = models.BooleanField(default = False)

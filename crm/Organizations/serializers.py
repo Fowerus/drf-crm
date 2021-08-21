@@ -14,7 +14,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization
-		fields = ['id','name','description', 'address', 'creator']
+		fields = ['id','name','description', 'address', 'creator', 'created_at', 'updated_at']
 
 
 	class OrganizationCSerializer(serializers.ModelSerializer):
@@ -36,7 +36,7 @@ class Organization_numberSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization_number
-		fields = ['id','number','organization']
+		fields = ['id','number','organization', 'created_at', 'updated_at']
 
 
 	class Organization_numberCSerializer(serializers.ModelSerializer):
@@ -58,7 +58,7 @@ class Organization_linkSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization_link
-		fields = ['id','link','organization']
+		fields = ['id','link','organization', 'created_at', 'updated_at']
 
 
 	class Organization_linkCSerializer(serializers.ModelSerializer):
@@ -88,7 +88,7 @@ class RoleSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Role
-		fields = ['id','name','permissions', 'organization']
+		fields = ['id','name','permissions', 'organization', 'created_at', 'updated_at']
 
 
 	class RoleCSerializer(serializers.ModelSerializer):
@@ -113,7 +113,7 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization_member
-		fields = ['id', 'user','role', 'organization']
+		fields = ['id', 'user','role', 'organization', 'created_at', 'updated_at']
 
 
 	class Organization_memberCSerializer(serializers.ModelSerializer):
@@ -135,7 +135,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Service
-		fields = ['id', 'name', 'address', 'number', 'organization']
+		fields = ['id', 'name', 'address', 'number', 'organization', 'created_at', 'updated_at']
 
 
 	class ServiceCSerializer(serializers.ModelSerializer):
@@ -158,7 +158,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Order
-		fields = ['id', 'order_code', 'description', 'creator', 'executor', 'client', 'done', 'service']
+		fields = ['id', 'order_code', 'description', 'creator', 'executor', 'client', 'done', 'service', 'created_at', 'updated_at']
 
 
 	class OrderCSerializer(serializers.ModelSerializer):
