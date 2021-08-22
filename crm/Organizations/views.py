@@ -726,22 +726,22 @@ class ClientViewSet(ViewSet):
 						else:
 							output['error']['Address'] = 'Address is too short or too long'
 
-	                if 'email' in requests.data:
-	                    try:
-	                        current_client.user.email = requests.data['email']
-	                        output['success']['Email'] = 'Email successfully changed'
-	                        current_client.user.confirmed_email = False
-	                    except:
-	                        output['error']['Email'] = 'Wrong email format'
+					if 'email' in requests.data:
+						try:
+							current_client.user.email = requests.data['email']
+							output['success']['Email'] = 'Email successfully changed'
+							current_client.user.confirmed_email = False
+						except:
+							output['error']['Email'] = 'Wrong email format'
 
 
-	                if 'number' in requests.data:
-	                    try:
-	                        current_client.user.email = requests.data['number']
-	                        output['success']['Number'] = 'Number successfully changed'
-	                        current_client.user.confirmed_number = False
-	                    except:
-	                        output['error']['Number'] = 'Wrong number format'
+					if 'number' in requests.data:
+						try:
+							current_client.user.email = requests.data['number']
+							output['success']['Number'] = 'Number successfully changed'
+							current_client.user.confirmed_number = False
+						except:
+							output['error']['Number'] = 'Wrong number format'
 
 
 					if len(output['success'] > 0):
