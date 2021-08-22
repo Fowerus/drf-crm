@@ -12,6 +12,7 @@ django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}
 djangorestframework-simplejwt = "*"
 pyjwt = "*"
 uuid = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
