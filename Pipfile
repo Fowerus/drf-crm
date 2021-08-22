@@ -11,6 +11,7 @@ pillow = "*"
 django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}
 djangorestframework-simplejwt = "*"
 pyjwt = "*"
+uuid = "*"
 
 [dev-packages]
 

@@ -1,6 +1,12 @@
+import uuid
+import datetime
+
+from django.core.mail import send_mail
+from django.conf import settings
+from django.urls import reverse
+
 from rest_framework.viewsets import ViewSet
 from rest_framework.views import APIView
-from django.conf import settings
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.views import TokenViewBase
@@ -8,22 +14,54 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.exceptions import TokenError
 
 from .serializers import *
+from .models import VerifyInfo
 from crm.views import *
 from Organizations.serializers import OrderSerializer
-
+# {
+#     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzMDc0OTc1OSwianRpIjoiYTIxNTI0NWJmYzljNDhlNzg1ZDNmNWYwNGIxOTRkYzciLCJ1c2VyX2lkIjoxfQ.PoQPrOSgmjJkWInqf-wOxnAiSIGTCAh7k3_TajvYkYA",
+#     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMwNzQ5NzU5LCJqdGkiOiJiM2Q5MjQ4YmMxMTQ0M2MyYWIxZjE2OGMyZDgwOGMyMSIsInVzZXJfaWQiOjF9.aI9p1RYyCSyYK7U3YlL9nvI9GUiNMJ-CfbPgwli7BTg",
+#     "expire_at": 0
+# }
 
 
 class MyCustomToken(TokenViewBase):
 
     def post(self, requests, *args, **kwargs):
+        print(reverse('organization'))
         data = requests.data.copy()
         headers = requests.headers.copy()
         data['device'] = headers['User-Agent']
-        serializer = self.get_serializer(data=data)
+
+        if 'email' in requests.data:
+            serializer = MyTokenObtainPairEmailSerializer(data=data)
+
+        else:
+            data['email'] = '@'
+            serializer = MyTokenObtainPairNumberSerializer(data = data)
 
         try:
             serializer.is_valid(raise_exception=True)
-            if 'error' in serializer.data:
+            if 'detail' in serializer.data:
+                return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response(serializer.validated_data | {'expire_at': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].seconds}, status=status.HTTP_200_OK)
+
+
+
+class MyCustomTokenForRefresh(TokenViewBase):
+
+    def post(self, requests, *args, **kwargs):
+        data = requests.data.copy()
+        headers = requests.headers.copy()
+        data['device'] = headers['User-Agent']
+
+        serializer = self.get_serializer(data = data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+            if 'detail' in serializer.data:
                 return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
         except TokenError as e:
             raise InvalidToken(e.args[0])
@@ -33,15 +71,15 @@ class MyCustomToken(TokenViewBase):
 
 
 class MyTokenObtainPairView(MyCustomToken):
-    serializer_class = MyTokenObtainPairSerializer
+    pass
 
 
 
-class MyTokenRefreshView(MyCustomToken):
+class MyTokenRefreshView(MyCustomTokenForRefresh):
     serializer_class = MyTokenRefreshSerializer
     
 
-class UserRegistration(APIView):
+class UserRegistrationViewSet(ViewSet):
     serializer_class = UserRegistrationSerializer
 
     def registration_user(self, requests):
@@ -130,6 +168,23 @@ class UserViewSet(ViewSet):
                     else:
                         output['error']['Image'] = 'Wrong image format'
 
+                if 'email' in requests.data:
+                    try:
+                        current_user.email = requests.data['email']
+                        output['success']['Email'] = 'Email successfully changed'
+                        current_user.confirmed_email = False
+                    except:
+                        output['error']['Email'] = 'Wrong email format'
+
+
+                if 'number' in requests.data:
+                    try:
+                        current_user.email = requests.data['number']
+                        output['success']['Number'] = 'Number successfully changed'
+                        current_user.confirmed_number = False
+                    except:
+                        output['error']['Number'] = 'Wrong number format'
+
 
                 if len(output['success']) > 0:
                     current_org.save()
@@ -155,3 +210,67 @@ class UserViewSet(ViewSet):
                 return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(status = status.HTTP_403_FORBIDDEN)
+
+
+
+class VerifyNumberEmailViewSet(ViewSet):
+
+    def verify_email_send(self, requests):
+        try:
+            user_data = get_userData(requests)
+            user = User.objects.get(id = user_data['user_id'])
+            if not user.confirmed_email:
+                try:
+                    current_info = VerifyInfo.objects.filter(user = user_data['user_id']).get(type_code = 'email')
+                    current_info.code = int(str(uuid.uuid1().int)[:6])
+            
+                except:
+                    try:
+                        current_info = VerifyInfo(user = user, type_code = 'email', code = int(str(uuid.uuid1().int)[:6]))
+                    except:
+                        return Response(status = status.HTTP_400_BAD_REQUEST)
+
+                link_to_verify = str(requests._current_scheme_host) + str(reverse('accept_email')) + str(current_info.code)
+                message = f'Перейдите по ссылке для подтверждения вашей почты\n{link_to_verify}'
+
+            return Response({'detail':'Already confirmed'}, status = status.HTTP_200_OK)
+        except:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+        try:
+            send_mail(
+                'Test app',
+                message, 
+                settings.EMAIL_HOST_USER,
+                [current_info.user.email],
+                fail_silently=False
+            )
+            current_info.save()
+        except:
+            return Response({'detail':'Unsuccessful code submission'}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(status = status.HTTP_200_OK)
+
+
+
+    def accept_email(self, requests, code):
+        try:
+            user_data = get_userData(requests)
+            try:
+                user = User.objects.get(id = user_data['user_id'])
+                verify_info = VerifyInfo.objects.get(code = code)
+                if verify_info.user.id == user.id:
+                    user = User.objects.get(id = user_data['user_id'])
+                    user.confirmed_email = True
+                    user.save()
+                    verify_info.delete()
+                    return Response({'detail':'Successfully confirmed'}, )
+            except:
+                return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+    def verify_number_send(self, requests):
+        pass

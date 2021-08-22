@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
@@ -9,27 +11,27 @@ from django_resized import ResizedImageField
 
 
 class UserManager(BaseUserManager):
-	def _create_user(self, surname, name, patronymic, email, number, address = None, password = None, **extra_fields):
+	def _create_user(self, surname, name, patronymic, email, address = None, password = None, **extra_fields):
 		email = self.normalize_email(email)
-		user = self.model(surname = surname, name = name, patronymic = patronymic, number = number, address = address, email = email, **extra_fields)
+		user = self.model(surname = surname, name = name, patronymic = patronymic, address = address, email = email, **extra_fields)
 		user.set_password(password)
 		user.save(using = self._db)
 
 		return user
 
 
-	def create_user(self, surname, name, patronymic, email, number, address= None, password = None, **extra_fields):
+	def create_user(self, surname, name, patronymic, email, address= None, password = None, **extra_fields):
 		extra_fields.setdefault('is_staff', False)
 		extra_fields.setdefault('is_superuser', False)
 
-		return self._create_user(surname = surname, name = name, patronymic = patronymic, number = number, address = address, email = email, password = password, **extra_fields)
+		return self._create_user(surname = surname, name = name, patronymic = patronymic, address = address, email = email, password = password, **extra_fields)
 
 
-	def create_superuser(self, surname, name, patronymic, email, number, address= None, password = None, **extra_fields):
+	def create_superuser(self, surname, name, patronymic, email, address= None, password = None, **extra_fields):
 		extra_fields.setdefault('is_staff', True)
 		extra_fields.setdefault('is_superuser', True)
 
-		return self._create_user(surname = surname, name = name, patronymic = patronymic, number = number, address = address, email = email, password = password, **extra_fields)
+		return self._create_user(surname = surname, name = name, patronymic = patronymic, address = address, email = email, password = password, **extra_fields)
 
 
 
@@ -47,7 +49,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
 
-	confirmed = models.BooleanField(default = False)
+	confirmed_email = models.BooleanField(default = False)
+	confirmed_number = models.BooleanField(default = False)
 
 	is_staff = models.BooleanField(default = False)
 	is_superuser = models.BooleanField(default = False)
@@ -69,3 +72,24 @@ class User(AbstractBaseUser, PermissionsMixin):
 		verbose_name_plural = 'Users'
 		verbose_name = 'User'
 		ordering = ['-created_at']
+
+
+
+class VerifyInfo(models.Model):
+	user = models.ForeignKey(User, on_delete = models.CASCADE, verbose_name = 'User')
+	code = models.IntegerField(unique = True)
+	type_code = models.CharField(max_length = 10, verbose_name = 'Type code')
+
+	updated_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
+
+
+	def __str__(self):
+		return f'user: {self.user} | type_code: {self.type_code}'
+
+
+	class Meta:
+		unique_together = ('user', 'type_code')
+		db_table = 'VerifyInfo'
+		verbose_name_plural = 'VerifyInfoes'
+		verbose_name = 'VerifyInfo'
+		ordering = ['-updated_at']
