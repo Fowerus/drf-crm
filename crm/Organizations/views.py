@@ -1,4 +1,5 @@
 import jwt
+
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework import status, permissions
@@ -7,11 +8,7 @@ from rest_framework.response import Response
 from .serializers import *
 from crm.views import *
 from Clients.serializers import ClientSerializer
-# {
-#     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzMDY3NzMyMSwianRpIjoiYzhhYzQ0MzZmYjA3NDA5ZmE4MzE5OTA4MDJjMGJlOTkiLCJ1c2VyX2lkIjozfQ.MjOS2h7MI2ka37rVyUJ8Hn8NFNCRmIn6_asE3eUFAes",
-#     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMwNjc3MzIxLCJqdGkiOiJkZDM0MDFhZjczN2I0NjVhODY4YmZjNTdmYWM5ODU2NCIsInVzZXJfaWQiOjN9.F9ysW-tCySJLK_MyEKl9M7A-RITSmV-jpiBYiV1f78w",
-#     "expire_at": 0
-# }
+
 
 
 class OrganizationAPIView(APIView):
@@ -729,12 +726,23 @@ class ClientViewSet(ViewSet):
 						else:
 							output['error']['Address'] = 'Address is too short or too long'
 
-					if 'email' in requests.data:
-						try:
-							current_client.user.email = requests.data['email']
-							output['success']['Email'] = 'Email successfully changed'
-						except:
-							output['error']['Email'] = 'Wrong email address'
+	                if 'email' in requests.data:
+	                    try:
+	                        current_client.user.email = requests.data['email']
+	                        output['success']['Email'] = 'Email successfully changed'
+	                        current_client.user.confirmed_email = False
+	                    except:
+	                        output['error']['Email'] = 'Wrong email format'
+
+
+	                if 'number' in requests.data:
+	                    try:
+	                        current_client.user.email = requests.data['number']
+	                        output['success']['Number'] = 'Number successfully changed'
+	                        current_client.user.confirmed_number = False
+	                    except:
+	                        output['error']['Number'] = 'Wrong number format'
+
 
 					if len(output['success'] > 0):
 						current_client.save()

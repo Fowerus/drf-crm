@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
+
 from rest_framework import serializers
-from Organizations.serializers import OrganizationSerializer
 
 from .models import Client
 from Users.serializers import UserSerializer
+from Organizations.serializers import OrganizationSerializer
 
 
 

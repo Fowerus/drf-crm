@@ -15,21 +15,6 @@ def get_userData(requests):
 	return access_token_decode
 
 
-#Сhecking a user as a member of an organization or its creator
-def check_memberships(user_id):
-	try:
-		user = get_user_model().objects.get(id = user_id)
-		user_member = user.user_member.all()
-		user_creator = user.my_organizations.all()
-
-		if user_member or user_creator:
-			return True
-
-		return False
-	except:
-		return False
-
-
 #Checking the required permissions
 def check_ReqPerm(role, permissions:list):
 	for i in role.permissions.all():
@@ -51,7 +36,8 @@ def check_UsrClient(user_id):
 
 def check_confirmed(user_id):
 	try:
-		return User.objects.get(id = user_id).confirmed
+		user = User.objects.get(id = user_id)
+		return user.confirmed_number + user.confirmed_email
 	except:
 		return False
 
