@@ -899,3 +899,28 @@ class OrderViewSet(ViewSet):
 
 		except:
 			return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+
+	def block_order(self, requests):
+		user_data = get_userData(requests)
+
+		try:
+			if is_valid_member(user_data['user_id'], requests.data['organization'],
+				['organization_creator', 'order_delete', 'order_guru']):
+				if check_orgOrder(requests.data['order_code'], requests.data['organization']):
+
+					try:
+						current_order = Order.objects.get(order_code = requests.data['order_code'])
+						current_order.blocked = True
+						current_order.save()
+
+						return Response(status = status.HTTP_200_OK)
+
+					except:
+						return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+			return Response(status = status.HTTP_403_FORBIDDEN)
+
+		except:
+			return Response(status = status.HTTP_400_BAD_REQUEST)

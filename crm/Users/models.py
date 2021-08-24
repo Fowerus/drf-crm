@@ -40,8 +40,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	patronymic = models.CharField(max_length = 150, verbose_name = 'Patronymic')
 
-	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, unique = True, blank = True, verbose_name = 'Email')
-	number = PhoneNumberField(unique = True, blank = True)
+	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, unique = True, blank = True, null = True, verbose_name = 'Email')
+	number = PhoneNumberField(unique = True, blank = True, null = True)
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
 
 	image = ResizedImageField(crop=['middle', 'center'], upload_to = '../static/Users/', blank = True, default = '../static/Users/default-user-image.jpeg', verbose_name = 'Image')
@@ -65,6 +65,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 	def __str__(self):
 		return f'id: {self.id} | email: {self.email} | number: {self.number}'
+		
+
+	@property
+	def confirmed(self):
+		return _check_confirmed()
+
+
+	def _check_confirmed(self):
+		return self.confirmed_number + self.confirmed_email
 
 
 	class Meta:

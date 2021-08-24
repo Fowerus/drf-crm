@@ -126,7 +126,7 @@ class UserViewSet(ViewSet):
             user_data = get_userData(requests)
             if not check_UsrClient(user_data['user_id']):
 
-                current_user = User.objects.get(id = 1)
+                current_user = User.objects.get(id = user_data['user_id'])
 
                 output = {
                     'success':{},
@@ -187,7 +187,7 @@ class UserViewSet(ViewSet):
 
 
                 if len(output['success']) > 0:
-                    current_org.save()
+                    current_user.save()
 
                 return Response(output, status = status.HTTP_200_OK)
 
