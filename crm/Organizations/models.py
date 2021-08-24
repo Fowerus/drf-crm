@@ -151,6 +151,8 @@ class Order(MainMixin):
 
 	done = models.BooleanField(default = False)
 
+	blocked = models.BooleanField(default = False)
+
 
 	class Meta:
 		db_table = 'Order'

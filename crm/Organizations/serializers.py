@@ -160,7 +160,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Order
-		fields = ['id', 'order_code', 'description', 'creator', 'executor', 'client', 'done', 'service', 'created_at', 'updated_at']
+		fields = ['id', 'order_code', 'description', 'creator', 'executor', 'client', 'done', 'blocked', 'service', 'created_at', 'updated_at']
 
 
 	class OrderCSerializer(serializers.ModelSerializer):

@@ -31,7 +31,7 @@ class ClientSerializer(serializers.ModelSerializer):
 			client_data = validated_data.pop('organizaion')
 
 			new_user = get_user_model().objects.create_user(**validated_data)
-			new_user.confirmed = True
+			new_user.confirmed_email = True
 			new_user.save()
 			client_data['user'] = new_user.id
 
