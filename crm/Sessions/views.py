@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ViewSet
-from rest_framework  import APIView
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -12,8 +12,8 @@ class SessionAPIView(APIView):
 	serializer_class = SessionSerializer
 
 	def get(self, requests):
-		user_data = get_userData(requests)
 		try:
+			user_data = get_userData(requests)
 			all_session = Organization.objects.filter(user = user_data['user_id'])
 			serializer = self.serializer_class(all_session, many = True)	
 
@@ -25,7 +25,10 @@ class SessionAPIView(APIView):
 
 	def delete(self, requests):
 		try:
-			Session.objects.get(id = requests.data['session']).delete()
+			user_data = get_userData(requests)
+			current_session = Session.objects.get(id = requests.data['session'])
+			if user_data['user_id'] == current_session.user.id:
+				current_session.delete()
 			return Response(status = status.HTTP_200_OK)
 		except:
 			return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
