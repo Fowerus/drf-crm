@@ -300,7 +300,7 @@ class Organization_linkViewSet(ViewSet):
 class Organization_memberViewSet(ViewSet):
 	serializer_class = Organization_memberSerializer
 
-	def list_all_organizations_member(self, requests):
+	def list_all_organizations_members(self, requests):
 		try:
 			all_organization_members = Organization_member.objects.all()
 			serializer = self.serializer_class(all_organization_members, many = True)
@@ -618,7 +618,7 @@ class ServiceViewSet(ViewSet):
 
 
 
-	def delete_organization_member(self, requests):
+	def delete_service(self, requests):
 		user_data = get_userData(requests)
 
 		try:

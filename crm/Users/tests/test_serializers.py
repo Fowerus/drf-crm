@@ -11,5 +11,5 @@ class TestUsersSerializers(APITestCase):
 		pass
 
 
-	def testUser(self):
+	def testUserRegistrationSerializer(self):
 		pass

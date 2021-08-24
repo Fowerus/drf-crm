@@ -1,6 +1,5 @@
 from django.urls import path
 
-from rest_framework.response import Response
 from rest_framework_simplejwt import views as jwt_view
 
 from . import views
@@ -9,11 +8,12 @@ urlpatterns = [
     path('auth/token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/token/refresh/', views.MyTokenRefreshView.as_view(), name='token_refresh'),
 
-    path('auth/user/', views.UserViewSet.as_view({
+    path('user/', views.UserViewSet.as_view({
         'get': 'information_about_user',
         'patch':'update_user',
         'delete':'delete_user'
         }), name='registration'),
+    path('user/executor', views.UserViewSet.as_view({'get':'list_user_executorOrders'}), name = 'user_executor'),
 
     path('auth/registration/', views.UserRegistrationViewSet.as_view({'post':'UserRegistrationViewSet'}), name = 'registration'),
 
