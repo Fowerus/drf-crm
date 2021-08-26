@@ -11,7 +11,7 @@ class Organization(models.Model):
 	description = models.CharField(max_length = 500, blank = True, verbose_name = 'Description')
 	address = models.CharField(max_length = 200, verbose_name = 'Address')
 
-	creator = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'my_organizations', verbose_name = 'creator')
+	creator = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'my_organizations', verbose_name = 'Creator')
 
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
@@ -22,7 +22,7 @@ class Organization(models.Model):
 
 	class Meta:
 		db_table = 'Organization'
-		unique_together = (("name"),("address"))
+		unique_together = ("name","address")
 		verbose_name_plural = "Organizations"
 		verbose_name = "Organization"
 		ordering = ['-updated_at']
@@ -47,27 +47,27 @@ class Organization_number(MainMixin):
 		return f'id: {self.id} | number: {self.number} | org: {self.organization}'
 
 	class Meta:
-		unique_together = (('number'), ('organization'))
+		unique_together = ('number', 'organization')
 		db_table = 'Organization_number'
-		verbose_name_plural = "Organizations' numbers"
-		verbose_name = "Organization's number"
+		verbose_name_plural = "Organizations numbers"
+		verbose_name = "Organization number"
 		ordering = ['-updated_at']
 
 
 
 class Organization_link(MainMixin):
 	name = models.CharField(max_length = 50, verbose_name = 'Name')
-	link = models.CharField(validators = [RegexValidator(regex = r"^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*$")], max_length = 200, verbose_name = 'Link')
+	link = models.CharField(validators = [RegexValidator(regex = r"^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*$")], max_length = 200, unique = True, verbose_name = 'Link')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_links', verbose_name = 'Organization')
 
 	def __str__(self):
 		return f'id: {self.id} | org: {self.org}'
 
 	class Meta:
-		unique_together = (('link'), ('organization'))
+		unique_together = ('link', 'organization')
 		db_table = 'Organization_link'
-		verbose_name_plural = "Organizations' link"
-		verbose_name = "Organization's link"
+		verbose_name_plural = "Organizations links"
+		verbose_name = "Organization link"
 		ordering = ['-updated_at']
 
 
@@ -82,7 +82,7 @@ class Service(MainMixin):
 		return f'id: {self.id} | name: {self.name} | org: {self.organization}'
 
 	class Meta:
-		unique_together = (('name'), ('organization'))
+		unique_together = ('name', 'organization')
 		db_table = 'Service'
 		verbose_name_plural = "Services"
 		verbose_name = "Service"
@@ -91,14 +91,15 @@ class Service(MainMixin):
 
 
 class CustomPermission(models.Model):
-	name = models.CharField(max_length = 60, verbose_name = 'Offical_name')
-	codename = models.CharField(max_length = 150, verbose_name = 'Technical_name')
+	name = models.CharField(max_length = 60, unique = True, verbose_name = 'Official_name')
+	codename = models.CharField(max_length = 150, unique = True, verbose_name = 'Codename')
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 
 	def __str__(self):
 		return f'id: {self.id} | name: {self.name}'
 
 	class Meta:
+		unique_together = ('name', 'codename')
 		db_table = 'CustomPermission'
 		verbose_name_plural = 'CustomPermissions'
 		verbose_name = 'CustomPermission'
@@ -107,7 +108,7 @@ class CustomPermission(models.Model):
 
 
 class Role(MainMixin):
-	name = models.CharField(max_length = 100, verbose_name = 'Name')
+	name = models.CharField(max_length = 100, unique = True, verbose_name = 'Name')
 	permissions = models.ManyToManyField(CustomPermission, related_name = 'permission_roles', verbose_name = 'Permissions')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_roles', verbose_name = 'Organization')
 
@@ -116,6 +117,7 @@ class Role(MainMixin):
 		return f'id: {self.id} | name: {self.name} | org: {self.organization}'
 
 	class Meta:
+		unique_together = ('name', 'organization')
 		db_table = 'Role'
 		verbose_name_plural = 'Roles'
 		verbose_name = 'Role'
@@ -132,16 +134,16 @@ class Organization_member(MainMixin):
 		return f'id: {self.id} | user: {self.user} | role: {self.role}'
 
 	class Meta:
-		unique_together = (('user'), ('organization'))
+		unique_together = ('user', 'organization')
 		db_table = 'Organization_member'
-		verbose_name_plural = 'Organization_members'
-		verbose_name = 'Organization_member'
+		verbose_name_plural = 'Organizations members'
+		verbose_name = 'Organization member'
 		ordering = ['-updated_at']
 
 
 
 class Order(MainMixin):
-	order_code = models.BigIntegerField(verbose_name = 'Order_code', unique = True)
+	order_code = models.BigIntegerField(unique = True, verbose_name = 'Order_code')
 	description = models.CharField(max_length = 500, verbose_name = 'Description')
 	client = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'client_orders', verbose_name = 'Client')
 	executor = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'user_executor', verbose_name = 'Executor')

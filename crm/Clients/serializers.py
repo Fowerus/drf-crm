@@ -14,13 +14,13 @@ class ClientSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Client
-		fields = ['id','organizaion', 'user']
+		fields = ['id','organization', 'user']
 
 
 	class ClientCSerializer(serializers.ModelSerializer):
-
+		password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+		email = serializers.CharField(write_only = True)
 		address = serializers.CharField(write_only = True)
-		number = serializers.CharField(write_only = True)
 
 		surname = serializers.CharField(write_only = True)
 		name = serializers.CharField(write_only = True)
@@ -28,18 +28,17 @@ class ClientSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
 
-			client_data = validated_data.pop('organizaion')
+			client_data = {'organization': validated_data.pop('organization')}
 
 			new_user = get_user_model().objects.create_user(**validated_data)
 			new_user.confirmed_email = True
 			new_user.save()
-			client_data['user'] = new_user.id
 
-			client = Client.objects.create(**client_data)
+			client = Client.objects.create(user = new_user, organization = client_data['organization'])
 
 			return client
 
 
 		class Meta:
 			model = Client
-			fields = ['organizaion', 'user']
+			fields = ['organization', 'password', 'email', 'surname', 'name', 'patronymic', 'address']

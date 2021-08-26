@@ -181,15 +181,41 @@ class MyTokenRefreshSerializer(serializers.Serializer):
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
 	password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+	
+	class UserRegistrationForNumber(serializers.ModelSerializer):
+		password = serializers.CharField(max_length=128, min_length=8, write_only=True)
 
-	def create(self, validated_data):
-		user = User.objects.create_user(**validated_data)
-		return user
+		def create(self, validated_data):
+			password = validated_data.pop('password')
+			user = User(**validated_data)
+			user.set_password(password)
+			user.save()
+
+			return user
+
+
+		class Meta:
+			model = User
+			fields = ['surname','name','patronymic', 'address', 'number', 'password']
+
+
+	class UserRegistrationForEmail(serializers.ModelSerializer):
+		password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+
+		def create(self, validated_data):
+			user = User.objects.create_user(**validated_data)
+
+			return user
+
+
+		class Meta:
+			model = User
+			fields = ['surname','name','patronymic', 'address', 'email', 'password']
 
 
 	class Meta:
 		model = User
-		fields = ['email','surname','name','patronymic', 'address', 'number', 'password']
+		fields = ['surname','name','patronymic', 'address', 'email','number', 'password']
 
 
 

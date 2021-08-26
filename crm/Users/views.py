@@ -8,6 +8,7 @@ from django.urls import reverse
 from rest_framework.viewsets import ViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import permissions
 
 from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -18,11 +19,10 @@ from .models import VerifyInfo
 from crm.views import *
 from Organizations.serializers import OrderSerializer
 # {
-#     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzMDc0OTc1OSwianRpIjoiYTIxNTI0NWJmYzljNDhlNzg1ZDNmNWYwNGIxOTRkYzciLCJ1c2VyX2lkIjoxfQ.PoQPrOSgmjJkWInqf-wOxnAiSIGTCAh7k3_TajvYkYA",
-#     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMwNzQ5NzU5LCJqdGkiOiJiM2Q5MjQ4YmMxMTQ0M2MyYWIxZjE2OGMyZDgwOGMyMSIsInVzZXJfaWQiOjF9.aI9p1RYyCSyYK7U3YlL9nvI9GUiNMJ-CfbPgwli7BTg",
+#     "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzMDk0NDIyNSwianRpIjoiNWZiODNhMTAwOWNhNGU4MGEwOTA2NGRmZmM3YTIyYWEiLCJ1c2VyX2lkIjoxfQ.r3w64dIiadUeBSkI8tq0JF_w7RHNap9ipVBFi1Vv5dA",
+#     "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMwOTQ0MjI1LCJqdGkiOiI1MjA2YzM3ZmY3N2E0ZTI2YWRlNzMxZjhhNmFmZmZlNCIsInVzZXJfaWQiOjF9.n77Jy2pXfEbmF3HiMjPAUZX8a-M02MVJheuGwfdVP60",
 #     "expire_at": 0
 # }
-
 
 class MyCustomToken(TokenViewBase):
 
@@ -30,7 +30,7 @@ class MyCustomToken(TokenViewBase):
         print(reverse('organization'))
         data = requests.data.copy()
         headers = requests.headers.copy()
-        data['device'] = headers['User-Agent']
+        data['device'] = headers['user-agent']
 
         if 'email' in requests.data:
             serializer = MyTokenObtainPairEmailSerializer(data=data)
@@ -46,7 +46,7 @@ class MyCustomToken(TokenViewBase):
         except TokenError as e:
             raise InvalidToken(e.args[0])
 
-        return Response(serializer.validated_data | {'expire_at': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].seconds}, status=status.HTTP_200_OK)
+        return Response(serializer.validated_data | {'expired_at': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].seconds}, status=status.HTTP_200_OK)
 
 
 
@@ -55,7 +55,7 @@ class MyCustomTokenForRefresh(TokenViewBase):
     def post(self, requests, *args, **kwargs):
         data = requests.data.copy()
         headers = requests.headers.copy()
-        data['device'] = headers['User-Agent']
+        data['device'] = headers['user-agent']
 
         serializer = self.get_serializer(data = data)
 
@@ -64,9 +64,10 @@ class MyCustomTokenForRefresh(TokenViewBase):
             if 'detail' in serializer.data:
                 return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
         except TokenError as e:
+            print('sdfdsf')
             raise InvalidToken(e.args[0])
 
-        return Response(serializer.validated_data | {'expire_at': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].seconds}, status=status.HTTP_200_OK)
+        return Response(serializer.validated_data | {'expired_at': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].seconds}, status=status.HTTP_200_OK)
 
 
 
@@ -80,16 +81,22 @@ class MyTokenRefreshView(MyCustomTokenForRefresh):
     
 
 class UserRegistrationViewSet(ViewSet):
-    serializer_class = UserRegistrationSerializer
+    permission_classes = [permissions.AllowAny]
 
     def registration_user(self, requests):
         try:
-            serializer = self.serializer_class(data = requests.data)
+            if 'number' in requests.data and not 'email' in requests.data:
+                serializer = UserRegistrationSerializer.UserRegistrationForNumber(data = requests.data)
+            elif 'email' in requests.data and not 'number' in requests.data:
+                serializer = UserRegistrationSerializer.UserRegistrationForEmail(data = requests.data)
+            else:
+                serializer = UserRegistrationSerializer(data = requests.data)
+
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-            return Response(status = status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
         except:
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -264,7 +271,7 @@ class VerifyNumberEmailViewSet(ViewSet):
                     user.confirmed_email = True
                     user.save()
                     verify_info.delete()
-                    return Response({'detail':'Successfully confirmed'}, )
+                    return Response({'detail':'Successfully confirmed'}, status = status.HTTP_200_OK)
             except:
                 return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 

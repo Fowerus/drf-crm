@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from Organizations.models import *
 from Clients.models import *
+from Users.models import User
 
 
 
@@ -28,7 +29,7 @@ def check_ReqPerm(role, permissions:list):
 #Checking the user as a client
 def check_UsrClient(user_id):
 	try:
-		if User.objects.get(user = user_id).user_client:
+		if User.objects.get(id = user_id).user_client:
 			return True
 	except:
 		return False
@@ -37,7 +38,7 @@ def check_UsrClient(user_id):
 def check_confirmed(user_id):
 	try:
 		user = User.objects.get(id = user_id)
-		return user.confirmed_number + user.confirmed_email
+		return user.confirmed
 	except:
 		return False
 

@@ -7,7 +7,7 @@ from Organizations.models import Organization
 
 class Client(models.Model):
 	user = models.OneToOneField(get_user_model(), on_delete = models.CASCADE, related_name = 'user_client', verbose_name = 'Client')
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'user_client', verbose_name = 'Organization')
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_clients', verbose_name = 'Organization')
 
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
