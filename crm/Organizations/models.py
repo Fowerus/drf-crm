@@ -127,7 +127,7 @@ class Role(MainMixin):
 
 class Organization_member(MainMixin):
 	user = models.ForeignKey(get_user_model(), on_delete = models.CASCADE, related_name = 'user_member', verbose_name = 'User')
-	role = models.ForeignKey(Role, on_delete = models.PROTECT, related_name = 'role_member', verbose_name = 'Role')
+	role = models.ForeignKey(Role, on_delete = models.SET_NULL, related_name = 'role_member', verbose_name = 'Role', null = True)
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_members', verbose_name = 'Organization')
 
 	def __str__(self):

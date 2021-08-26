@@ -60,7 +60,7 @@ class Organization_linkSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization_link
-		fields = ['id','link','organization', 'created_at', 'updated_at']
+		fields = ['id','name','link','organization', 'created_at', 'updated_at']
 
 
 	class Organization_linkCSerializer(serializers.ModelSerializer):
@@ -73,7 +73,7 @@ class Organization_linkSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Organization_link
-			fields = ['link','organization']
+			fields = ['name', 'link','organization']
 
 
 
@@ -96,8 +96,8 @@ class RoleSerializer(serializers.ModelSerializer):
 	class RoleCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
-			role = Role(name = validated_data['name'], organization = validated_data['organization'])
-			role.set(validated_data['permissions'])
+			role = Role.objects.create(name = validated_data['name'], organization = validated_data['organization'])
+			role.permissions.set(set(validated_data['permissions']))
 			role.save()
 
 			return role
@@ -164,6 +164,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 	class OrderCSerializer(serializers.ModelSerializer):
+
+		def create(self, validated_data):
+			order = Order.objects.create(**validated_data)
+
+			return order
 
 		class Meta:
 			model = Order

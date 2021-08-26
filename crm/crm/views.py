@@ -74,7 +74,7 @@ def check_orgNumber(number_id, org_id):
 #Checking the link of an organization
 def check_orgLink(link_id, org_id):
 	try:
-		current_link = Organization.objects.get(id = org_id).organization_links.all().filter(id = link_id)
+		current_link = Organization.objects.get(id = org_id).organization_links.all().get(id = link_id)
 		if current_link:
 			return True
 
@@ -87,12 +87,8 @@ def check_orgLink(link_id, org_id):
 #User verification for work in the organization
 def check_orgMember(member_id, org_id):
 	try:
-		current_member = Organization.objects.get(id = org_id).organization_members.all().filter(id = member_id)
-		if current_member:
-			return True
-
-		return False
-
+		current_member = Organization.objects.get(id = org_id).organization_members.all().get(id = member_id)
+		return True
 	except:
 		return False
 
@@ -100,12 +96,8 @@ def check_orgMember(member_id, org_id):
 #Checking the role of an organization
 def check_orgRole(role_id, org_id):
 	try:
-		current_role = Organization.objects.get(id = org_id).organization_roles.all().filter(id = role_id)
-		if current_role:
-			return True
-
-		return False
-
+		current_role = Organization.objects.get(id = org_id).organization_roles.all().get(id = role_id)
+		return True
 	except:
 		return False
 
@@ -113,12 +105,8 @@ def check_orgRole(role_id, org_id):
 #Checking the service of organizaion
 def check_orgService(service_id, org_id):
 	try:
-		current_service = Organization.objects.get(id = org_id).organization_services.all().filter(id = service_id)
-		if current_service:
-			return True
-
-		return False
-
+		current_service = Organization.objects.get(id = org_id).organization_services.all().get(id = service_id)
+		return True
 	except:
 		return False
 
@@ -126,12 +114,8 @@ def check_orgService(service_id, org_id):
 #Checking a user as a client of organization
 def check_orgClient(client_id, org_id):
 	try:
-		current_client = Organization.objects.get(id = org_id).organization_services.all().filter(id = client_id)
-		if current_client:
-			return True
-
-		return False
-
+		current_client = Organization.objects.get(id = org_id).organization_clients.all().get(id = client_id)
+		return True
 	except:
 		return False
 
