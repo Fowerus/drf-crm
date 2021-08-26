@@ -12,7 +12,7 @@ from Clients.models import Client
 
 
 
-class TestOrganizationsModels(APITestCase):
+class TestClientsModels(APITestCase):
 
 	def setUp(self):
 		self.user_data = {
