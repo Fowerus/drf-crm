@@ -5,6 +5,7 @@ from rest_framework_simplejwt import views as jwt_view
 from . import views
 
 
+
 urlpatterns = [
     path('auth/registration/', views.UserRegistrationViewSet.as_view({'post':'registration_user'}), name = 'registration'),
 
