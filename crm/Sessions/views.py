@@ -14,7 +14,7 @@ class SessionAPIView(APIView):
 	def get(self, requests):
 		try:
 			user_data = get_userData(requests)
-			all_session = Organization.objects.filter(user = user_data['user_id'])
+			all_session = Session.objects.filter(user = user_data['user_id'])
 			serializer = self.serializer_class(all_session, many = True)	
 
 			return Response(serializer.data, status = status.HTTP_200_OK)

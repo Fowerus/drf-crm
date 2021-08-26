@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from .serializers import *
 from crm.views import *
 from Clients.serializers import ClientSerializer
+from Organizations.models import *
 
 
 
@@ -27,15 +28,14 @@ class OrganizationAPIView(APIView):
 
 	def post(self, requests):
 		user_data = get_userData(requests)
-		if not check_UsrClient(user_data['user_id']) and not check_confirmed(user_data['user_id']):
+		if not check_UsrClient(user_data['user_id']) and check_confirmed(user_data['user_id']):
 			serializer = self.serializer_class.OrganizationCSerializer(data = requests.data)
 			if serializer.is_valid():
 				serializer.save()
 
-				return Response(serialzier.data, status = status.HTTP_201_CREATE)
+				return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-			else:
-				return Response(status = status.HTTP_400_BAD_REQUEST)
+			return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 		else:
 			return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -43,12 +43,11 @@ class OrganizationAPIView(APIView):
 
 	def patch(self, requests):
 		user_data = get_userData(requests)
-
 		try:
 			if is_valid_member(user_data['user_id'], requests.data['organization'],
 				['organization_creator', 'organization_change']):
 
-				current_org = Organization.objects.get(id = 1)
+				current_org = Organization.objects.get(id = requests.data['organization'])
 
 				output = {
 					'success':{},
@@ -70,8 +69,8 @@ class OrganizationAPIView(APIView):
 						output['error']['description'] = 'Description is too long or too short'
 
 				if 'address' in requests.data:
-					if 10 <= len(requests.data['description']) <= 500:
-						current_org.description = requests.data['description']
+					if 10 <= len(requests.data['address']) <= 500:
+						current_org.address = requests.data['address']
 						output['success']['address'] = 'Address changed successfully'
 					else:
 						output['error']['address'] = 'Address is too long or too short'
@@ -83,6 +82,7 @@ class OrganizationAPIView(APIView):
 
 			else:
 				return Response(status = status.HTTP_403_FORBIDDEN)
+
 
 		except:
 			return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -143,10 +143,9 @@ class Organization_numberViewSet(ViewSet):
 				if serializer.is_valid():
 					serializer.save()
 
-					return Response(status = status.HTTP_200_OK)
+					return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-				else:
-					return Response(status = status.HTTP_400_BAD_REQUEST)
+				return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 			else:
 				return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -167,7 +166,7 @@ class Organization_numberViewSet(ViewSet):
 					try:
 						current_number.number = requests.data['new_number']
 						current_number.save()
-						return Response(status = status.HTTP_200_OK)
+						return Response({'success':'Number successfully changed'}, status = status.HTTP_200_OK)
 
 					except:
 						return Response({'error':'Bad new number'}, status = status.HTTP_400_BAD_REQUEST)
@@ -237,10 +236,9 @@ class Organization_linkViewSet(ViewSet):
 				if serializer.is_valid():
 					serializer.save()
 
-					return Response(status = status.HTTP_200_OK)
+					return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-				else:
-					return Response(status = status.HTTP_400_BAD_REQUEST)
+				return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 			else:
 				return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -261,8 +259,7 @@ class Organization_linkViewSet(ViewSet):
 					try:
 						current_number.number = requests.data['new_link']
 						current_number.save()
-
-						return Response(status = status.HTTP_200_OK)
+						return Response({'success':'Link successfully changed'}, status = status.HTTP_200_OK)
 
 					except:
 						return Response({'error':'Bad new link'}, status = status.HTTP_400_BAD_REQUEST)
@@ -328,14 +325,15 @@ class Organization_memberViewSet(ViewSet):
 		try:
 			if is_valid_member(user_data['user_id'], requests.data['organization'], 
 				['organization_creator', 'organization_member_create', 'organization_member_guru']):
-				if Organization.objects.get(id = requests.data['organization']).creator.id == requests.data['user'] and not check_UsrClient(requests.data['user']) and check_confirmed(requests.data['client']):
+				if not Organization.objects.get(id = requests.data['organization']).creator.id == requests.data['user'] and not check_UsrClient(requests.data['user']) and check_confirmed(requests.data['user']):
 					serializer = self.serializer_class.Organization_memberCSerializer(data = requests.data)
 					if serializer.is_valid():
 						serializer.save()
 
-						return Response(status = status.HTTP_200_OK)
+						return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-				return Response(status = status.HTTP_400_BAD_REQUEST)
+					return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+				return Response({'error':"You cannot add the creator of organization"}, status = status.HTTP_400_BAD_REQUEST)
 			else:
 				return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -350,17 +348,17 @@ class Organization_memberViewSet(ViewSet):
 		try:
 			if is_valid_member(user_data['user_id'], requests.data['organization'],
 				['organization_creator', 'organization_member_change', 'organization_member_guru']):
-				if check_orgMember(requests.data['user'], requests.data['organization']):
+				if check_orgMember(requests.data['member'], requests.data['organization']):
 
 					try:
-						current_member = Organization_member.objects.get(id = requests.data['user'])
-						current_member.role = requests.data['new_role']
+						current_member = Organization_member.objects.get(id = requests.data['member'])
+						current_member.role = Role.objects.get(id = requests.data['role'])
 						current_member.save()
 
-						return Response(status = status.HTTP_200_OK)
+						return Response({'success':'Role successfully changed'}, status = status.HTTP_200_OK)
 
 					except:
-						return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+						return Response({'error':'Bad role format'}, status = status.HTTP_400_BAD_REQUEST)
 
 			return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -430,18 +428,16 @@ class RolePermViewSet(ViewSet):
 
 		try:
 			if is_valid_member(user_data['user_id'], requests.data['organization'],
-				['organization_creator', 'role_create', 'role-_guru']):
+				['organization_creator', 'role_create', 'role_guru']):
 				serializer = self.serializer_class.RoleCSerializer(data = requests.data)
 				if serializer.is_valid():
 					serializer.save()
 
-					return Response(status = status.HTTP_200_OK)
+					return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-				else:
-					return Response(status = status.HTTP_400_BAD_REQUEST)
+				return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 			else:
 				return Response(status = status.HTTP_403_FORBIDDEN)
-
 		except:
 			return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -465,7 +461,7 @@ class RolePermViewSet(ViewSet):
 					if 'new_permissions' in requests.data:
 						try:
 							old_perms = set(current_role.permissions.all())
-							current_role.permissions.set(requests.data['new_permissions'])
+							current_role.permissions.set(set(requests.data['new_permissions']))
 							add_remove_perms = set(current_role.permissions.all())
 							new_perms = old_perms ^ add_remove_perms
 							current_role.permissions.set(new_perms)
@@ -475,7 +471,7 @@ class RolePermViewSet(ViewSet):
 							output['error']['permissions'] = 'Some error on the server'
 
 					if 'name' in requests.data:
-						if 10 <= requests.data['name'] <= 100:
+						if 10 <= len(requests.data['name']) <= 100:
 							current_role.name = requests.data['name']
 							output['success']['name'] = 'Name changed successfully'
 						else:
@@ -554,10 +550,9 @@ class ServiceViewSet(ViewSet):
 				if serializer.is_valid():
 					serializer.save()
 
-					return Response(status = status.HTTP_200_OK)
+					return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-				else:
-					return Response(status = status.HTTP_400_BAD_REQUEST)
+				return Response(serializeer.errors, status = status.HTTP_400_BAD_REQUEST)
 			else:
 				return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -581,7 +576,7 @@ class ServiceViewSet(ViewSet):
 						'error':{}
 					}
 
-					if 'new_name' in requests.data:
+					if 'name' in requests.data:
 						if 10 <= len(requests.data['name']) <= 150:
 							current_service.name = requests.data['name']
 							output['success']['Name'] = 'Name successfully changed'
@@ -594,10 +589,10 @@ class ServiceViewSet(ViewSet):
 							current_service.number = requests.data['number']
 							output['success']['Number'] = 'Number successfully changed'
 						except:
-							output['error']['Number'] = "Wrong number's format"
+							output['error']['Number'] = "Wrong number format"
 
 					if 'address' in requests.data:
-						if 10 <= requests.data['address'] <= 200:
+						if 10 <= len(requests.data['address']) <= 200:
 							current_service.address = requests.data['address']
 							output['success']['Address'] = 'Address successfully changed'
 
@@ -608,8 +603,6 @@ class ServiceViewSet(ViewSet):
 						current_service.save()
 
 					return Response(output, status = status.HTTP_200_OK)
-
-					return Response(status = status.HTTP_200_OK)
 
 			return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -672,9 +665,9 @@ class ClientViewSet(ViewSet):
 				if serializer.is_valid():
 					serializer.save()
 
-					return Response(status = status.HTTP_200_OK)
+					return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-				return Response(status = status.HTTP_400_BAD_REQUEST)
+				return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 			else:
 				return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -689,6 +682,7 @@ class ClientViewSet(ViewSet):
 		try:
 			if is_valid_member(user_data['user_id'], requests.data['organization'], 
 				['organization_creator', 'client_change', 'client_guru']):
+
 				if check_orgClient(requests.data['client'], requests.data['organization']):
 
 					current_client = Client.objects.get(id = requests.data['client'])
@@ -699,38 +693,45 @@ class ClientViewSet(ViewSet):
 					}
 
 					if 'surname' in requests.data:
-						if 10 <= len(requests.data['surname']) <= 150:
+						if 2 <= len(requests.data['surname']) <= 150:
 							current_client.user.surname = requests.data['surname']
 							output['success']['Surname'] = 'Surname successfully changed'
 						else:
 							output['error']['Surname'] = 'Surname is too short or too long'
 
 					if 'name' in requests.data:
-						if 10 <= len(requests.data['name']) <= 150:
+						if 2 <= len(requests.data['name']) <= 150:
 							current_client.user.name = requests.data['name']
 							output['success']['Name'] = 'Name successfully changed'
 						else:
 							output['error']['Name'] = 'Name is too short or too long'
 
 					if 'patronymic' in requests.data:
-						if 10 <= len(requests.data['patronymic']) <= 150:
+						if 2 <= len(requests.data['patronymic']) <= 150:
 							current_client.user.patronymic = requests.data['patronymic']
 							output['success']['Patronymic'] = 'Patronymic successfully changed'
 						else:
 							output['error']['Patronymic'] = 'Patronymic is too short or too long'
 
 					if 'address' in requests.data:
-						if 10 <= len(requests.data['address']) <= 150:
+						if 2 <= len(requests.data['address']) <= 150:
 							current_client.user.address = requests.data['address']
 							output['success']['Address'] = 'Address successfully changed'
 						else:
 							output['error']['Address'] = 'Address is too short or too long'
 
+					if 'image' in requests.data:
+						try:
+							current_client.user.image = requests.data['image']
+							output['success']['Image'] = 'Image successfully changed'
+						except:
+							output['error']['Image'] = 'Wrong image format'
+
 					if 'email' in requests.data:
 						try:
 							current_client.user.email = requests.data['email']
 							output['success']['Email'] = 'Email successfully changed'
-							current_client.user.confirmed_email = False
+							current_client.user.confirmed_email = True
 						except:
 							output['error']['Email'] = 'Wrong email format'
 
@@ -739,17 +740,23 @@ class ClientViewSet(ViewSet):
 						try:
 							current_client.user.email = requests.data['number']
 							output['success']['Number'] = 'Number successfully changed'
-							current_client.user.confirmed_number = False
+							current_client.user.confirmed_number = True
 						except:
 							output['error']['Number'] = 'Wrong number format'
 
 
-					if len(output['success'] > 0):
+					if 'password' in requests.data:
+						try:
+							current_client.user.set_password(requests.data['password'])
+							output['success']['Password'] = 'Password successfully changed'
+						except:
+							output['error']['Password'] = 'Wrong password format'
+
+
+					if len(output['success']) > 0:
 						current_client.save()
 
 					return Response(output, status = status.HTTP_200_OK)
-
-				return Response(status = status.HTTP_400_BAD_REQUEST)
 			else:
 				return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -812,9 +819,9 @@ class OrderViewSet(ViewSet):
 				if serializer.is_valid():
 					serializer.save()
 
-					return Response(status = status.HTTP_200_OK)
+					return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-				return Response(status = status.HTTP_400_BAD_REQUEST)
+				return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 			else:
 				return Response(status = status.HTTP_403_FORBIDDEN)
 
@@ -848,7 +855,7 @@ class OrderViewSet(ViewSet):
 					if 'executor' in requests.data:
 						try:
 							if not check_UsrClient(requests.data['executor']):
-								current_order.executor = requests.data['executor']
+								current_order.executor = User.objects.get(id = requests.data['executor'])
 								output['success']['Executor'] = 'Executor successfully changed'
 							else:
 								output['error']['Executor'] = 'Wrong executor'
@@ -858,7 +865,7 @@ class OrderViewSet(ViewSet):
 					if 'service' in requests.data:
 						try:
 							if check_orgService(requests.data['service'], requests.data['organization']):
-								current_order.executor = requests.data['service']
+								current_order.service = Service.objects.get(id = requests.data['service'])
 								output['success']['Service'] = 'Service successfully changed'
 							else:
 								output['error']['Service'] = 'Wrong service'
@@ -908,8 +915,8 @@ class OrderViewSet(ViewSet):
 		try:
 			if is_valid_member(user_data['user_id'], requests.data['organization'],
 				['organization_creator', 'order_delete', 'order_guru']):
-				if check_orgOrder(requests.data['order_code'], requests.data['organization']):
 
+				if check_orgOrder(requests.data['order_code'], requests.data['organization']):
 					try:
 						current_order = Order.objects.get(order_code = requests.data['order_code'])
 						current_order.blocked = True

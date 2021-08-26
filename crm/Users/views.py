@@ -141,38 +141,38 @@ class UserViewSet(ViewSet):
                 }
 
                 if 'surname' in requests.data:
-                    if 2 <= requests.data['surname'] <= 150:
+                    if 2 <= len(requests.data['surname']) <= 150:
                         current_user.surname = requests.data['surname']
                         output['success']['Surname'] = 'Surname successfully changed'
                     else:
                         output['error']['Surname'] = 'Surname is too short or too long'
 
                 if 'name' in requests.data:
-                    if 2 <= requests.data['name'] <= 150:
+                    if 2 <= len(requests.data['name']) <= 150:
                         current_user.name = requests.data['name']
                         output['success']['Name'] = 'Name successfully changed'
                     else:
                         output['error']['Name'] = 'Name is too short or too long'
 
                 if 'patronymic' in requests.data:
-                    if 2 <= requests.data['patronymic'] <= 150:
+                    if 2 <= len(requests.data['patronymic']) <= 150:
                         current_user.patronymic = requests.data['patronymic']
                         output['success']['Patronymic'] = 'Patronymic successfully changed'
                     else:
                         output['error']['Patronymic'] = 'Patronymic is too short or too long'
 
                 if 'address' in requests.data:
-                    if 2 <= requests.data['address'] <= 150:
+                    if 2 <= len(requests.data['address']) <= 150:
                         current_user.address = requests.data['address']
                         output['success']['Address'] = 'Address successfully changed'
                     else:
                         output['error']['Address'] = 'Address is too short or too long'
 
                 if 'image' in requests.data:
-                    if 2 <= requests.data['image'] <= 150:
+                    try:
                         current_user.image = requests.data['image']
                         output['success']['Image'] = 'Image successfully changed'
-                    else:
+                    except:
                         output['error']['Image'] = 'Wrong image format'
 
                 if 'email' in requests.data:
@@ -193,6 +193,14 @@ class UserViewSet(ViewSet):
                         output['error']['Number'] = 'Wrong number format'
 
 
+                if 'password' in requests.data:
+                    try:
+                        current_user.set_password(requests.data['password'])
+                        output['success']['Password'] = 'Password successfully changed'
+                    except:
+                        output['error']['Password'] = 'Wrong password format'
+                        
+
                 if len(output['success']) > 0:
                     current_user.save()
 
@@ -209,7 +217,7 @@ class UserViewSet(ViewSet):
         user_data = get_userData(requests)
         if not check_UsrClient(user_data['user_id']):
             try:
-                User.objects.get(order_code = requests.data['order_code']).delete()
+                User.objects.get(id = user_data['user_id']).delete()
 
                 return Response(status = status.HTTP_200_OK)
 

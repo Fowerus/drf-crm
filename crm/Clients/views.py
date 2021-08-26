@@ -13,19 +13,17 @@ from Organizations.serializers import OrderSerializer
 class ClientViewSet(ViewSet):
 
     def list_orders_as_client(self, requests):
-        if check_authHeader(requests):
-            user_data = get_userData(requests)
+        user_data = get_userData(requests)
 
-            try:
-                client_orders = User.objects.get(id = user_data['user_id']).client_orders..all()
-                serializer = OrderSerializer(client_orders, many = True)
+        try:
+            client_orders = User.objects.get(id = user_data['user_id']).client_orders.all()
+            serializer = OrderSerializer(client_orders, many = True)
 
-                return Response(serializer.data, status = status.HTTP_200_OK)
+            return Response(serializer.data, status = status.HTTP_200_OK)
 
-            except:
-                return Response(status = status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
-        return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
     def update_client(self, requests):
@@ -41,38 +39,38 @@ class ClientViewSet(ViewSet):
                 }
 
                 if 'surname' in requests.data:
-                    if 2 <= requests.data['surname'] <= 150:
+                    if 2 <= len(requests.data['surname']) <= 150:
                         current_user.surname = requests.data['surname']
                         output['success']['Surname'] = 'Surname successfully changed'
                     else:
                         output['error']['Surname'] = 'Surname is too short or too long'
 
                 if 'name' in requests.data:
-                    if 2 <= requests.data['name'] <= 150:
+                    if 2 <= len(requests.data['name']) <= 150:
                         current_user.name = requests.data['name']
                         output['success']['Name'] = 'Name successfully changed'
                     else:
                         output['error']['Name'] = 'Name is too short or too long'
 
                 if 'patronymic' in requests.data:
-                    if 2 <= requests.data['patronymic'] <= 150:
+                    if 2 <= len(requests.data['patronymic']) <= 150:
                         current_user.patronymic = requests.data['patronymic']
                         output['success']['Patronymic'] = 'Patronymic successfully changed'
                     else:
                         output['error']['Patronymic'] = 'Patronymic is too short or too long'
 
                 if 'address' in requests.data:
-                    if 2 <= requests.data['address'] <= 150:
+                    if 2 <= len(requests.data['address']) <= 150:
                         current_user.address = requests.data['address']
                         output['success']['Address'] = 'Address successfully changed'
                     else:
                         output['error']['Address'] = 'Address is too short or too long'
 
                 if 'image' in requests.data:
-                    if 2 <= requests.data['image'] <= 150:
+                    try:
                         current_user.image = requests.data['image']
                         output['success']['Image'] = 'Image successfully changed'
-                    else:
+                    except:
                         output['error']['Image'] = 'Wrong image format'
 
                 if 'email' in requests.data:
@@ -91,6 +89,14 @@ class ClientViewSet(ViewSet):
                         current_user.confirmed_number = False
                     except:
                         output['error']['Number'] = 'Wrong number format'
+
+
+                if 'password' in requests.data:
+                    try:
+                        current_user.set_password(requests.data['password'])
+                        output['success']['Password'] = 'Password successfully changed'
+                    except:
+                        output['error']['Password'] = 'Wrong password format'
 
 
                 if len(output['success']) > 0:

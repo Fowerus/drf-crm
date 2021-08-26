@@ -8,7 +8,6 @@ from rest_framework import status
 from phonenumber_field.modelfields import PhoneNumberField
 from django_resized import ResizedImageField
 
-from Organizations.models import *
 from Users.models import User
 from Sessions.models import Session
 
@@ -31,7 +30,6 @@ class TestUsersAPI(APITestCase):
 		}
 		response_email = self.client.post(url, data = data_by_email)
 		data_by_email.pop('password')
-		data_by_email['number'] = None
 
 		self.assertEquals(response_email.status_code, status.HTTP_201_CREATED)
 		self.assertEquals(response_email.data, data_by_email)
@@ -48,7 +46,6 @@ class TestUsersAPI(APITestCase):
 		response_number = self.client.post(url, data = data_by_number)
 		data_by_number.pop('password')
 
-		print(response_number.errors)
 		self.assertEquals(response_number.status_code, status.HTTP_201_CREATED)
 		self.assertEquals(response_number.data, data_by_number)
 
@@ -69,22 +66,7 @@ class TestUsersAPI(APITestCase):
 		self.assertEquals(response_all.data, data_by_all)
 
 
-	def setUp(self):
-		data = {
-			'surname':'Landa',
-			'name':'Hans',
-			'patronymic':'maybe_not',
-			'address':'Austria',
-			'number':'+79996248728',
-			'email':'tarantino_tthe_best@gmail.com',
-		}
-
-		self.user = User(id = 1000, **data)
-		self.user.set_password('1995landa')
-		self.user.save()
-
-
-	def testAuthToken(self):
+	def testAuthToken_AuthTokenRefresh(self):
 
 		url_obtain = reverse('token_obtain_pair')
 		user_agent = [
@@ -129,3 +111,73 @@ class TestUsersAPI(APITestCase):
 		self.assertTrue('access' in response_refresh.data)
 		self.assertTrue('refresh' in response_refresh.data)
 		self.assertTrue('expired_at' in response_refresh.data)
+
+
+	def setUp(self):
+		self.user_data = {
+			'surname':'Landa',
+			'name':'Hans',
+			'patronymic':'maybe_not',
+			'address':'Austria',
+			'number':'+79996248728',
+			'email':'tarantino_tthe_best@gmail.com',
+		}
+
+		self.user = User(id = 1000, **self.user_data)
+		self.user.set_password('1995landa')
+		self.user.save()
+
+		self.response = self.client.post(
+			reverse('token_obtain_pair'), 
+			data = {'number':'+79996248728', 'password':'1995landa'},
+			HTTP_USER_AGENT = 'Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4')
+
+		self.access = self.response.data['access']
+
+
+	def testUser(self):
+		url = reverse('user')
+		access = f'Bearer {self.access}'
+
+		#GET
+		#Within token
+		response_get = self.client.get(url)
+		self.assertEquals(response_get.status_code, status.HTTP_401_UNAUTHORIZED)
+
+		#With token
+		response_get = self.client.get(url, HTTP_AUTHORIZATION = access)
+		fields = ['surname', 'name', 'patronymic', 'address', 'email', 'image','confirmed_email', 'confirmed_number', 'created_at', 'updated_at']
+
+		self.assertEquals(response_get.status_code, status.HTTP_200_OK)
+		self.assertEquals(set(response_get.data.keys()), set(fields))
+
+		#PATCH
+		data_patch = {
+			'surname':'LandaChange',
+			'name':'HansChange',
+			'patronymic':'maybe_notChange',
+			'address':'AustriaChange',
+			'number':'+79996248720',
+			'email':'tarantino_tthe_bestChange@gmail.com',
+			'password':'199landaChange',
+			'image':'/user/photo/check/' 
+		}
+
+		#Within token
+		response_patch = self.client.patch(url, data = data_patch)
+		self.assertEquals(response_patch.status_code, status.HTTP_401_UNAUTHORIZED)
+
+		#With tokne
+		response_patch = self.client.patch(url, data = data_patch, HTTP_AUTHORIZATION = access)
+
+		self.assertEquals(response_patch.status_code, status.HTTP_200_OK)
+		self.assertEquals(len(response_patch.data['success'].keys()), len(data_patch.keys()))
+
+		#DELETE
+		#Within token
+		response_delete = self.client.delete(url)
+		self.assertEquals(response_delete.status_code, status.HTTP_401_UNAUTHORIZED)
+
+		#With token
+		response_delete = self.client.delete(url, HTTP_AUTHORIZATION = access)
+		self.assertEquals(response_delete.status_code, status.HTTP_200_OK)

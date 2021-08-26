@@ -4,7 +4,7 @@ from . import views
 
 
 urlpatterns = [
-    path('organizations/', views.OrganizationAPIView.as_view(), name = 'organization'),
+    path('organization/', views.OrganizationAPIView.as_view(), name = 'organization'),
 
     path('number/', views.Organization_numberViewSet.as_view({
         'get':'list_organizations_numbers',
@@ -24,7 +24,7 @@ urlpatterns = [
     path('link-all/<int:org_id>', views.Organization_numberViewSet.as_view({'get':'list_organization_links'}), name = 'list_organization_links'),
 
 
-    path('member/', views.Organization_linkViewSet.as_view({
+    path('member/', views.Organization_memberViewSet.as_view({
         'get':'list_all_organizations_members',
         'post':'create_organization_member',
         'patch':'update_organization_member',
@@ -35,7 +35,7 @@ urlpatterns = [
 
     path('role/', views.RolePermViewSet.as_view({
         'post':'create_role',
-        'patch':'updata_role',
+        'patch':'update_role',
         'delete':'delete_role'
         }), name = 'organization_role'),
     path('role-all/<int:org_id>', views.RolePermViewSet.as_view({'get':'list_roles'}), name = 'list_roles'),
