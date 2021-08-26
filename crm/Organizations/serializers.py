@@ -81,7 +81,7 @@ class PermissionSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = CustomPermission
-		fields = ['id', 'official_perm_name', 'name']
+		fields = ['id', 'name', 'codename']
 
 
 
@@ -109,7 +109,7 @@ class RoleSerializer(serializers.ModelSerializer):
 
 
 class Organization_memberSerializer(serializers.ModelSerializer):
-	user = OrganizationSerializer()
+	user = UserSerializer()
 	role = RoleSerializer()
 	organization = OrganizationSerializer()
 
@@ -156,7 +156,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
 	creator = UserSerializer()
 	executor = UserSerializer()
-	service = ServiceSerializer
+	service = ServiceSerializer()
 
 	class Meta:
 		model = Order

@@ -41,8 +41,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 	patronymic = models.CharField(max_length = 150, verbose_name = 'Patronymic')
 
 	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, unique = True, blank = True, null = True, verbose_name = 'Email')
-	number = PhoneNumberField(unique = True, blank = True, null = True)
-	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
+	number = PhoneNumberField(unique = True, blank = True, null = True, verbose_name = 'Number')
+	address = models.CharField(max_length = 200, blank = True, verbose_name = 'Address')
 
 	image = ResizedImageField(crop=['middle', 'center'], upload_to = '../static/Users/', blank = True, default = '../static/Users/default-user-image.jpeg', verbose_name = 'Image')
 
@@ -69,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 	@property
 	def confirmed(self):
-		return _check_confirmed()
+		return self._check_confirmed()
 
 
 	def _check_confirmed(self):
@@ -87,9 +87,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 class VerifyInfo(models.Model):
 	user = models.ForeignKey(User, on_delete = models.CASCADE, verbose_name = 'User')
 	code = models.IntegerField(unique = True)
-	type_code = models.CharField(max_length = 10, verbose_name = 'Type code')
+	type_code = models.CharField(max_length = 10, verbose_name = 'Type_code')
 
-	updated_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
+	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 
 
 	def __str__(self):
@@ -101,4 +101,4 @@ class VerifyInfo(models.Model):
 		db_table = 'VerifyInfo'
 		verbose_name_plural = 'VerifyInfoes'
 		verbose_name = 'VerifyInfo'
-		ordering = ['-updated_at']
+		ordering = ['-created_at']

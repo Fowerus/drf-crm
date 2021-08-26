@@ -142,6 +142,7 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',) #'Users
 AUTH_USER_MODEL = "Users.User"
 
 REST_FRAMEWORK = {
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
