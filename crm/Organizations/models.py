@@ -11,7 +11,7 @@ class Organization(models.Model):
 	description = models.CharField(max_length = 500, blank = True, verbose_name = 'Description')
 	address = models.CharField(max_length = 200, verbose_name = 'Address')
 
-	creator = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'my_organizations', verbose_name = 'Creator')
+	creator = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'my_organizations', verbose_name = 'Creator')
 
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
@@ -127,7 +127,7 @@ class Role(MainMixin):
 
 class Organization_member(MainMixin):
 	user = models.ForeignKey(get_user_model(), on_delete = models.CASCADE, related_name = 'user_member', verbose_name = 'User')
-	role = models.ForeignKey(Role, on_delete = models.SET_NULL, related_name = 'role_member', verbose_name = 'Role', null = True)
+	role = models.ForeignKey(Role, on_delete = models.SET_NULL, null = True, related_name = 'role_member', verbose_name = 'Role')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_members', verbose_name = 'Organization')
 
 	def __str__(self):
@@ -145,11 +145,11 @@ class Organization_member(MainMixin):
 class Order(MainMixin):
 	order_code = models.BigIntegerField(unique = True, verbose_name = 'Order_code')
 	description = models.CharField(max_length = 500, verbose_name = 'Description')
-	client = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'client_orders', verbose_name = 'Client')
-	executor = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'user_executor', verbose_name = 'Executor')
-	creator = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'user_creator', verbose_name = 'Creator')
+	client = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'client_orders', verbose_name = 'Client')
+	executor = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'user_executor', verbose_name = 'Executor')
+	creator = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'user_creator', verbose_name = 'Creator')
 
-	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_orders', verbose_name = 'Service')
+	service = models.ForeignKey(Service, on_delete = models.CASCADE, related_name = 'service_orders', verbose_name = 'Service')
 
 	done = models.BooleanField(default = False)
 

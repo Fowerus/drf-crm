@@ -775,7 +775,7 @@ class ClientViewSet(ViewSet):
 				if check_orgClient(requests.data['client'], requests.data['organization']):
 
 					try:
-						Client.objects.get(id = requests.data['client']).delete()
+						Client.objects.get(id = requests.data['client']).user.delete()
 
 						return Response(status = status.HTTP_200_OK)
 

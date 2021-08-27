@@ -21,5 +21,5 @@ urlpatterns = [
     path('user/executor', views.UserViewSet.as_view({'get':'list_user_executorOrders'}), name = 'user_executor'),
 
     path('verify-email/', views.VerifyNumberEmailViewSet.as_view({'post':'verify_email_send'}), name = 'verify_email'),
-    path('accept-email/<int:code>/', views.VerifyNumberEmailViewSet.as_view({'post':'accept_email'}), name = 'accept_email'),
+    path('accept-email/', views.VerifyNumberEmailViewSet.as_view({'post':'accept_email'}), name = 'accept_email'),
 ]

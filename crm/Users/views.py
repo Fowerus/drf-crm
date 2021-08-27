@@ -247,7 +247,8 @@ class VerifyNumberEmailViewSet(ViewSet):
                 link_to_verify = str(requests._current_scheme_host) + str(reverse('accept_email')) + str(current_info.code)
                 message = f'Перейдите по ссылке для подтверждения вашей почты\n{link_to_verify}'
 
-            return Response({'detail':'Already confirmed'}, status = status.HTTP_200_OK)
+            else:
+                return Response({'detail':'Already confirmed'}, status = status.HTTP_200_OK)
         except:
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -267,18 +268,20 @@ class VerifyNumberEmailViewSet(ViewSet):
 
 
 
-    def accept_email(self, requests, code):
+    def accept_email(self, requests):
         try:
             user_data = get_userData(requests)
             try:
                 user = User.objects.get(id = user_data['user_id'])
-                verify_info = VerifyInfo.objects.get(code = code)
+                verify_info = VerifyInfo.objects.get(code = requests.data['code'])
                 if verify_info.user.id == user.id:
                     user = User.objects.get(id = user_data['user_id'])
                     user.confirmed_email = True
                     user.save()
                     verify_info.delete()
                     return Response({'detail':'Successfully confirmed'}, status = status.HTTP_200_OK)
+
+                return Response({'erorr':'Invalid code or not exist'}, status = status.HTTP_400_BAD_REQUEST)
             except:
                 return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 

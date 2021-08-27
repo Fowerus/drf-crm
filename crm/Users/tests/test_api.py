@@ -8,7 +8,7 @@ from rest_framework import status
 from phonenumber_field.modelfields import PhoneNumberField
 from django_resized import ResizedImageField
 
-from Users.models import User
+from Users.models import *
 from Organizations.models import *
 from Clients.models import *
 from Sessions.models import *
@@ -74,7 +74,7 @@ class TestUsersAPI(APITestCase):
 			'name':'Hans',
 			'patronymic':'maybe_not',
 			'address':'Austria',
-			'number':'+79996248728',
+			'number':'+79518148618',
 			'email':'tarantino_tthe_best@gmail.com',
 		}
 
@@ -84,25 +84,91 @@ class TestUsersAPI(APITestCase):
 		self.user.confirmed_number = True
 		self.user.save()
 
-		self.user_data2 = {
-			'surname':'Landa',
-			'name':'Hans',
-			'patronymic':'maybe_not',
-			'address':'Austria',
-			'number':'+79132488720',
-			'email':'tarantino_tthe_best9809801@gmail.com',
-		}
-
-		self.user2 = User(id = 1001, **self.user_data2)
+		self.user2 = User(id = 1001, **self.user_data)
+		self.user2.email = 'tarantino_tthe_best3@gmail.com'
+		self.user2.number = '+79996248729'
 		self.user2.set_password('1995landa')
+		self.user2.confirmed_email = True
+		self.user2.confirmed_number = True
 		self.user2.save()
+
+		self.user3 = User(id = 1002, **self.user_data)
+		self.user3.email = 'tarantino_tthe_best4@gmail.com'
+		self.user3.number = '+79996248720'
+		self.user3.set_password('1995landa')
+		self.user3.confirmed_email = True
+		self.user3.confirmed_number = True
+		self.user3.save()
+
+		self.user4 = User(id = 1003, **self.user_data)
+		self.user4.email = 'ggg@gmail.com'
+		self.user4.number = '+79516240820'
+		self.user4.set_password('1995landa')
+		self.user4.save()
+
+		self.user5 = User(id = 1004, **self.user_data)
+		self.user5.email = 'couse_for@gmail.com'
+		self.user5.number = '+79516248820'
+		self.user5.set_password('1995landa')
+		self.user5.save()
+
+
 
 		self.response = self.client.post(
 			reverse('token_obtain_pair'), 
-			data = {'number':'+79132488720', 'password':'1995landa'},
+			data = {'number':'+79518148618', 'password':'1995landa'},
 			HTTP_USER_AGENT = 'Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4')
 
 		self.access = self.response.data['access']
+
+		self.organization_data = {
+			'name':'Test', 
+			'description':'Test',
+			'address':'Test_address',
+			'creator': self.user
+		}
+		self.organization = Organization.objects.create(id = 1000, **self.organization_data)
+
+		self.custom_permission = CustomPermission.objects.create(id = 1000, name = 'Client guru', codename = 'client_guru')
+		self.custom_permission2 = CustomPermission.objects.create(id = 1001, name = 'Order guru', codename = 'order_guru')
+
+		self.role_data = {
+			'name':'Main role',
+			'organization': self.organization
+		}
+		self.role = Role(id = 1000, **self.role_data)
+		self.role.name = 'Main role'
+		self.role.permissions.set({self.custom_permission, self.custom_permission2})
+		self.role.save()
+
+		self.organization_member_data = {
+			'user':self.user2,
+			'role':self.role,
+			'organization':self.organization
+		}
+		self.organization_member = Organization_member.objects.create(id = 1000, **self.organization_member_data)
+
+		self.service_data = {
+			'name':'TestService',
+			'number':'+79518373619',
+			'address':'test_address',
+			'organization':self.organization
+		}
+		self.service = Service.objects.create(id = 1000, **self.service_data)
+
+		self.my_client = Client.objects.create(id = 1000, user = self.user3, organization = self.organization)
+
+		self.order_data = {
+			'order_code':13212,
+			'description':'test est',
+			'client':self.user3,
+			'executor':self.user2,
+			'creator':self.user,
+			'service':self.service
+		}
+		self.order = Order.objects.create(id = 1000, **self.order_data)
+
+		self.verify_info = VerifyInfo.objects.create(id = 1000, user = self.user5, code = 346125, type_code = 'email')
 
 
 	def testAuthToken_AuthTokenRefresh(self):
@@ -110,7 +176,7 @@ class TestUsersAPI(APITestCase):
 		url_obtain = reverse('token_obtain_pair')
 		user_agent = [
 			'Mozilla: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101',
-			'Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4',
+			'Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.1',
 		]
 
 		#by number
@@ -184,7 +250,7 @@ class TestUsersAPI(APITestCase):
 		response_patch = self.client.patch(url, data = data_patch)
 		self.assertEquals(response_patch.status_code, status.HTTP_401_UNAUTHORIZED)
 
-		#With tokne
+		#With token
 		response_patch = self.client.patch(url, data = data_patch, HTTP_AUTHORIZATION = access)
 
 		self.assertEquals(response_patch.status_code, status.HTTP_200_OK)
@@ -199,11 +265,71 @@ class TestUsersAPI(APITestCase):
 		response_delete = self.client.delete(url, HTTP_AUTHORIZATION = access)
 		self.assertEquals(response_delete.status_code, status.HTTP_200_OK)
 
+		#GET-user_executor
+		self.response = self.client.post(
+			reverse('token_obtain_pair'), 
+			data = {'number':'+79996248729', 'password':'1995landa'},
+			HTTP_USER_AGENT = 'Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4')
+
+		self.access = self.response.data['access']
+		access = f'Bearer {self.access}'
+
+		url_ex = reverse('user_executor')
+
+		#Within token
+		response_get_ex = self.client.get(url_ex)
+		self.assertEquals(response_get_ex.status_code, status.HTTP_401_UNAUTHORIZED)
+
+		#With token
+		response_get_ex = self.client.get(url_ex, HTTP_AUTHORIZATION = access)
+		self.assertEquals(response_get_ex.status_code, status.HTTP_200_OK)
+		self.assertEquals(response_get_ex.data[0]['id'], self.order.id)
+
+
+	def testVerify_emailAccept_email(self):
+		self.response = self.client.post(
+			reverse('token_obtain_pair'), 
+			data = {'number':'+79516240820', 'password':'1995landa'},
+			HTTP_USER_AGENT = 'Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4')
+
+		self.access = self.response.data['access']
+
+		#verify_email
+		url = reverse('verify_email')
+		access = f'Bearer {self.access}'
+
+		#Within token
+		response_verify = self.client.post(url)
+		self.assertEquals(response_verify.status_code, status.HTTP_401_UNAUTHORIZED)
+
+		#With token
+		response_verify = self.client.post(url, HTTP_AUTHORIZATION = access)
+		self.assertEquals(response_verify.status_code, status.HTTP_200_OK)
+
+		self.response = self.client.post(
+			reverse('token_obtain_pair'), 
+			data = {'number':'+79516248820', 'password':'1995landa'},
+			HTTP_USER_AGENT = 'Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4')
+
+		self.access = self.response.data['access']
+
+		#accept_email
+		url = reverse('accept_email')
+		access = f'Bearer {self.access}'
+		#Within token
+		response_verify = self.client.post(url, data = {'code':346125})
+		self.assertEquals(response_verify.status_code, status.HTTP_401_UNAUTHORIZED)
+
+		#With token
+		response_verify = self.client.post(url, data = {'code':346125}, HTTP_AUTHORIZATION = access)
+		self.assertEquals(response_verify.status_code, status.HTTP_200_OK)
+		self.assertTrue('detail' in response_verify.data)
+
 
 	def tearDown(self):
 		Order.objects.all().delete()
-		Client.objects.all().delete()
 		Service.objects.all().delete()
+		Client.objects.all().delete()
 		Organization_member.objects.all().delete()
 		Role.objects.all().delete()
 		CustomPermission.objects.all().delete()
