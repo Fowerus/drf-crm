@@ -7,8 +7,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django_resized import ResizedImageField
 
 from Users.models import User
-from Organizations.models import Organization
+from Organizations.models import *
 from Clients.models import Client
+from Sessions.models import Session
 
 
 
@@ -56,3 +57,17 @@ class TestClientsModels(APITestCase):
 		self.assertEquals(self.client._meta.verbose_name_plural, 'Clients')
 		self.assertEquals(self.client._meta.verbose_name, 'Client')
 		self.assertEquals(self.client._meta.ordering, ['-updated_at'])
+
+
+	def tearDown(self):
+		Order.objects.all().delete()
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()

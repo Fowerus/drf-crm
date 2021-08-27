@@ -325,6 +325,7 @@ class Organization_memberViewSet(ViewSet):
 		try:
 			if is_valid_member(user_data['user_id'], requests.data['organization'], 
 				['organization_creator', 'organization_member_create', 'organization_member_guru']):
+			
 				if not Organization.objects.get(id = requests.data['organization']).creator.id == requests.data['user'] and not check_UsrClient(requests.data['user']) and check_confirmed(requests.data['user']):
 					serializer = self.serializer_class.Organization_memberCSerializer(data = requests.data)
 					if serializer.is_valid():

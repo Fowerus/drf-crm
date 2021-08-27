@@ -27,7 +27,6 @@ from Organizations.serializers import OrderSerializer
 class MyCustomToken(TokenViewBase):
 
     def post(self, requests, *args, **kwargs):
-        print(reverse('organization'))
         data = requests.data.copy()
         headers = requests.headers.copy()
         data['device'] = headers['user-agent']

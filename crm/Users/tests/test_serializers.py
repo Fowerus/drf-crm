@@ -4,6 +4,9 @@ from rest_framework.test import APITestCase
 
 from Users.models import User
 from Users.serializers import *
+from Organizations.models import *
+from Clients.models import *
+from Sessions.models import *
 
 
 
@@ -25,7 +28,7 @@ class TestUsersSerializers(APITestCase):
 		self.assertEquals(user_registration_serializer.fields['password'].min_length, 8)
 		self.assertEquals(user_registration_serializer.fields['password'].write_only, True)
 
-		self.assertEquals(user_registration_serializer.Meta.fields, ['email','surname','name','patronymic', 'address', 'number', 'password'])
+		self.assertEquals(set(user_registration_serializer.Meta.fields), set(['email','surname','name','patronymic', 'address', 'number', 'password']))
 		self.assertEquals(user_registration_serializer.Meta.model, get_user_model())
 
 		self.assertTrue(user_registration_serializer.is_valid())
@@ -35,7 +38,7 @@ class TestUsersSerializers(APITestCase):
 	def testUserSerializer(self):
 		user_serializer = UserSerializer()
 
-		self.assertEquals(user_serializer.Meta.fields, ['surname', 'name', 'patronymic', 'address', 'email', 'image','confirmed_email', 'confirmed_number', 'created_at', 'updated_at'])
+		self.assertEquals(user_serializer.Meta.fields, ['id', 'surname', 'name', 'patronymic', 'address', 'email', 'image','confirmed_email', 'confirmed_number', 'created_at', 'updated_at'])
 		self.assertEquals(user_serializer.Meta.model, get_user_model())
 
 
@@ -82,3 +85,17 @@ class TestUsersSerializers(APITestCase):
 		username_field = get_user_model().USERNAME_FIELD
 
 		self.assertTrue(token_obtain_for_email_serializer_fields[username_field].write_only)
+
+
+	def tearDown(self):
+		Order.objects.all().delete()
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()

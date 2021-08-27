@@ -8,6 +8,9 @@ from django_resized import ResizedImageField
 
 from Users.models import User
 from Sessions.models import Session
+from Organizations.models import *
+from Clients.models import *
+from Sessions.models import *
 
 
 
@@ -54,3 +57,17 @@ class TestSessionsModels(APITestCase):
 		self.assertEquals(self.session._meta.verbose_name_plural, 'Sessions')
 		self.assertEquals(self.session._meta.verbose_name, 'Session')
 		self.assertEquals(self.session._meta.ordering, ['-updated_at'])
+
+
+	def tearDown(self):
+		Order.objects.all().delete()
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()

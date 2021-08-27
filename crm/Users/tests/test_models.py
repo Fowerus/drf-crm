@@ -7,6 +7,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django_resized import ResizedImageField
 
 from Users.models import User, VerifyInfo
+from Organizations.models import *
+from Clients.models import *
+from Sessions.models import *
 
 
 
@@ -112,3 +115,18 @@ class TestUsersModels(APITestCase):
 		self.assertEquals(self.verify_info._meta.verbose_name_plural, 'VerifyInfoes')
 		self.assertEquals(self.verify_info._meta.verbose_name, 'VerifyInfo')
 		self.assertEquals(self.verify_info._meta.ordering, ['-created_at'])
+
+
+	def tearDown(self):
+		VerifyInfo.objects.all().delete()
+		Order.objects.all().delete()
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()
