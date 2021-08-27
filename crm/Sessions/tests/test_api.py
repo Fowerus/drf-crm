@@ -9,7 +9,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django_resized import ResizedImageField
 
 from Users.models import User
-from Sessions.models import Session
+from Organizations.models import *
+from Clients.models import *
+from Sessions.models import *
 
 
 
@@ -21,8 +23,8 @@ class TestSessionsAPI(APITestCase):
 			'name':'Hans',
 			'patronymic':'maybe_not',
 			'address':'Austria',
-			'number':'+79996248728',
-			'email':'tarantino_tthe_best@gmail.com',
+			'number':'+79996258720',
+			'email':'tarantino_ttheee_best@gmail.com',
 		}
 
 		self.user = User(id = 1000, **self.user_data)
@@ -36,15 +38,17 @@ class TestSessionsAPI(APITestCase):
 
 		self.response1 = self.client.post(
 			reverse('token_obtain_pair'), 
-			data = {'number':'+79996248728', 'password':'1995landa'},
+			data = {'email':'tarantino_ttheee_best@gmail.com', 'password':'1995landa'},
 			HTTP_USER_AGENT = self.user_agent[0])
 
 		self.response2 = self.client.post(
 			reverse('token_obtain_pair'),
-			data = {'number':'+79996248728', 'password':'1995landa'},
+			data = {'number':'+79996258720', 'password':'1995landa'},
 			HTTP_USER_AGENT = self.user_agent[1])
 
 		self.access = self.response2.data['access']
+
+		self.session = Session.objects.create(id = 1000, user = self.user, device = '2343234')
 
 
 	def testSession(self):
@@ -60,7 +64,7 @@ class TestSessionsAPI(APITestCase):
 		response_get = self.client.get(url, HTTP_AUTHORIZATION = access)
 
 		self.assertEquals(response_get.status_code, status.HTTP_200_OK)
-		self.assertEquals(len(response_get.data), 2)
+		self.assertEquals(len(response_get.data), 3)
 
 		#DELETE
 		#Within token
@@ -68,5 +72,19 @@ class TestSessionsAPI(APITestCase):
 		self.assertEquals(response_delete.status_code, status.HTTP_401_UNAUTHORIZED)
 
 		#With token
-		response_delete = self.client.delete(url, data = {'session':1}, HTTP_AUTHORIZATION = access)
+		response_delete = self.client.delete(url, data = {'session':1000}, HTTP_AUTHORIZATION = access)
 		self.assertEquals(response_delete.status_code, status.HTTP_200_OK)
+
+
+	def tearDown(self):
+		Order.objects.all().delete()
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()

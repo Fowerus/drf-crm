@@ -6,8 +6,9 @@ from Users.serializers import *
 from Organizations.serializers import OrganizationSerializer
 
 from Users.models import User
-from Organizations.models import Organization
+from Organizations.models import *
 from Clients.models import Client
+from Sessions.models import Session
 
 from Clients.serializers import ClientSerializer
 
@@ -59,3 +60,17 @@ class TestClientsSerializers(APITestCase):
 
 		self.assertTrue(client_serializer_create.is_valid())
 		self.assertEquals(client_serializer_create.errors, {})
+
+
+	def tearDown(self):
+		Order.objects.all().delete()
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()

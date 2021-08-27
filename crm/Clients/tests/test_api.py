@@ -10,7 +10,7 @@ from django_resized import ResizedImageField
 
 from Users.models import User
 from Sessions.models import Session
-from Organizations.models import Organization, Service, Order
+from Organizations.models import *
 from Clients.models import Client
 
 
@@ -122,3 +122,17 @@ class TestClientsAPI(APITestCase):
 		response_patch = self.client.patch(url, data = data_patch, HTTP_AUTHORIZATION = access)
 		self.assertEquals(response_patch.status_code, status.HTTP_200_OK)
 		self.assertEquals(len(response_patch.data['success'].keys()), len(data_patch.keys()))
+
+
+	def tearDown(self):
+		Order.objects.all().delete()
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()

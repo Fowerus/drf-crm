@@ -8,6 +8,8 @@ from django_resized import ResizedImageField
 
 from Organizations.models import *
 from Users.models import User
+from Clients.models import Client
+from Sessions.models import Session
 
 
 
@@ -265,3 +267,17 @@ class TestOrganizationsModels(APITestCase):
 		self.assertEquals(self.order._meta.verbose_name_plural, 'Orders')
 		self.assertEquals(self.order._meta.verbose_name, 'Order')
 		self.assertEquals(self.order._meta.ordering, ['-updated_at'])
+
+
+	def tearDown(self):
+		Order.objects.all().delete()
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()

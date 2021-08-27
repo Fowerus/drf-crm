@@ -38,6 +38,8 @@ def check_UsrClient(user_id):
 def check_confirmed(user_id):
 	try:
 		user = User.objects.get(id = user_id)
+		if user.confirmed == 2:
+			return True
 		return user.confirmed
 	except:
 		return False

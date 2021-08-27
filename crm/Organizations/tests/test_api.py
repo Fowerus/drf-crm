@@ -23,8 +23,8 @@ class TestOrganizationsAPI(APITestCase):
 			'name':'Hans',
 			'patronymic':'maybe_not',
 			'address':'Austria',
-			'number':'+79996248728',
-			'email':'tarantino_tthe_best@gmail.com',
+			'number':'+79968148328',
+			'email':'tarantino_tthe_best22222@gmail.com',
 		}
 
 		self.user = User(id = 1000, **self.user_data)
@@ -34,7 +34,7 @@ class TestOrganizationsAPI(APITestCase):
 		self.user.save()
 
 		self.user2 = User(id = 1001, **self.user_data)
-		self.user2.email = 'tarantino_tthe_best2@gmail.com'
+		self.user2.email = 'tarantino_tthe_best3@gmail.com'
 		self.user2.number = '+79996248729'
 		self.user2.set_password('1995landa')
 		self.user2.confirmed_email = True
@@ -42,7 +42,7 @@ class TestOrganizationsAPI(APITestCase):
 		self.user2.save()
 
 		self.user3 = User(id = 1002, **self.user_data)
-		self.user3.email = 'tarantino_tthe_best3@gmail.com'
+		self.user3.email = 'tarantino_tthe_best4@gmail.com'
 		self.user3.number = '+79996248720'
 		self.user3.set_password('1995landa')
 		self.user3.confirmed_email = True
@@ -50,7 +50,7 @@ class TestOrganizationsAPI(APITestCase):
 		self.user3.save()
 
 		self.user4 = User(id = 1003, **self.user_data)
-		self.user4.email = 'tarantino3_tthe_best3@gmail.com'
+		self.user4.email = 'tarantino3_tthe_best@gmail.com'
 		self.user4.number = '+79996142720'
 		self.user4.set_password('1995landa')
 		self.user4.confirmed_email = True
@@ -60,7 +60,7 @@ class TestOrganizationsAPI(APITestCase):
 
 		self.response = self.client.post(
 			reverse('token_obtain_pair'), 
-			data = {'number':'+79996248728', 'password':'1995landa'},
+			data = {'number':'+79968148328', 'password':'1995landa'},
 			HTTP_USER_AGENT = 'Firefox/47.3 Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/43.4')
 
 		self.access = self.response.data['access']
@@ -323,7 +323,7 @@ class TestOrganizationsAPI(APITestCase):
 
 		#POST
 		data_post = {
-			'user':self.user3.id,
+			'user':self.user4.id,
 			'role': self.role.id,
 			'organization':self.organization.id
 		}
@@ -426,7 +426,7 @@ class TestOrganizationsAPI(APITestCase):
 		#With token
 		response_get = self.client.get(url, HTTP_AUTHORIZATION = access)
 		self.assertEquals(response_get.status_code, status.HTTP_200_OK)
-		self.assertEquals(response_get.data[0]['id'], self.service.id)
+		self.assertEquals(response_get.data[0]['id'], self.service2.id)
 		self.assertEquals(response_get.data[0]['organization']['id'], self.organization.id)
 
 		#POST
@@ -602,3 +602,17 @@ class TestOrganizationsAPI(APITestCase):
 		#With token
 		response_delete = self.client.delete(url, data = data_delete, HTTP_AUTHORIZATION = access)
 		self.assertEquals(response_delete.status_code, status.HTTP_200_OK)
+
+
+	def tearDown(self):
+		Order.objects.all().delete()
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()

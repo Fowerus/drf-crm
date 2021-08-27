@@ -6,6 +6,7 @@ from Organizations.models import *
 from Organizations.serializers import *
 from Users.serializers import UserSerializer
 from Clients.models import Client
+from Sessions.models import Session
 
 
 
@@ -87,17 +88,18 @@ class TestOrganizationsSerializers(APITestCase):
 		organization_link_serializer = Organization_linkSerializer()
 
 		self.assertEquals(organization_link_serializer.fields['organization'].__class__, OrganizationSerializer)
-		self.assertEquals(organization_link_serializer.Meta.fields, ['id','link','organization', 'created_at', 'updated_at'])
+		self.assertEquals(organization_link_serializer.Meta.fields, ['id','name', 'link','organization', 'created_at', 'updated_at'])
 		self.assertEquals(organization_link_serializer.Meta.model, Organization_link)
 
 		#Organization_linkSerializer for create
 		org_link_data = {
+			'name':'vk',
 			'link':'http://vk.com',
 			'organization':1
 		}
 		organization_link_serializer_create = organization_link_serializer.Organization_linkCSerializer(data = org_link_data)
 
-		self.assertEquals(organization_link_serializer_create.Meta.fields, ['link','organization'])
+		self.assertEquals(organization_link_serializer_create.Meta.fields, ['name', 'link','organization'])
 		self.assertEquals(organization_link_serializer_create.Meta.model, Organization_link)
 
 		self.assertTrue(organization_link_serializer_create.is_valid())
@@ -212,3 +214,17 @@ class TestOrganizationsSerializers(APITestCase):
 
 		self.assertTrue(order_serializer_create.is_valid())
 		self.assertEquals(order_serializer_create.errors, {})
+
+
+
+	def tearDown(self):
+		Client.objects.all().delete()
+		Service.objects.all().delete()
+		Organization_member.objects.all().delete()
+		Role.objects.all().delete()
+		CustomPermission.objects.all().delete()
+		Organization_link.objects.all().delete()
+		Organization_number.objects.all().delete()
+		Organization.objects.all().delete()
+		Session.objects.all().delete()
+		get_user_model().objects.all().delete()

@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 
 from Sessions.serializers import *
-from Users.serializers import *
 
 
 
