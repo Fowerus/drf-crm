@@ -75,7 +75,7 @@
   ```  
     
 ### **Retrieve, Update, Destroy a user**   
-##### This view need the access token in Authorization key in headers in format like this(Bearer access or Token access)  
+  This view need the access token in Authorization key in headers in format like this(Bearer access or Token access)   
 * **GET** `user/`    
   OUTPUT    
   *`Response 200`*  
