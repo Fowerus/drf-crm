@@ -27,7 +27,7 @@
   }
   ```    
     
-## **AccessToken**    
+## **Access token**    
 * **POST** `auth/token/`    
   INPUT    
   ```json   
@@ -53,7 +53,7 @@
   }  
   ```  
 
-## **RefreshToken**    
+## **Refresh token**    
 * **POST** `auth/token/refresh`    
   INPUT    
   ```json   
@@ -132,7 +132,7 @@
   OUTPUT    
   *`Response 200`*   
 
-## **VerifyEmail**    
+## **Verify email**    
 * **POST** `verify-email/`     
   OUTPUT    
   *`Response 200`*    
