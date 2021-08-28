@@ -1,9 +1,6 @@
 # **Users API** - **`/users/`**   
-      
     
-## **Authentication and similar functions**
-    
-### **Registration**    
+## **Registration**    
 * **POST** `auth/registration/`    
   INPUT    
   ```json  
@@ -30,7 +27,7 @@
   }
   ```    
     
-### **AccessToken**    
+## **AccessToken**    
 * **POST** `auth/token/`    
   INPUT    
   ```json   
@@ -56,7 +53,7 @@
   }  
   ```  
 
-### **RefreshToken**    
+## **RefreshToken**    
 * **POST** `auth/token/refresh`    
   INPUT    
   ```json   
@@ -74,7 +71,7 @@
   }  
   ```  
     
-### **Retrieve, Update, Destroy a user**   
+## **Retrieve, Update, Destroy a user**   
   This view need the access token in Authorization key in headers in format like this(Bearer access or Token access)   
 * **GET** `user/`    
   OUTPUT    
@@ -135,7 +132,7 @@
   OUTPUT    
   *`Response 200`*   
 
-### **VerifyEmail**    
+## **VerifyEmail**    
 * **POST** `verify-email/`     
   OUTPUT    
   *`Response 200`*    
