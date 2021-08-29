@@ -26,6 +26,7 @@
     "patronymic":"client1Changed",  
     "address":"client1Changedaddress",
     "email":"user1Changed@gmail.com",
+    "image":"/new/",
     "number":"+79957348130",
     "password":"client1client1Changed"  
   }  
