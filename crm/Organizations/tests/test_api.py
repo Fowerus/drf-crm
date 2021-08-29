@@ -542,7 +542,6 @@ class TestOrganizationsAPI(APITestCase):
 
 		#POST
 		data_post = {
-			'order_code':132343,
 			'description':'just do it sdfdsfdsf',
 			'client':self.my_client.id,
 			'executor':self.user3.id,
@@ -561,7 +560,6 @@ class TestOrganizationsAPI(APITestCase):
 		self.assertEquals(response_post.data, data_post)
 		#PATCH
 		data_patch = {
-			'order_code':132343,
 			'organization':self.organization.id,
 			'description':'Changed kdsjfdsfds',
 			'executor':self.user4.id,
