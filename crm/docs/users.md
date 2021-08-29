@@ -111,6 +111,7 @@
     "patronymic":"user1Changed",  
     "address":"user1Changedaddress",
     "email":"user1Changed@gmail.com",
+    "image":"/new/",
     "number":"+79967348130",
     "password":"user1user1Changed"  
   }  
