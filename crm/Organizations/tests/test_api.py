@@ -123,6 +123,16 @@ class TestOrganizationsAPI(APITestCase):
 
 		self.my_client = Client.objects.create(id = 1000, user = self.user3, organization = self.organization)
 
+		self.order_data = {
+			"order_code":23223,
+			"description":"gs",
+			"executor":self.user4,
+			"creator":self.user,
+			"client":self.my_client.user,
+			"service":self.service
+		}
+		self.order = Order.objects.create(id = 1000, **self.order_data)
+
 
 
 	def testOrganization(self):
@@ -338,7 +348,7 @@ class TestOrganizationsAPI(APITestCase):
 
 		#PATCH
 		data_patch = {
-			'member':1,
+			'member':self.organization_member.id,
 			'role': self.role2.id,
 			'organization':self.organization.id
 		}
@@ -353,7 +363,7 @@ class TestOrganizationsAPI(APITestCase):
 
 		#DELETE
 		data_delete = {
-			'member':1,
+			'member':self.organization_member.id,
 			'organization':self.organization.id
 		}
 		#Within token
@@ -447,7 +457,7 @@ class TestOrganizationsAPI(APITestCase):
 
 		#PATCH
 		data_patch = {
-			'service':1,
+			'service':self.service.id,
 			'name':'Test_serviceChanged',
 			'number':'+79134725591',
 			'address':'Test_address_Changed',
@@ -511,7 +521,7 @@ class TestOrganizationsAPI(APITestCase):
 			'password':'isclient1995Changed',
 			'image':'/to/here/',
 			'organization':self.organization.id,
-			'client':1
+			'client':self.my_client.user.id,
 		}
 		#Within token
 		response_patch = self.client.patch(url, data = data_patch)
@@ -524,7 +534,7 @@ class TestOrganizationsAPI(APITestCase):
 
 		#DELETE
 		data_delete = {
-			'client': 1,
+			'client':self.my_client.user.id,
 			'organization':self.organization.id
 		}
 		#Within token
@@ -543,8 +553,8 @@ class TestOrganizationsAPI(APITestCase):
 		#POST
 		data_post = {
 			'description':'just do it sdfdsfdsf',
-			'client':self.my_client.id,
-			'executor':self.user3.id,
+			'client':self.my_client.user.id,
+			'executor':self.user2.id,
 			'creator':self.user.id,
 			'service':self.service.id,
 			'organization':self.organization.id
@@ -557,9 +567,11 @@ class TestOrganizationsAPI(APITestCase):
 		response_post = self.client.post(url, data = data_post, HTTP_AUTHORIZATION = access)
 		data_post.pop('organization')
 		self.assertEquals(response_post.status_code, status.HTTP_201_CREATED)
+		response_post.data.pop('order_code')
 		self.assertEquals(response_post.data, data_post)
 		#PATCH
 		data_patch = {
+			"order_code":self.order.order_code,
 			'organization':self.organization.id,
 			'description':'Changed kdsjfdsfds',
 			'executor':self.user4.id,
@@ -577,7 +589,7 @@ class TestOrganizationsAPI(APITestCase):
 		#POST-blocked_order
 		url_blocked = reverse('block_order')
 		data_blocked = {
-			'order_code':132343,
+			'order_code':self.order.order_code,
 			'organization':self.organization.id
 		}
 		#Within tokne
@@ -590,7 +602,7 @@ class TestOrganizationsAPI(APITestCase):
 		
 		#DELETE
 		data_delete = {
-			'order_code': 132343,
+			'order_code': self.order.order_code,
 			'organization':self.organization.id
 		}
 		#Within token
