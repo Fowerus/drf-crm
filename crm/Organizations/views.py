@@ -1,3 +1,4 @@
+import uuid
 import jwt
 
 from rest_framework.views import APIView
@@ -816,6 +817,7 @@ class OrderViewSet(ViewSet):
 		try:
 			if is_valid_member(user_data['user_id'], requests.data['organization'], 
 				['organization_creator', 'order_create', 'order_guru']) and check_confirmed(requests.data['executor']):
+				requests.data['order_code'] = int(str(uuid.uuid1().int)[:10])
 				serializer = self.serializer_class.OrderCSerializer(data = requests.data)
 				if serializer.is_valid():
 					serializer.save()
