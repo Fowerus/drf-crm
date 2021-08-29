@@ -116,7 +116,7 @@ def check_orgService(service_id, org_id):
 #Checking a user as a client of organization
 def check_orgClient(client_id, org_id):
 	try:
-		current_client = Organization.objects.get(id = org_id).organization_clients.all().get(id = client_id)
+		current_client = Organization.objects.get(id = org_id).organization_clients.all().filter(user = client_id)
 		return True
 	except:
 		return False

@@ -684,10 +684,9 @@ class ClientViewSet(ViewSet):
 		try:
 			if is_valid_member(user_data['user_id'], requests.data['organization'], 
 				['organization_creator', 'client_change', 'client_guru']):
-
 				if check_orgClient(requests.data['client'], requests.data['organization']):
 
-					current_client = Client.objects.get(id = requests.data['client'])
+					current_client = Client.objects.get(user = requests.data['client'])
 
 					output = {
 						"success":{},
@@ -759,8 +758,8 @@ class ClientViewSet(ViewSet):
 						current_client.save()
 
 					return Response(output, status = status.HTTP_200_OK)
-			else:
-				return Response(status = status.HTTP_403_FORBIDDEN)
+			
+			return Response(status = status.HTTP_403_FORBIDDEN)
 
 		except:
 			return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -776,7 +775,7 @@ class ClientViewSet(ViewSet):
 				if check_orgClient(requests.data['client'], requests.data['organization']):
 
 					try:
-						Client.objects.get(id = requests.data['client']).user.delete()
+						User.objects.get(id = requests.data['client']).user_client.delete()
 
 						return Response(status = status.HTTP_200_OK)
 
