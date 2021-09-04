@@ -12,7 +12,7 @@ from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt import exceptions
 
 from .models import User
-from Sessions.models import Session
+from Sessions.models import Session_user
 
 
 
@@ -47,7 +47,6 @@ class MyTokenObtainForNumberSerializer(TokenObtainSerializer):
 			pass
 		try:
 			self.user = get_user_model().objects.get(number = authenticate_kwargs['number'])
-
 			if not self.user.check_password(authenticate_kwargs['password']):
 				self.user = None
 		except:
@@ -66,7 +65,7 @@ class MyTokenObtainForNumberSerializer(TokenObtainSerializer):
 class MyTokenObtainPairNumberSerializer(MyTokenObtainForNumberSerializer):
 	refresh = serializers.CharField(read_only = True)
 	detail = serializers.CharField(read_only = True)
-	access = serializers.ReadOnlyField(read_only = True)
+	access = serializers.ReadOnlyField()
 	device = serializers.CharField(write_only = True)
 
 	@classmethod
@@ -80,13 +79,13 @@ class MyTokenObtainPairNumberSerializer(MyTokenObtainForNumberSerializer):
 		data = super().validate(attrs)
 
 		try:
-			Session.objects.filter(user = self.user.id).get(device = device)
+			Session_user.objects.filter(user = self.user.id).get(device = device)
 
 			return {'detail':'Already authorized'}
 
 		except:
 			try:
-				Session.objects.create(user = self.user, device = device)
+				Session_user.objects.create(user = self.user, device = device)
 				refresh = self.get_token(self.user)
 
 				data['refresh'] = str(refresh)
@@ -98,6 +97,7 @@ class MyTokenObtainPairNumberSerializer(MyTokenObtainForNumberSerializer):
 				return data
 			except:
 				return {"detail": "No active account found with the given credentials"}
+
 
 
 
@@ -118,13 +118,13 @@ class MyTokenObtainPairEmailSerializer(MyTokenObtainForEmailSerializer):
 		data = super().validate(attrs)
 
 		try:
-			Session.objects.filter(user = self.user.id).get(device = device)
+			Session_user.objects.filter(user = self.user.id).get(device = device)
 
 			return {'detail':'Already authorized'}
 
 		except:
 			try:
-				Session.objects.create(user = self.user, device = device)
+				Session_user.objects.create(user = self.user, device = device)
 				refresh = self.get_token(self.user)
 
 				data['refresh'] = str(refresh)
@@ -162,7 +162,7 @@ class MyTokenRefreshSerializer(serializers.Serializer):
 			return {'detail':'Refresh token expired or not exist'}
 
 		try:
-			current_session = Session.objects.filter(user = user.id).get(device = device)
+			current_session = Session_user.objects.filter(user = user.id).get(device = device)
 			refresh = self.get_token(user)
 
 			data['refresh'] = str(refresh)
@@ -181,18 +181,24 @@ class MyTokenRefreshSerializer(serializers.Serializer):
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
 	password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+	number = serializers.CharField()
+	email = serializers.CharField()
+
+
+	def create(self, validated_data):
+		user = User.objects.create_user(**validated_data)
+
+		return user
+
 	
 	class UserRegistrationForNumber(serializers.ModelSerializer):
 		password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+		number = serializers.CharField()
 
 		def create(self, validated_data):
-			password = validated_data.pop('password')
-			user = User(**validated_data)
-			user.set_password(password)
-			user.save()
+			user = User.objects.create_user(**validated_data)
 
 			return user
-
 
 		class Meta:
 			model = User
@@ -201,12 +207,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 	class UserRegistrationForEmail(serializers.ModelSerializer):
 		password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+		email = serializers.CharField()
 
 		def create(self, validated_data):
 			user = User.objects.create_user(**validated_data)
 
 			return user
-
 
 		class Meta:
 			model = User
@@ -223,4 +229,29 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = User
-		fields = ['id', 'surname', 'name', 'patronymic', 'address', 'email', 'image','confirmed_email', 'confirmed_number', 'created_at', 'updated_at']
+		fields = ['id', 'surname', 'name', 'patronymic', 'address', 'email', 'number', 'image', 'confirmed_email', 'confirmed_number', 'created_at', 'updated_at']
+
+	class UserUSerializer(serializers.ModelSerializer):
+		password = serializers.CharField(write_only = True)
+
+		def update(self, instance, validated_data):
+			try:
+				if 'password' in validated_data:
+					instance.set_password(validated_data['password'])
+					validated_data.pop('password')
+			except:
+				pass
+				if 'number' in validated_data:
+					instance.number = validated_data['number']
+					instance.confirmed_number = False
+					validated_data.pop('number')
+				if 'email' in validated_data:
+					instance.email = validated_data['email']
+					instance.confirmed_email = False
+					validated_data.pop('email')
+
+			return super().update(instance, validated_data)
+
+		class Meta:
+			model = User 
+			fields = ['surname', 'name', 'patronymic','address', 'email', 'number', 'image', 'password']

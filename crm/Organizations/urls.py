@@ -4,66 +4,26 @@ from . import views
 
 
 urlpatterns = [
-    path('organization/', views.OrganizationAPIView.as_view(), name = 'organization'),
-
-    path('number/', views.Organization_numberViewSet.as_view({
-        'get':'list_organizations_numbers',
-        'post':'create_organization_number',
-        'patch':'update_organization_number',
-        'delete':'delete_organization_number'
-        }), name = 'organization_number'),
-    path('number-all/<int:org_id>/', views.Organization_numberViewSet.as_view({'get':'list_organization_numbers'}), name = 'list_organization_numbers'),
+    path('organization-lc/', views.OrganizationListCreateAPIView.as_view(), name = 'organization_lc'),
+    path('organization-rud/<int:id>/', views.OrganizationRetrieveUpdateDestroyAPIView.as_view(), name = 'organization_rud'),
 
 
-    path('link/', views.Organization_linkViewSet.as_view({
-        'get':'list_organizations_links',
-        'post':'create_organization_link',
-        'patch':'update_organization_link',
-        'delete':'delete_organization_link'
-        }), name = 'organization_link'),
-    path('link-all/<int:org_id>/', views.Organization_numberViewSet.as_view({'get':'list_organization_links'}), name = 'list_organization_links'),
+    path('member-l/<int:organization>/', views.Organization_memberListAPIView.as_view(), name = 'organization_member_l'),
+    path('member-c/', views.Organization_memberCreateAPIView.as_view(), name = 'organization_member_c'),
+    path('member-ud/<int:id>/', views.Organization_memberUpdateDestroyAPIView.as_view(), name = 'organization_member_ud'),
+    path('member-r/<int:id>/<int:organization>/', views.Organization_memberRetrieveAPIView.as_view(), name = 'organization_member_r'),
 
 
-    path('member/', views.Organization_memberViewSet.as_view({
-        'get':'list_all_organizations_members',
-        'post':'create_organization_member',
-        'patch':'update_organization_member',
-        'delete':'delete_organization_member'
-        }), name = 'organization_member'),
-    path('member-all/<int:org_id>/', views.Organization_memberViewSet.as_view({'get':'list_organization_members'}), name = 'list_organization_members'),
+    path('role-l/<int:organization>/', views.RoleListAPIView.as_view(), name = 'organization_role_l'),
+    path('role-c/', views.RoleCreateAPIView.as_view(), name = 'organization_role_c'),
+    path('role-ud/<int:id>/', views.RoleUpdateDestroyAPIView.as_view(), name = 'organization_role_ud'),
+    path('role-r/<int:id>/<int:organization>/', views.RoleRetrieveAPIView.as_view(), name = 'organization_role_r'),
+
+    path('perm-l/<int:organization>/', views.PermListAPIView.as_view(), name = 'organization_perm_l'),
 
 
-    path('role/', views.RolePermViewSet.as_view({
-        'post':'create_role',
-        'patch':'update_role',
-        'delete':'delete_role'
-        }), name = 'organization_role'),
-    path('role-all/<int:org_id>/', views.RolePermViewSet.as_view({'get':'list_roles'}), name = 'list_roles'),
-    path('perms-all/<int:org_id>/', views.RolePermViewSet.as_view({'get':'list_permissions'}), name = 'list_permissions'),
-
-
-    path('service/', views.ServiceViewSet.as_view({
-        'get':'list_all_service',
-        'post':'create_service',
-        'patch':'update_service',
-        'delete':'delete_service'
-        }), name = 'organization_service'),
-    path('service-all/<int:org_id>/', views.ServiceViewSet.as_view({'get':'list_organization_services'}), name = 'list_organization_services'),
-
-
-    path('client/', views.ClientViewSet.as_view({
-        'post':'create_client',
-        'patch':'update_client',
-        'delete':'delete_client'
-        }), name = 'organization_client'),
-    path('client-all/<int:org_id>/', views.ClientViewSet.as_view({'get':'list_clients'}), name = 'list_clients'),
-
-
-    path('order/', views.OrderViewSet.as_view({
-        'post':'create_order',
-        'patch':'update_order',
-        'delete':'delete_order'
-        }), name = 'organization_order'),
-    path('order-all/<int:org_id>/', views.OrderViewSet.as_view({'get':'list_orders'}), name = 'list_orders'),
-    path('order-block/', views.OrderViewSet.as_view({'post':'block_order'}), name = 'block_order'),
+    path('service-l/<int:organization>/', views.ServiceListAPIView.as_view(), name = 'organization_service_l'),
+    path('service-c/', views.ServiceCreateAPIView.as_view(), name = 'organization_service_c'),
+    path('service-ud/<int:id>/', views.ServiceUpdateDestroyAPIView.as_view(), name = 'organization_service_ud'),
+    path('service-r/<int:id>/<int:organization>/', views.ServiceRetrieveAPIView.as_view(), name = 'organization_service_r'),
 ]
