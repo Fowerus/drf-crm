@@ -12,6 +12,8 @@ class Organization(models.Model):
 	address = models.CharField(max_length = 200, verbose_name = 'Address')
 
 	creator = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'my_organizations', verbose_name = 'Creator')
+	numbers = models.JSONField(null = True, blank = True)
+	links = models.JSONField(null = True, blank = True)
 
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
@@ -36,39 +38,6 @@ class MainMixin(models.Model):
 
 	class Meta:
 		abstract = True
-
-
-
-class Organization_number(MainMixin):
-	number = PhoneNumberField(unique = True)
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_numbers', verbose_name = 'Organization')
-
-	def __str__(self):
-		return f'id: {self.id} | number: {self.number} | org: {self.organization}'
-
-	class Meta:
-		unique_together = ('number', 'organization')
-		db_table = 'Organization_number'
-		verbose_name_plural = "Organizations numbers"
-		verbose_name = "Organization number"
-		ordering = ['-updated_at']
-
-
-
-class Organization_link(MainMixin):
-	name = models.CharField(max_length = 50, verbose_name = 'Name')
-	link = models.CharField(validators = [RegexValidator(regex = r"^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*$")], max_length = 200, unique = True, verbose_name = 'Link')
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_links', verbose_name = 'Organization')
-
-	def __str__(self):
-		return f'id: {self.id} | org: {self.org}'
-
-	class Meta:
-		unique_together = ('link', 'organization')
-		db_table = 'Organization_link'
-		verbose_name_plural = "Organizations links"
-		verbose_name = "Organization link"
-		ordering = ['-updated_at']
 
 
 
@@ -138,26 +107,4 @@ class Organization_member(MainMixin):
 		db_table = 'Organization_member'
 		verbose_name_plural = 'Organizations members'
 		verbose_name = 'Organization member'
-		ordering = ['-updated_at']
-
-
-
-class Order(MainMixin):
-	order_code = models.BigIntegerField(unique = True, verbose_name = 'Order_code')
-	description = models.CharField(max_length = 500, verbose_name = 'Description')
-	client = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'client_orders', verbose_name = 'Client')
-	executor = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'user_executor', verbose_name = 'Executor')
-	creator = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'user_creator', verbose_name = 'Creator')
-
-	service = models.ForeignKey(Service, on_delete = models.CASCADE, related_name = 'service_orders', verbose_name = 'Service')
-
-	done = models.BooleanField(default = False)
-
-	blocked = models.BooleanField(default = False)
-
-
-	class Meta:
-		db_table = 'Order'
-		verbose_name_plural = "Orders"
-		verbose_name = "Order"
 		ordering = ['-updated_at']

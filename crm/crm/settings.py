@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-&y_2xqs5o%p(y+yo40)y6@ar7-_ff$&=d5uvy3d+9nc_ah&-=('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -41,11 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Organizations',
     'Users',
+    'Orders',
     'Clients',
     'Sessions',
+    'VerifyInfo',
     'rest_framework',
     'phonenumber_field',
-    'django_resized'
+    'django_resized',
 ]
 
 MIDDLEWARE = [
@@ -82,24 +84,23 @@ WSGI_APPLICATION = 'crm.wsgi.application_noise'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#     'NAME': 'd7arik64v6okhv',
-#     'USER': 'svbhscctuooagi',
-#     'PASSWORD': 'db55d03ad7b4233f8da542e46cdc1d60db7b858cb5794a4762fef58d1e6442a4',
-#     'HOST': 'ec2-35-174-122-153.compute-1.amazonaws.com', # Set to empty string for localhost.
-#     'PORT': '5432', # Set to empty string for default.
-#     'URI':'postgres://svbhscctuooagi:db55d03ad7b4233f8da542e46cdc1d60db7b858cb5794a4762fef58d1e6442a4@ec2-35-174-122-153.compute-1.amazonaws.com:5432/d7arik64v6okhv'
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'd8fl67kdd5imi7',
+    'USER': 'zuisequicvihdz',
+    'PASSWORD': '458fe5e85101c60f10896d59a72db97e3d9434967e496fd367e9cc38b66ca003',
+    'HOST': 'ec2-44-197-94-126.compute-1.amazonaws.com', # Set to empty string for localhost.
+    'PORT': '5432', # Set to empty string for default.
+    'URI':'postgres://zuisequicvihdz:458fe5e85101c60f10896d59a72db97e3d9434967e496fd367e9cc38b66ca003@ec2-44-197-94-126.compute-1.amazonaws.com:5432/d8fl67kdd5imi7'
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 
@@ -160,12 +161,14 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',) #'Users
 AUTH_USER_MODEL = "Users.User"
 
 REST_FRAMEWORK = {
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+    ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
@@ -179,10 +182,12 @@ SIMPLE_JWT = {
 
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = 'fowerus.test.email@gmail.com'
+EMAIL_HOST_PASSWORD = '841362597!A(b)=>9472562862374email.send'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+

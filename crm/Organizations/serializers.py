@@ -1,11 +1,6 @@
-import jwt
-
-from django.contrib.auth import authenticate
-from django.conf import settings
+import uuid
 
 from rest_framework import serializers
-from rest_framework.response import Response
-from rest_framework import status
 
 from .models import *
 from Users.serializers import UserSerializer
@@ -16,7 +11,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization
-		fields = ['id','name','description', 'address', 'creator', 'created_at', 'updated_at']
+		fields = ['id','name','description', 'address', 'creator', 'created_at', 'numbers','links', 'updated_at']
 
 
 	class OrganizationCSerializer(serializers.ModelSerializer):
@@ -29,51 +24,15 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Organization
-			fields = ['name','description', 'address', 'creator']
+			fields = ['name','description', 'address', 'links', 'numbers' 'creator']
 
 
-
-class Organization_numberSerializer(serializers.ModelSerializer):
-	organization = OrganizationSerializer()
-
-	class Meta:
-		model = Organization_number
-		fields = ['id','number','organization', 'created_at', 'updated_at']
-
-
-	class Organization_numberCSerializer(serializers.ModelSerializer):
-
-		def create(self, validated_data):
-			organization_number = Organization_number.objects.create(**validated_data)
-
-			return organization_number
-
+	class OrganizationUSerializer(serializers.ModelSerializer):
 
 		class Meta:
-			model = Organization_number
-			fields = ['number','organization']
+			model = Organization
+			fields = ['name','description', 'address', 'links', 'numbers']
 
-
-
-class Organization_linkSerializer(serializers.ModelSerializer):
-	organization = OrganizationSerializer()
-
-	class Meta:
-		model = Organization_link
-		fields = ['id','name','link','organization', 'created_at', 'updated_at']
-
-
-	class Organization_linkCSerializer(serializers.ModelSerializer):
-
-		def create(self, validated_data):
-			organization_link = Organization_link.objects.create(**validated_data)
-
-			return organization_link
-
-
-		class Meta:
-			model = Organization_link
-			fields = ['name', 'link','organization']
 
 
 
@@ -87,6 +46,7 @@ class PermissionSerializer(serializers.ModelSerializer):
 
 class RoleSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
+	permissions = PermissionSerializer(many = True)
 
 	class Meta:
 		model = Role
@@ -96,16 +56,37 @@ class RoleSerializer(serializers.ModelSerializer):
 	class RoleCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
-			role = Role.objects.create(name = validated_data['name'], organization = validated_data['organization'])
+			role = Role(name = validated_data['name'], organization = validated_data['organization'])
 			role.permissions.set(set(validated_data['permissions']))
 			role.save()
 
 			return role
 
-
 		class Meta:
 			model = Role
 			fields = ['name', 'permissions', 'organization']
+
+
+	class RoleUSerializer(serializers.ModelSerializer):
+
+		def update(self, instance, validated_data):
+			if 'permissions' in validated_data:
+				try:
+					old_perms = set(instance.permissions.all())
+					instance.permissions.set(set(validated_data['permissions']))
+					add_remove_perms = set(instance.permissions.all())
+					new_perms = old_perms ^ add_remove_perms
+					instance.permissions.set(new_perms)
+				except:
+					pass
+
+			validated_data.pop('permissions')
+			return super().update(instance, validated_data)
+
+
+		class Meta:
+			model = Role
+			fields = ['name', 'permissions']
 
 
 class Organization_memberSerializer(serializers.ModelSerializer):
@@ -131,6 +112,13 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 			fields = ['user','role', 'organization']
 
 
+	class Organization_memberUSerializer(serializers.ModelSerializer):
+
+		class Meta:
+			model = Organization_member
+			fields = ['role']
+
+
 
 class ServiceSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
@@ -153,23 +141,8 @@ class ServiceSerializer(serializers.ModelSerializer):
 			fields = ['name', 'address', 'number', 'organization']
 
 
-class OrderSerializer(serializers.ModelSerializer):
-	creator = UserSerializer()
-	executor = UserSerializer()
-	service = ServiceSerializer()
-
-	class Meta:
-		model = Order
-		fields = ['id', 'order_code', 'description', 'creator', 'executor', 'client', 'done', 'blocked', 'service', 'created_at', 'updated_at']
-
-
-	class OrderCSerializer(serializers.ModelSerializer):
-
-		def create(self, validated_data):
-			order = Order.objects.create(**validated_data)
-
-			return order
+	class ServiceUSerializer(serializers.ModelSerializer):
 
 		class Meta:
-			model = Order
-			fields = ['order_code', 'description', 'creator', 'executor', 'client', 'service']
+			model = Service
+			fields = ['name', 'address', 'number']

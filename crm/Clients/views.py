@@ -1,111 +1,71 @@
-from django.conf import settings
-
-from rest_framework.viewsets import ViewSet
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework import generics
 
 from .serializers import *
+from .models import Client
+from crm.customPerm import CustomPermissionVerificationRole,CustomPermissionVerificationAffiliation
+
 from crm.views import *
-from Organizations.serializers import OrderSerializer
+from crm.customPerm import CustomPermissionGetUser
+from Orders.serializers import OrderSerializer
+from Users.serializers import UserSerializer
 
 
 
-class ClientViewSet(ViewSet):
+class ClientOrderListAPIView(generics.ListAPIView):
+    permission_classes = [CustomPermissionGetUser]
+    queryset = Client.objects.all()
+    serializer_class = OrderSerializer
 
-    def list_orders_as_client(self, requests):
-        user_data = get_userData(requests)
+    def get_queryset(self):
+        return self.queryset.get(id = self.kwargs['id']).client_orders.all()
 
+
+
+class ClientLoginAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = ClientLoginSerializer
+
+    def post(self, requests):
         try:
-            client_orders = User.objects.get(id = user_data['user_id']).client_orders.all()
-            serializer = OrderSerializer(client_orders, many = True)
+            data = dict(requests.data)
+            data['device'] = requests.headers['User-Agent']
 
-            return Response(serializer.data, status = status.HTTP_200_OK)
-
+            serializer = self.serializer_class(data = data)
+            if serializer.is_valid():
+                return Response(serializer.data, status = status.HTTP_200_OK)
+            
+            return Response(serializers.errors, status = status.HTTP_400_BAD_REQUEST)
         except:
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 
 
-    def update_client(self, requests):
-        try:
-            user_data = get_userData(requests)
-            if check_UsrClient(user_data['user_id']):
 
-                current_user = User.objects.get(id = user_data['user_id'])
+class ClientListAPIView(generics.ListAPIView):
+    permission_classes = [CustomPermissionVerificationRole]
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
 
-                output = {
-                    'success':{},
-                    'error':{}
-                }
-
-                if 'surname' in requests.data:
-                    if 2 <= len(requests.data['surname']) <= 150:
-                        current_user.surname = requests.data['surname']
-                        output['success']['Surname'] = 'Surname successfully changed'
-                    else:
-                        output['error']['Surname'] = 'Surname is too short or too long'
-
-                if 'name' in requests.data:
-                    if 2 <= len(requests.data['name']) <= 150:
-                        current_user.name = requests.data['name']
-                        output['success']['Name'] = 'Name successfully changed'
-                    else:
-                        output['error']['Name'] = 'Name is too short or too long'
-
-                if 'patronymic' in requests.data:
-                    if 2 <= len(requests.data['patronymic']) <= 150:
-                        current_user.patronymic = requests.data['patronymic']
-                        output['success']['Patronymic'] = 'Patronymic successfully changed'
-                    else:
-                        output['error']['Patronymic'] = 'Patronymic is too short or too long'
-
-                if 'address' in requests.data:
-                    if 2 <= len(requests.data['address']) <= 150:
-                        current_user.address = requests.data['address']
-                        output['success']['Address'] = 'Address successfully changed'
-                    else:
-                        output['error']['Address'] = 'Address is too short or too long'
-
-                if 'image' in requests.data:
-                    try:
-                        current_user.image = requests.data['image']
-                        output['success']['Image'] = 'Image successfully changed'
-                    except:
-                        output['error']['Image'] = 'Wrong image format'
-
-                if 'email' in requests.data:
-                    try:
-                        current_user.email = requests.data['email']
-                        output['success']['Email'] = 'Email successfully changed'
-                        current_user.confirmed_email = False
-                    except:
-                        output['error']['Email'] = 'Wrong email format'
+    def get_queryset(self):
+        return self.queryset.filter(organization = self.kwargs.get('organization'))
 
 
-                if 'number' in requests.data:
-                    try:
-                        current_user.email = requests.data['number']
-                        output['success']['Number'] = 'Number successfully changed'
-                        current_user.confirmed_number = False
-                    except:
-                        output['error']['Number'] = 'Wrong number format'
+class ClientCreateAPIView(generics.CreateAPIView):
+    permission_classes = [CustomPermissionVerificationRole]
+    serializer_class = ClientSerializer.ClientCUSerializer
 
 
-                if 'password' in requests.data:
-                    try:
-                        current_user.set_password(requests.data['password'])
-                        output['success']['Password'] = 'Password successfully changed'
-                    except:
-                        output['error']['Password'] = 'Wrong password format'
+class ClientRetrieveAPIView(generics.RetrieveAPIView):
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+    lookup_field = 'id'
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
 
 
-                if len(output['success']) > 0:
-                    current_user.save()
-
-                return Response(output, status = status.HTTP_200_OK)
-
-            else:
-                return Response(status = status.HTTP_403_FORBIDDEN)
-
-        except:
-            return Response(status = status.HTTP_400_BAD_REQUEST)
+class ClientUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+    lookup_field = 'id'
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer.ClientCUSerializer

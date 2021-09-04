@@ -1,34 +1,40 @@
-from rest_framework.viewsets import ViewSet
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework import status
 from rest_framework.response import Response
 
 from .serializers import *
 from crm.views import *
+from crm.customPerm import CustomPermissionGetUser
 
 
 
-class SessionAPIView(APIView):
-	serializer_class = SessionSerializer
+class Session_userListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionGetUser]
+	queryset = Session_user.objects.all()
+	serializer_class = Session_userSerializer
 
-	def get(self, requests):
-		try:
-			user_data = get_userData(requests)
-			all_session = Session.objects.filter(user = user_data['user_id'])
-			serializer = self.serializer_class(all_session, many = True)	
-
-			return Response(serializer.data, status = status.HTTP_200_OK)
-		except:
-			return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+	def get_queryset(self):
+		return self.queryset.filter(user = self.kwargs['id'])
 
 
+class Session_userDestroyAPIView(generics.DestroyAPIView):
+	permission_classes = [CustomPermissionGetUser]
+	lookup_field = 'id'
+	queryset = Session_user.objects.all()
 
-	def delete(self, requests):
-		try:
-			user_data = get_userData(requests)
-			current_session = Session.objects.get(id = requests.data['session'])
-			if user_data['user_id'] == current_session.user.id:
-				current_session.delete()
-			return Response(status = status.HTTP_200_OK)
-		except:
-			return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class Session_clientListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionGetUser]
+	queryset = Session_user.objects.all()
+	serializer_class = Session_clientSerializer
+
+	def get_queryset(self):
+		return self.queryset.filter(client = self.kwargs['id'])
+
+
+class Session_clientDestroyAPIView(generics.DestroyAPIView):
+	permission_classes = [CustomPermissionGetUser]
+	lookup_field = 'id'
+	queryset = Session_user.objects.all()
