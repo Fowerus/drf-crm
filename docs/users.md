@@ -264,8 +264,8 @@
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**If the authorization is with a user whose *id* does not match what is on the link**  
-	**Response**  
+	**If the authorization is with a user whose *id* does not match what is on the link**   
+	**Response**   
 	*`Response 403`*  
 	```json  
 	{
@@ -285,7 +285,7 @@
 	}
 	```   
 	Inserting one of the listed fields is allowed one at a time   
-	**Response**  
+	**Response**   
 	*`Response 200`*  
 	```json  
 	{
@@ -307,7 +307,7 @@
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**If the authorization is with a user whose *id* does not correspond to what is on the link**   
+	**If the authorization is with a user whose *id* does not correspond to what is on the link**      
 	**Response**  
 	*`Response 403`*  
 	```json  
