@@ -66,7 +66,7 @@
 		]
 	}
 	```   
-	**Некорректные данные**  
+	**Incorrect request data**  
 	*`Response 400`*  
 	```json  
 	{
@@ -264,7 +264,7 @@
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**Если авторизации у юзера, *id* которого не соResponseствует тому, что в пути**  
+	**If the authorization is with a user whose *id* does not match what is on the link**  
 	**Response**  
 	*`Response 403`*  
 	```json  
@@ -307,7 +307,7 @@
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**If the authorization is with a user whose *id* does not correspond to what is on the way**  
+	**If the authorization is with a user whose *id* does not correspond to what is on the link**  
 	**Response**  
 	*`Response 403`*  
 	```json  
