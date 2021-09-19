@@ -2,24 +2,24 @@
 
 
 ## **Registration**  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json"
 }
 ``` 
 * **POST** `auth/registration/`     
-	**Пустой запрос**  
-	Этот же ответ будет в случае некорректности некоторых данных.   
-	**Ответ** 
+	**Empty request data**  
+	The same Response will be in case of some data incorrectness  
+	**Response** 
 	*`Response 400`*  
 	```json  
 	{
 		"detail": "Valid phone number or email not provided"
 	}
 	```  
-	Во входных данных можно указать, номер телефона или адрес электронной почты или все вместе   
-	**Входные данные**     
+	In the input data, you can specify a phone number or email address, or all together   
+	**Input data**     
 	```json  
 	{  
 		"surname":"user1",   
@@ -31,8 +31,8 @@
 		"password":"user1user1"  
 	}  
 	```  
-	Если регистрация происходила, например, по номеру телефона, то в ответе адрес электронной почты указываться не будет(Также и про адрес электронной почты).   Пароль также в ответ от сервера не входит.   
-	**Ответ**  
+	If the registration took place, for example, by a phone number, then the e-mail address will not be indicated in the Response (Also about the e-mail address). The password is also not included in the Response from the server  
+	**Response**  
 	*`Response 201`*    
 	```json  
 	{
@@ -47,14 +47,14 @@
 
 ## **TokenObtainPair**  
 * **POST**  `auth/token/`     
-	**Заголовки**  
+	**Headers**  
 	```json  
 	{
 		"Content-Type":"application/json"
 	}
 	```  
-	**Пустой запрос**  
-	**Ответ** 
+	**Empty request data**  
+	**Response** 
 	*`Response 400`*  
 	```json  
 	{
@@ -73,16 +73,16 @@
 		"detail": "No active account found with the given credentials"
 	}
 	```   
-	В качестве идентификационных полей можно использовать номер телефона или адрес электронной почты. Если укажите сразу два подобных поля, то аутентификация произойдет через адрес электронной почты.   
-	**Входные данные**  
+	Phone number or email address can be used as identification fields. If you specify two such fields at once, then authentication will occur through the  email address  
+	**Input data**  
 	```json  
 	{
 		"email":"user1@gmail.com",
 		"password":"user1user1"
 	}
 	```  
-	Поле *expired_at* выражено в секунда и показывает время жизни *access token*   
-	**Ответ**  
+	The *expired_at* field is expressed in seconds and indicates the lifetime of the *access token*     
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -94,14 +94,14 @@
 
 ## **TokenRefresh**  
 * **POST**  `auth/token/refresh/`  
-	**Заголовки**  
+	**Headers**  
 	```json  
 	{
 		"Content-Type":"application/json"
 	}
 	```  
-	**Пустой запрос**  
-	**Ответ**  
+	**Empty request data**  
+	**Response**  
 	*`Response 400`*  
 	```json  
 	{
@@ -110,21 +110,21 @@
 		]
 	}
 	```   
-	**Некорректные данные**  
-	**Ответ**  
+	**Incorrect request data**  
+	**Response**  
 	*`Response 400`*  
 	```json  
 	{
 		"detail": "Refresh token expired or not exist"
 	}
 	```   
-	**Входные данные**  
+	**Input data**  
 	```json  
 	{
 		"refresh":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzMjIyODAwMCwianRpIjoiOTJlMzQ4ODg4ZGIzNGYzZTljZDM4NTFlYjNjNDVkYWEiLCJ1c2VyX2lkIjo1fQ.yyKwQG7ax0cfGP4G6kPEhXucEjX4x_m8LlDRapifji0",
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -133,10 +133,10 @@
 		"expired_at": 0
 	}
 	```  
-	Поле *expired_at* выражено в секунда и показывает время жизни *access token*   
+	The *expired_at* field is expressed in seconds and indicates the lifetime of the *access token*  
 
 ## **User change**  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
@@ -144,23 +144,23 @@
 }
 ```  
 * **GET**  `user/5/`  
-	**Запрос без authorization в заголовках**   
-	**Ответ**  
+	**Request without authorization in headers**   
+	**Response**  
 	*`Response 401`*  
 	```json  
 	{
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**Если у авторизированного юзера *id* не соответствует тому, что в пути**   
-	**Ответ**  
+	**If an authorized user has an *id* that does not match what is on the way**   
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 		"detail": "You do not have permission to perform this action."
 	}
 	```  
-	**Корректный юзер**  
+	**The right user**  
 	*`Response 200`*  
 	```json   
 	{
@@ -179,9 +179,9 @@
 	}
 	```  
 * **PUT**  `user/5/`  
-	Можно менять пароль, адрес почты и номер телефона  
-	**Пустой запрос**  
-	**Ответ**  
+	You can change your password, email address and phone number  
+	**Empty request data**  
+	**Response**  
 	*`Response 400`*  
 	```json  
 	{
@@ -199,23 +199,23 @@
 		]
 	}
 	```   
-	**Запрос без authorization в заголовках**  
-	**Ответ**  
+	**Request without authorization in headers**  
+	**Response**  
 	*`Response 401`*  
 	```json  
 	{
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**Если авторизации у юзера, *id* которого не соответствует тому, что в пути**  
-	**Ответ**  
+	**If the user has authorization, *id* of which does not match what is on the way** 
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 		"detail": "You do not have permission to perform this action."
 	}
 	```  
-	**Входные данные**   
+	**Input data**   
 	```json  
 	{
 		"surname": "user3",
@@ -227,7 +227,7 @@
 		"password":"user3user3"
 	}
 	```   
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -241,9 +241,9 @@
 	}
 	```  
 * **PATCH**  `user/5/`  
-	Можно менять пароль, адрес почты и номер телефона  
-	**Пустой запрос**  
-	**Ответ**  
+	You can change your password, email address and phone number  
+	**Empty request data**  
+	**Response**  
 	*`Response 200`*  
 	```json   
 	{
@@ -256,23 +256,23 @@
 	    "image": "host/users/user/5/static/Users/default-user-image.jpeg"
 	}
 	```  
-	**Запрос без authorization в заголовках**  
-	**Ответ**  
+	**Request without authorization in headers**  
+	**Response**  
 	*`Response 401`*  
 	```json  
 	{
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**Если авторизации у юзера, *id* которого не соответствует тому, что в пути**  
-	**Ответ**  
+	**Если авторизации у юзера, *id* которого не соResponseствует тому, что в пути**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 		"detail": "You do not have permission to perform this action."
 	}
 	```  
-	**Входные данные**   
+	**Input data**   
 	```json  
 	{
 		"surname": "user1",
@@ -284,8 +284,8 @@
 		"password":"user1user1"
 	}
 	```   
-	Вставка одного из перечисленных полей допускается и по одному   
-	**Ответ**  
+	Inserting one of the listed fields is allowed one at a time   
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -299,28 +299,28 @@
 	}
 	```  
 * **DELETE**  `user/5/`     
-	**Запрос без authorization в заголовках**  
-	**Ответ**  
+	**Request without authorization in headers**  
+	**Response**  
 	*`Response 401`*  
 	```json  
 	{
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**Если авторизации у юзера, *id* которого не соответствует тому, что в пути**  
-	**Ответ**  
+	**If the authorization is with a user whose *id* does not correspond to what is on the way**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 		"detail": "You do not have permission to perform this action."
 	}
 	```  
-	**Входные данные**  
+	**Input data**  
 	```json   
 	{
 	}
 	```   
-	**Ответ**  
+	**Response**  
 	*`Response 204`*  
 	```json  
 	{
@@ -329,22 +329,22 @@
 
 ## **User-executor list**  
 * **GET** `user/executor/`  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
 	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMyMjI4NDYyLCJqdGkiOiIwZDEwZjNiYzNhM2M0NzdiODQyZWVjNzQ5ZTY5MGI5OSIsInVzZXJfaWQiOjV9.aYGVJfdEXxsp9_ggjdtc6BMYW7qIp7DCH3BPvabllQ0"
 }
 ```  
-**Запрос без authorization в заголовках**   
-**Ответ**  
+**Request without authorization in headers**   
+**Response**  
 *`Response 401`*  
 ```json  
 {
 	"detail": "Authentication credentials were not provided."
 }
 ```   
-**Ответ**  
+**Response**  
 *`Response 200`*  
 ```json  
 [

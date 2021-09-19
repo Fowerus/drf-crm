@@ -2,14 +2,14 @@
 
 
 ## **Token error**
-Если запрос выполняется без токена  
+If the request is made without a token   
 *`Response 401`*  
 ```json  
 {
 	"detail": "Authentication credentials were not provided."
 }
 ```  
-Если вам не хватает прав или аккаунт не является подтвержденным  или сессия удалена   
+If you do not have enough rights or the account is not confirmed or the session has been deleted  
 *`Response 403`*
 ```json  
 {
@@ -18,7 +18,7 @@
 ```  
 
 ## **Sessions user**  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
@@ -26,7 +26,7 @@
 }
 ``` 
 * **GET** `session-user-l/1/`    
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json   
 	[
@@ -51,14 +51,14 @@
 	]
 	```   
 * **DELETE** `session-user-d/1/`    
-	**Ответ**  
+	**Response**  
 	*`Response 204`*  
 	```json   
 	{
 	}
 	```   
 ## **Sessions client**  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
@@ -66,7 +66,7 @@
 }
 ``` 
 * **GET** `session-client-l/1/`    
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json   
 	[
@@ -89,7 +89,7 @@
 	]
 	```   
 * **DELETE** `session-client-d/1/`    
-	**Ответ**  
+	**Response**  
 	*`Response 204`*  
 	```json   
 	{

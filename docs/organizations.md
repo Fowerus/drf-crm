@@ -2,14 +2,14 @@
 
 
 ## **Token error**
-Если запрос выполняется без токена  
+If the request is made without a token   
 *`Response 401`*  
 ```json  
 {
 	"detail": "Authentication credentials were not provided."
 }
 ```  
-Если вам не хватает прав или аккаунт не является подтвержденным  или сессия удалена   
+If you do not have enough rights or the account is not confirmed or the session has been deleted  
 *`Response 403`*
 ```json  
 {
@@ -19,7 +19,7 @@
 
 
 ## **Organizations Create/List**  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
@@ -27,8 +27,8 @@
 }
 ```  
 * **POST** `organization-lc/`        
-	**Пустой запрос**     
-	**Ответ**  
+	**Emplty request body**     
+	**Response**  
 	*`Response 400`*    
 	```json  
 	{
@@ -43,7 +43,7 @@
 		]
 	}
 	```   
-	**Входные данные**     
+	**Input data**     
 	```json  
 	{     
 		"name":"Organization1",    
@@ -52,7 +52,7 @@
 		"creator":5, 
 	}  
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 201`*    
 	```json  
 	{
@@ -65,7 +65,7 @@
 	}
 	```  
 * **GET** `organization-lc/`    
-	**Ответ**  
+	**Response**  
 	*`Response 200`*    
 	```json   
 	[
@@ -97,7 +97,7 @@
 	```   
 
 ## **Organizations Retrieve/Update/Destroy**  
-**Заголовки**   
+**Headers**   
 ```json   
 {
 	"Content-Type":"application/json",
@@ -105,7 +105,7 @@
 }
 ```  
 * **GET** `organization-rud/1/`   
-	**Ответ**   
+	**Response**   
 	*`Response 200`*   
 	```json   
 	{
@@ -134,8 +134,8 @@
 	}
 	```   
 * **PUT** `organization-rud/1/`    
-	**Пустой запрос**     
-	**Ответ**    
+	**Emplty request body**     
+	**Response**    
 	*`Response 400`*   
 	```json    
 	{
@@ -151,7 +151,7 @@
 	}
 	```   
 	Можно изменить *name*, *description*, *address*, *links*, *numbers*   
-	**Входные данные**      
+	**Input data**      
 	```json   
 	{     
 		"name":"Organization2",    
@@ -161,7 +161,7 @@
 		"numbers":{"main":"+79999999999"}
 	}  
 	```    
-	**Ответ**   
+	**Response**   
 	*`Response 200`*  
 	```json  
 	{
@@ -177,8 +177,8 @@
 	}
 	```  
 * **PATCH** `organization-rud/1/`   
-	**Пустой запрос**    
-	**Ответ**   
+	**Emplty request body**    
+	**Response**   
 	*`Response 200`*  
 	```json   
 	{
@@ -193,7 +193,7 @@
 		}
 	}
 	```   
-	**Входные данные**      
+	**Input data**      
 	```json  
 	{     
 		"name":"Organization1",    
@@ -203,7 +203,7 @@
 		"numbers":{"main":"+79999999999"}
 	}  
 	```   
-	**Ответ**  
+	**Response**  
 	*`Response 200`*   
 	```json   
 	{
@@ -219,12 +219,12 @@
 	}
 	```   
 * **DELETE** `organization-rud/1/`  
-	**Входные данные**       
+	**Input data**       
 	```json   
 	{     
 	}  
 	```     
-	**Ответ**    
+	**Response**    
 	*`Response 204`*   
 	```json   
 	{
@@ -232,7 +232,7 @@
 	```    
 
 ## **Members**  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
@@ -240,17 +240,17 @@
 }
 ```  
 *	**POST** `member-c/`   
-	**Пустой запрос**   
-	**Ответ**   
+	**Emplty request body**   
+	**Response**   
 	*`Response 403`*   
 	```json   
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	Этот же ответ будет в случае возникновения конфликтов разрешений из полей *organization*, *user*, *role*     
-	*user* должен быть подтвержденным, *role* должна принадлежать организации и у вас должны быть соответствующие права   
-	**Входные данные**  
+	The same answer will be in case of conflicts of permissions from the fields *organization*, *user*, *role*  
+	*user* must be verified, role must belong to the organization and you must have the appropriate rights  
+	**Input data**  
 	```json  
 	{
 	    "organization":1,
@@ -258,7 +258,7 @@
 	    "user":2
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 201`*   
 	```json   
 	{
@@ -268,8 +268,8 @@
 	}
 	```  
 * **GET** `member-l/1/`  
-	Список может видеть тот, кто авторизован   
-	**Ответ**   
+	The list can be seen by the authorized person   
+	**Response**   
 	*`Reponse 200`*  
 	```json  
 	[
@@ -467,23 +467,23 @@
 	]
 	```   
 * **PUT** `member-ud/2/`   
-	**Пустой запрос**   
-	**Ответ**   
+	**Emplty request body**   
+	**Response**   
 	*`Response 403`*   
 	```json   
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	В запросе обязательно должен быть *organizations* и *role*   
-	**Входные данные**   
+	The request must contain *organizations* and *role*   
+	**Input data**   
 	```json   
 	{
 		"organization":1,
 		"role":2
 	}
 	```   
-	**Ответ**   
+	**Response**   
 	*`Response 200`*   
 	```json   
 	{
@@ -491,30 +491,30 @@
 	}
 	```   
 * **PATCH** `member-ud/2/`   
-	**Пустой запрос**   
-	**Ответ**   
+	**Emplty request body**   
+	**Response**   
 	*`Response 403`*   
 	```json   
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	Если указать только *организации* и ваши права позволяют изменять работника, то выдаст    
-	**Ответ**   
+	If you specify only *organizations* and your rights allow you to change the employee, then it will issue    
+	**Response**   
 	*`Response 200`*    
 	```json  
 	{
 	    "role": 2
 	}
 	```  
-	**Входные данные**  
+	**Input data**  
 	```json   
 	{
 		"organization":1,
 		"role":1
 	}
 	```  
-	**Ответ**   
+	**Response**   
 	*`Response 200`*   
 	```json  
 	{
@@ -522,23 +522,23 @@
 	}
 	```  
 * **DELETE** `member-ud/2/`  
-	**Пустой запрос**  
-	**Ответ**  
+	**Emplty request body**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *id* организации и ваши права позволяют удалять работника, то выдаст  
-	**Ответ**  
+	If you specify only *organizations* and your rights allow you to delete the employee, then it will issue    
+	**Response**  
 	*`Response 204`*   
 	```json  
 	{
 	}
 	```  
 * **GET** `member-r/1/`   
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -642,7 +642,7 @@
 	```  
 
 ## **Roles and Permissions**
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
@@ -650,22 +650,22 @@
 }
 ```  
 * **POST** `role-c/`  
-	**Пустой запрос**  
-	**Ответ**  
+	**Emplty request body**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *organization*  и права позволяют   
-	**Входные данные**  
+	If you specify *organization* and the rights allow
+	**Input data**  
 	```json   
 	{
 		"organization":1
 	}
 	```   
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json   
 	{
@@ -677,9 +677,9 @@
 	    ]
 	}
 	```    
-	Запрос со всеми необходимыми полями.  
-	В *permissions* следует указать массив или множество.    
-	**Входные данные**   
+	Request with all required fields    
+	*Permissions* should be an array or set.  
+	**Input data**   
 	```json  
 	{
 		"organization":1,
@@ -687,7 +687,7 @@
 		"permissions":[1,2,3]
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -701,7 +701,7 @@
 	}
 	```    
 * **GET** `role-l/1/`  
-	**Ответ**   
+	**Response**   
 	```json   
 	[
 	    {
@@ -865,23 +865,23 @@
 	]
 	```   
 * **PUT** `role-ud/1/`   
-	**Пустой запрос**   
-	**Ответ**   
+	**Emplty request body**   
+	**Response**   
 	*`Response 403`*   
 	```json   
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	Этот же ответ если не позволяет роль.   
-	Если роль позволяет   
-	**Входные данные**   
+	The same Response if the role does not allow        
+	If the role allows   
+	**Input data**   
 	```json   
 	{
 		"organization":1
 	}
 	```   
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json    
 	{
@@ -893,10 +893,10 @@
 	    ]
 	}
 	```  
-	Корректный запрос  
-	В поле *permissions* находиться массив или множество. Здесь применяется "Исключающее или"-XOR.  
-	Эта роль создана с пермишенами 1,2,3.  
-	**Входные данные**    
+	The correct request   
+	The *permissions* field contains an array or set. "Exclusive or" -XOR applies here.  
+	This role was previously created with permissions 1,2,3    
+	**Input data**    
 	```json   
 	{
 		"organization":1,
@@ -904,7 +904,7 @@
 		"permissions":[1,2,4,5]
 	}
 	```   
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json   
 	{
@@ -917,23 +917,24 @@
 	}
 	```   
 * **PATCH** `role-ud/1/`  
-	**Пустой запрос**   
-	**Ответ**   
+	**Emplty request body**   
+	**Response**   
 	*`Response 403`*   
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	Этот же ответ если не позволяет роль.  
-	Если роль позволяет  
-	**Входные данные**  
+	The same Response if the role does not allow    
+
+	If the role allows    
+	**Input data**  
 	```json  
 	{
 		"organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json  
 	{
@@ -945,10 +946,10 @@
 	    ]
 	}
 	```  
-	Корректный запрос  
-	В поле *permissions* находиться массив или множество. Здесь применяется "Исключающее или"-XOR. 
-	Эта роль обладает пермишенами 3,4,5.  
-	**Входные данные**   
+	The correct request   
+	The *permissions* field contains an array or set. "Exclusive or" -XOR applies here.  
+	This role has permissions 3,4,5  
+	**Input data**   
 	```json  
 	{
 		"organization":1,
@@ -956,7 +957,7 @@
 		"permissions":[1,2,4,5]
 	}
 	```  
-	**Ответ**   
+	**Response**   
 	*`Response 400`*   
 	```json  
 	{
@@ -969,23 +970,23 @@
 	}
 	```   
 * **DELETE** `role-ud/2/`   
-	**Пустой запрос**   
-	**Ответ**   
+	**Emplty request body**   
+	**Response**   
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *id* организации и ваши права позволяют удалять работника, то выдаст  
-	**Ответ**  
+	If you specify the *id* of the organization and your rights allow you to delete an employee, then it will give  
+	**Response**  
 	*`Response 204`*  
 	```json  
 	{
 	}
 	```  
 * **GET** `role-r/1/1/`  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*   
 	```json   
 	{
@@ -1041,7 +1042,7 @@
 	}
 	```  
 * **GET** `perm-l/1/`  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json   
 	[
@@ -1099,7 +1100,7 @@
 	```   
 
 ## **Services**   
-**Заголовки**   
+**Headers**   
 ```json   
 {
 	"Content-Type":"application/json",
@@ -1107,22 +1108,22 @@
 }
 ```  
 * **POST** `service-c/`   
-	**Пустой запрос**   
-	**Ответ**   
+	**Emplty request body**   
+	**Response**   
 	*`Response 403`*   
 	```json   
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	Если указать *id* организации и ваши права позволяют создавать сервис, то выдаст   
-	**Входные данные**   
+	If you specify the *id* of the organization and your rights allow you to create a service, then it will give   
+	**Input data**   
 	```json   
 	{
 		"organization":1
 	}
 	```   
-	**Ответ**   
+	**Response**   
 	*`Response 400`*   
 	```json   
 	{
@@ -1137,8 +1138,8 @@
 	    ]
 	}
 	```   
-	Корректный запрос   
-	**Входные данные**   
+	The correct request    
+	**Input data**   
 	```json   
 	{
 		"name":"Programming",
@@ -1147,7 +1148,7 @@
 		"phone":"+79518472961"
 	}
 	```   
-	**Ответ**   
+	**Response**   
 	*`Response 201`*   
 	```json   
 	{
@@ -1158,22 +1159,22 @@
 	}
 	```   
 * **PUT** `service-ud/1/`   
-	**Пустой запрос**   
-	**Ответ**   
+	**Emplty request body**   
+	**Response**   
 	*`Response 403`*   
 	```json   
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	Если указать *id* организации и ваши права позволяют изменять сервис, то выдаст   
-	**Входные данные**   
+	If you specify the *id* of the organization and your rights allow you to change the service, then it will give  
+	**Input data**   
 	```json   
 	{
 		"organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json  
 	{
@@ -1188,8 +1189,8 @@
 	    ]
 	}
 	```  
-	Корректный запрос   
-	**Входные данные**  
+	The correct request     
+	**Input data**  
 	```json   
 	{
 		"name":"Programming Changed",
@@ -1198,7 +1199,7 @@
 		"phone":"+79518472962"
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 201`*  
 	```json   
 	{
@@ -1208,22 +1209,22 @@
 	}
 	```  
 * **PATCH** `service-ud/1/`  
-	**Пустой запрос**  
-	**Ответ**  
+	**Emplty request body**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *id* организации и ваши права позволяют изменять сервис, то выдаст  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to change the service, then it will give  
+	**Input data**  
 	```json  
 	{
 		"organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json   
 	{
@@ -1232,8 +1233,8 @@
 	    "phone": "+79518472962"
 	}
 	```   
-	Корректный запрос  
-	**Входные данные**  
+	The correct request  
+	**Input data**  
 	```json   
 	{
 		"name":"Programming",
@@ -1242,7 +1243,7 @@
 		"phone":"+79518472961"
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 201`*  
 	```json  
 	{
@@ -1252,29 +1253,29 @@
 	}
 	```  
 * **DELETE** `service-ud/1/`   
-	**Пустой запрос**   
-	**Ответ**  
+	**Emplty request body**   
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	Если указать *id* организации и ваши права позволяют удалять сервис, то выдаст  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to delete the service, then it will give  
+	**Input data**  
 	```json  
 	{
 		"organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 204`*   
 	```json   
 	{
 	}
 	```   
 * **GET** `service-r/1/1/`  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{

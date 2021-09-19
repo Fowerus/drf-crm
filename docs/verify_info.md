@@ -2,7 +2,7 @@
 
 
 ## **Verify User email**  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
@@ -10,45 +10,45 @@
 }
 ``` 
 * **POST** `verify-user-email/`    
-  	Если в заголовках неверный токен   
-  	**Ответ**   
+  	If the token is incorrect in the headers   
+  	**Response**   
   	*`Response 401`*   
 	```json     
 	{
 	    "detail": "No active account found with the given credentials"
 	}
 	```   
-	**Входные данные**        
+	**Input data**        
 	```json   
 	{
 	}
 	```   
-	Если почта уже подтверждена   
-	**Ответ**   
+	If the mail is already confirmed    
+	**Response**   
 	*`Response 200`*  
 	```json   
 	{
 		"detail":"Already confirmed"
 	}
 	```   
-	Если возникли проблемы с парсингом токена из заголовка  
-	**Ответ**   
+	If you have problems parsing the token from the header   
+	**Response**   
 	*`Response 400`*  
 	```json   
 	{
 		"detail":"Invalid token or not exist"
 	}
 	```  
-	Если возникли проблемы с отправкой сообщения  
-	**Ответ**   
+	If you have problems sending your message   
+	**Response**   
 	*`Response 500`*   
 	```json   
 	{
 		"detail":"Cannot send the mail"
 	}
 	```  
-	Если все удачно то   
-	**Ответ**   
+	If all is well then   
+	**Response**   
 	*`Response 200`*   
 	```json   
 	{
@@ -63,22 +63,22 @@
 }
 ```  
 *	**POST** `accept-user-info/`  
-	**Входные данные**  
+	**Input data**  
 	```json  
 	{
 		"type_code":"email",
 		"code":281343
 	}
 	```  
-	Если во входных данных есть неточность  
-	**Ответ**  
+	If there is an inaccuracy in the input data    
+	**Response**  
 	```json
 	{
 	    "detail":"Invalid code or not exist"
 	}
 	```   
-	Если *code* и *type_code* верные  
-	**Ответ**  
+	If *code* and *type_code* are correct    
+	**Response**  
 	```json
 	{
 	    "detail": "Successfully confirmed"

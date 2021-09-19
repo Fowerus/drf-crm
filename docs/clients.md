@@ -2,14 +2,14 @@
 
 
 ## **Token error**
-Если запрос выполняется без токена  
+If the request is made without a token   
 *`Response 401`*  
 ```json  
 {
 	"detail": "Authentication credentials were not provided."
 }
 ```  
-Если вам не хватает прав или аккаунт не является подтвержденным  или сессия удалена   
+If you do not have enough rights or the account is not confirmed or the session has been deleted  
 *`Response 403`*
 ```json  
 {
@@ -18,7 +18,7 @@
 ```  
 
 ## **Clients**  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
@@ -26,22 +26,22 @@
 }
 ``` 
 * **POST** `client-c/`    
-	**Пустой запрос**  
-	**Ответ**  
+	**Emplty request body**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *id* организации и ваши права позволяют создать клиента, то выдаст(В данном случае следует помещать *id* в *organization* в массив или множество, если *id* будет несколько, то возьмется по индексу 0)  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to create a client, it will return (In this case, you should place *id* in *organization* in an array or set, if there are several *id*, it will be taken at index 0)  
+	**Input data**  
 	```json  
 	{
 		"organization":[1]
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json   
 	{
@@ -56,8 +56,8 @@
 	    ]
 	}
 	```   
-	Корректный запрос  
-	**Входные данные**  
+	The correct request    
+	**Input data**  
 	```json   
 	{
 		"name":"Client1",
@@ -66,7 +66,7 @@
 		"password":"client1client1",
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 201`*  
 	```json  
 	{
@@ -128,22 +128,22 @@
 	]
 	```  
 * **PUT** `client-u/1/`  
-	**Пустой запрос**  
-	**Ответ**  
+	**Empty request data**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *id* организации и ваши права позволяют изменять клиента, то выдаст(В данном случае следует помещать *id* в *organization* в массив или множество, если *id* будет несколько, то возьмется по индексу 0)  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to create a client, it will return (In this case, you should place *id* in *organization* in an array or set, if there are several *id*, it will be taken at index 0)  
+	**Input data**  
 	```json  
 	{
 		"organization":[1]
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json   
 	{
@@ -158,9 +158,9 @@
 	    ]
 	}
 	```   
-	Корректный запрос.
-	У клиента можно изменить name, surname, patronymic, phone, password, address, links  
-	**Входные данные**  
+	The correct request  
+	At the client, you can change name, surname, patronymic, phone, password, address, links  
+	**Input data**  
 	```json  
 	{
 		"name":"Client1Changed",
@@ -173,7 +173,7 @@
         "organization":[1]
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -188,22 +188,22 @@
 	}
 	```  
 * **PATCH** `client-u/1/`  
-	**Пустой запрос**  
-	**Ответ**  
+	**Empty request data**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	Если указать *id* организации и ваши права позволяют изменять клиента, то выдаст(В данном случае следует помещать *id* в *organization* в массив или  множество, если *id* будет несколько, то возьмется по индексу 0)  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to create a client, it will return (In this case, you should place *id* in *organization* in an array or set, if there are several *id*, it will be taken at index 0)  
+	**Input data**  
 	```json  
 	{
 		"organization":[1]
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json   
 	{
@@ -217,9 +217,9 @@
 	    }
 	}
 	```   
-	Корректный запрос.  
-	У клиента можно изменить name, surname, patronymic, phone, password, address, links  
-	**Входные данные**  
+	The correct request    
+	At the client, you can change name, surname, patronymic, phone, password, address, links  
+	**Input data**  
 	```json  
 	{
 		"name":"Client1",
@@ -232,7 +232,7 @@
         "organization":[1]
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -247,22 +247,22 @@
 	}
 	```  
 * **DELETE** `clients-r/1/1/`  
-	**Пустой запрос**  
-	**Ответ**  
+	**Empty request data**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```   
-	Если указать *id* организации и ваши права позволяют удалять клиента, то выдаст(В данном случае следует помещать *id* в *organization* в массив или  множество, если *id* будет несколько, то возьмется по индексу 0)  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to create a client, it will return (In this case, you should place *id* in *organization* in an array or set, if there are several *id*, it will be taken at index 0)  
+	**Input data**  
 	```json  
 	{
 		"organization":[1]
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 204`*  
 	```json   
 	{
@@ -270,30 +270,30 @@
 	```  
 
 ## **Client Auth**
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json"
 }
 ```  
 * **POST** `auth/token/`
-	**Пустой запрос**  
-	**Ответ**  
+	**Empty request data**  
+	**Response**  
 	*`Response 400`*
 	```json
 	{
 	}
 	```
-	Этот же ответ в случае некорректности введенных данных  
-	Корректный запрос  
-	**Входные данные**  
+	The same answer in case of incorrect data entered   
+	The correct request  
+	**Input data**  
 	```json  
 	{
 		"phone":"+79967486294",
 		"password":"client1client1"
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{

@@ -10,7 +10,7 @@
 * [Verify-Info API documentation](./verify_info.md)
 
 ## **Token error**
-Если в заголовке вы вставили некорректный токен или токен с истёкшим сроком службы, то выдаст  
+If you inserted an incorrect token or an expired token in the header, it will give    
 *`Response 401`*
 ```json
 {
