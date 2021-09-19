@@ -150,7 +150,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 		]
 	}
 	```   
-	Можно изменить *name*, *description*, *address*, *links*, *numbers*   
+	Can change *name*, *description*, *address*, *links*, *numbers*   
 	**Input data**      
 	```json   
 	{     
