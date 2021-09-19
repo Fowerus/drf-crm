@@ -31,7 +31,7 @@
 		"password":"user1user1"  
 	}  
 	```  
-	If the registration took place, for example, by a phone number, then the e-mail address will not be indicated in the Response (Also about the e-mail address). The password is also not included in the Response from the server  
+	If the registration took place, for example, by a phone number, then the e-mail address will not be indicated in the Response (Also about the e-mail address). The password is also not included in the Response from the server   
 	**Response**  
 	*`Response 201`*    
 	```json  
@@ -54,7 +54,7 @@
 	}
 	```  
 	**Empty request data**  
-	**Response** 
+	**Response**  
 	*`Response 400`*  
 	```json  
 	{
@@ -111,7 +111,7 @@
 	}
 	```   
 	**Incorrect request data**  
-	**Response**  
+	**Response**   
 	*`Response 400`*  
 	```json  
 	{
@@ -124,7 +124,7 @@
 		"refresh":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTYzMjIyODAwMCwianRpIjoiOTJlMzQ4ODg4ZGIzNGYzZTljZDM4NTFlYjNjNDVkYWEiLCJ1c2VyX2lkIjo1fQ.yyKwQG7ax0cfGP4G6kPEhXucEjX4x_m8LlDRapifji0",
 	}
 	```  
-	**Response**  
+	**Response**   
 	*`Response 200`*  
 	```json  
 	{
@@ -207,7 +207,7 @@
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**If the user has authorization, *id* of which does not match what is on the way** 
+	**If the user has authorization, *id* of which does not match what is on the link** 
 	**Response**  
 	*`Response 403`*  
 	```json  
@@ -272,7 +272,7 @@
 		"detail": "You do not have permission to perform this action."
 	}
 	```  
-	**Input data**   
+	**Input data**     
 	```json  
 	{
 		"surname": "user1",
@@ -307,7 +307,7 @@
 		"detail": "Authentication credentials were not provided."
 	}
 	```   
-	**If the authorization is with a user whose *id* does not correspond to what is on the link**  
+	**If the authorization is with a user whose *id* does not correspond to what is on the link**   
 	**Response**  
 	*`Response 403`*  
 	```json  
