@@ -11,7 +11,7 @@ More about system funcionality you can read in [docs/index.md](./docs/index.md)
 * Establish and activate the virtual environment(recommend use python3)  
   In python3 you can do that with `pipenv shell`
 * Install all necessary libraries `pipenv install`  
-* Install all migrations `pipenv run python3 manage.py makemigrations && python3 manage.py migrate`
+* Install all migrations `pipenv run python3 manage.py makemigrations && pipenv run python3 manage.py migrate`
 * Do not forget to create a superuser account `pipenv run python3 manage.py createsuperuser`  
 
 ## **Testing**
