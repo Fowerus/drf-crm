@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "73a2b4a85306115cde1e8f2dbf149fa86558fb99f6c6a00cbd63723358bc778b"
+            "sha256": "2725d96f1678ce195f4a41c7529ca30245ddaf11536600b4321d4a54fea8c005"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -56,14 +56,6 @@
             "index": "pypi",
             "version": "==3.2.7"
         },
-        "django-heroku": {
-            "hashes": [
-                "sha256:2bc690aab89eedbe01311752320a9a12e7548e3b0ed102681acc5736a41a4762",
-                "sha256:6af4bc3ae4a9b55eaad6dbe5164918982d2762661aebc9f83d9fa49f6009514e"
-            ],
-            "index": "pypi",
-            "version": "==0.3.1"
-        },
         "django-phonenumber-field": {
             "hashes": [
                 "sha256:52b2e5970133ec5ab701218b802f7ab237229854dc95fd239b7e9e77dc43731d",
@@ -94,14 +86,6 @@
             ],
             "index": "pypi",
             "version": "==4.8.0"
-        },
-        "gunicorn": {
-            "hashes": [
-                "sha256:9dcc4547dbb1cb284accfb15ab5667a0e5d1881cc443e0677b4882a4067a807e",
-                "sha256:e0a968b5ba15f8a328fdfd7ab1fcb5af4470c28aaf7e55df02a99bc13138e6e8"
-            ],
-            "index": "pypi",
-            "version": "==20.1.0"
         },
         "idna": {
             "hashes": [
@@ -226,14 +210,6 @@
             ],
             "index": "pypi",
             "version": "==1.26.6"
-        },
-        "whitenoise": {
-            "hashes": [
-                "sha256:d234b871b52271ae7ed6d9da47ffe857c76568f11dd30e28e18c5869dbd11e12",
-                "sha256:d963ef25639d1417e8a247be36e6aedd8c7c6f0a08adcb5a89146980a96b577c"
-            ],
-            "index": "pypi",
-            "version": "==5.3.0"
         }
     },
     "develop": {}
