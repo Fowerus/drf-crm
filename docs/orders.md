@@ -2,14 +2,14 @@
 
 
 ## **Token error**
-Если запрос выполняется без токена  
+If the request is made without a token   
 *`Response 401`*  
 ```json  
 {
 	"detail": "Authentication credentials were not provided."
 }
 ```  
-Если вам не хватает прав или аккаунт не является подтвержденным  или сессия удалена   
+If you do not have enough rights or the account is not confirmed or the session has been deleted  
 *`Response 403`*
 ```json  
 {
@@ -18,7 +18,7 @@
 ```  
 
 ## **Orders**  
-**Заголовки**  
+**Headers**  
 ```json  
 {
 	"Content-Type":"application/json",
@@ -26,22 +26,22 @@
 }
 ``` 
 * **POST** `order-c/`    
-	**Пустой запрос**  
-	**Ответ**  
+	**Empty request data**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *id* организации и ваши права позволяют создать заказ, то выдаст  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to create the order, it will issue   
+	**Input data**  
 	```json  
 	{
 		"organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json   
 	{
@@ -62,8 +62,8 @@
 	    ]
 	}
 	```   
-	Корректный запрос  
-	**Входные данные**  
+	The correct request   
+	**Input data**  
 	```json   
 	{
 		"description":"New order",
@@ -74,7 +74,7 @@
 		"service":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 201`*  
 	```json  
 	{
@@ -87,7 +87,7 @@
 	}
 	```  
 * **GET** `order-l/1/`  
-	**Ответ**   
+	**Response**   
 	*`Response 200`*   
 	```json  
 	[
@@ -195,7 +195,7 @@
 	]
 	```  
 * **GET** `order-creator-l/1/`  
-	**Ответ**   
+	**Response**   
 	*`Response 200`*   
 	```json  
 	[
@@ -303,7 +303,7 @@
 	]
 	```  
 * **GET** `order-r/1/`   
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -410,22 +410,22 @@
 	```  
 
 * **PUT** `order-ud/1/`  
-	**Пустой запрос**  
-	**Ответ**  
+	**Empty request data**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *id* организации и ваши права позволяют изменять заказ, то выдаст  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to change the order, it will issue   
+	**Input data**  
 	```json  
 	{
 		"organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 400`*  
 	```json   
 	{
@@ -437,8 +437,8 @@
 	    ]
 	}
 	```   
-	Корректный запрос  
-	**Входные данные**  
+	The correct request   
+	**Input data**  
 	```json  
 	{
 	    "description": "Changed descr",
@@ -446,7 +446,7 @@
 	    "organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -455,22 +455,23 @@
 	}
 	```  
 * **PATCH** `order-ud/1/`  
-	**Пустой запрос**  
-	**Ответ**  
+	**Empty request data**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *id* организации и ваши права позволяют изменять заказ, то выдаст  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to change the order, it will issue   
+
+	**Input data**  
 	```json  
 	{
 		"organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json   
 	{
@@ -478,8 +479,8 @@
 	    "executor": 2
 	}
 	```   
-	Корректный запрос  
-	**Входные данные**  
+	The correct request    
+	**Input data**  
 	```json  
 	{
 	    "description": "Description",
@@ -487,7 +488,7 @@
 	    "organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 200`*  
 	```json  
 	{
@@ -496,22 +497,22 @@
 	}
 	```  
 * **DELETE** `order-ud/1/`   
-	**Пустой запрос**  
-	**Ответ**  
+	**Empty request data**  
+	**Response**  
 	*`Response 403`*  
 	```json  
 	{
 	    "detail": "You do not have permission to perform this action."
 	}
 	```  
-	Если указать *id* организации и ваши права позволяют удалить заказ, то выдаст  
-	**Входные данные**  
+	If you specify the *id* of the organization and your rights allow you to delete the order, it will issue  
+	**Input data**  
 	```json  
 	{
 		"organization":1
 	}
 	```  
-	**Ответ**  
+	**Response**  
 	*`Response 204`*  
 	```json   
 	{
