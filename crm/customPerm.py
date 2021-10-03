@@ -94,18 +94,30 @@ class CustomPermissionVerificationAffiliation(BasePermission):
 				'role':check_orgRole,
 				'service':check_orgService,
 				'organization_member':check_orgMember,
+				'devicetype':check_orgDeviceType,
+				'devicemaker':check_orgDeviceMaker,
+				'devicemodel':check_orgDeviceModel,
+				'devicekit':check_orgDeviceKit,
+				'deviceappearance':check_orgDeviceAppearance,
+				'devicedefect':check_orgDeviceDefect,
+				'serviceprice':check_orgServicePrice,
 			}
 
 			user_data = get_userData(requests)
 
 			if view_name == 'organization_member' and requests.method == 'POST':
 				return bool(check_confirmed(requests.data['user']) and validate_func_map['role'](requests.data['role'], organization))
-			if view_name == 'order' and requests.method == 'POST':
-				return bool(validate_func_map[str(view_name)](id_obj, organization)
+
+			elif view_name == 'order' and requests.method == 'POST':
+				return bool(validate_func_map[view_name](id_obj, organization)
 						and validate_func_map['service'](requests.data['service'], organization)
 						and validate_func_map['client'](requests.data['client'], organization))
 
-			return validate_func_map[str(view_name)](id_obj, organization)
+			elif view_name == 'devicekit' and (requests.method == 'POST' or requests.method == 'PATCH' or requests.method == 'PUT'):
+				return bool(validate_func_map[view_name](id_obj, organization)
+						and validate_func_map['devicetype'](requests.data['devicetype'], organization))
+
+			return validate_func_map[view_name](id_obj, organization)
 
 		except:
 			return False

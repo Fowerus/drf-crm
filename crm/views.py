@@ -11,6 +11,7 @@ from rest_framework import permissions
 from Organizations.models import *
 from Sessions.models import Session_user, Session_client 
 from Orders.models import Order
+from Handbook.models import *
 
 
 
@@ -24,9 +25,9 @@ def get_userData(requests):
 	return access_token_decode
 
 
-
+#Get information about client from token
 def get_clientData(requests):
-	access_token = requests.headers['Authorization'].split(' ')[1].strip()
+	access_token = requests.headers['Token'].split(' ')[1].strip()
 	access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
 
 	Session_client.objects.filter(client = access_token_decode['client_id']).get(device = requests.headers['user-agent'])
@@ -45,11 +46,7 @@ def check_ReqPerm(role, permissions:list):
 
 
 def check_confirmed(user_id):
-	try:
-		user = User.objects.get(id = user_id)
-		return user.confirmed
-	except:
-		return False
+	return User.objects.get(id = user_id).confirmed
 
 
 #Member rule confirmation
@@ -67,51 +64,73 @@ def is_valid_member(user_id, org_id, permissions:list):
 		return False
 
 
+# <Organization>---------------------------------------------------------
+
 #User verification for work in the organization
 def check_orgMember(member_id, org_id):
-	try:
-		current_member = Organization.objects.get(id = org_id).organization_members.all().get(id = member_id)
-		return True
-	except:
-		return False
+	return Organization.objects.get(id = org_id).organization_members.all().filter(id = member_id).exists()
 
 
 #Checking the role of an organization
 def check_orgRole(role_id, org_id):
-	try:
-		current_role = Organization.objects.get(id = org_id).organization_roles.all().get(id = role_id)
-		return True
-	except:
-		return False
+	return Organization.objects.get(id = org_id).organization_roles.all().filter(id = role_id).exists()
 
 
 #Checking the service of organizaion
 def check_orgService(service_id, org_id):
-	try:
-		current_service = Organization.objects.get(id = org_id).organization_services.all().get(id = service_id)
-		return True
-	except:
-		return False
+	return Organization.objects.get(id = org_id).organization_services.all().filter(id = service_id).exists()
 
+
+# <Order>----------------------------------------------------------------
 
 #Checking an organizaions's order
 def check_orgOrder(order_id, org_id):
-	try:
-		current_order = Order.objects.get(id = order_id)
+	return Organization.objects.get(id = org_id).organization_orders.all().filter(id = order_id).exists()
 
-		return current_order.organization.id == org_id
 
-	except:
-		return False
-
+# <Client>---------------------------------------------------------------
 
 #Checking an organizaions's client
 def check_orgClient(client_id, org_id):
-	try:
-		current_client = Organization.objects.get(id = org_id).organization_clients.all().get(id = client_id)
-		return True
-	except:
-		return False
+	return Organization.objects.get(id = org_id).organization_clients.all().filter(id = client_id).exists()
+
+
+# <Handbook>-------------------------------------------------------------
+
+#Checking an organizaions's device type
+def check_orgDeviceType(devicetype_id, org_id):
+	return DeviceType.objects.get(id = org_id).organization_device_type.all().filter(id = devicetype_id).exists()
+
+
+#Checking an organizaions's device maker
+def check_orgDeviceMaker(devicemaker_id, org_id):
+	return DeviceMaker.objects.get(id = org_id).organization_device_maker.all().filter(id = devicemaker_id).exists()
+
+
+#Checking an organizaions's device model
+def check_orgDeviceModel(devicemodel_id, org_id):
+	return DeviceModel.objects.get(id = org_id).organization_device_model.all().filter(id = devicemodel_id).exists()
+
+
+#Checking an organizaions's device kit
+def check_orgDeviceKit(devicekit_id, org_id):
+	return DeviceKit.objects.get(id = org_id).organization_device_kit.all().filter(id = devicekit_id).exists()
+
+
+#Checking an organizaions's device appearance
+def check_orgDeviceAppearance(deviceappearance_id, org_id):
+	return DeviceAppearance.objects.get(id = org_id).organization_device_appearance.all().filter(id = deviceappearance_id).exists()
+
+
+#Checking an organizaions's device defect
+def check_orgDeviceDefect(devicedefect_id, org_id):
+	return DeviceDefect.objects.get(id = org_id).organization_device_defect.all().filter(id = devicedefect_id).exists()
+
+
+#Checking an organizaions's service price
+def check_orgServicePrice(serviceprice_id, org_id):
+	return ServicePrice.objects.get(id = org_id).organization_service_price.all().filter(id = serviceprice_id).exists()
+
 
 
 def get_viewName(view):
