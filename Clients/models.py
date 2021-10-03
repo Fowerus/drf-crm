@@ -8,9 +8,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from phonenumber_field.modelfields import PhoneNumberField
-from django_resized import ResizedImageField
 
-from Organizations.models import Organization
+from Organizations.models import Organization, MainMixin
 
 
 
@@ -20,7 +19,7 @@ class Client(AbstractBaseUser):
 	patronymic = models.CharField(max_length = 150, verbose_name = 'Patronymic', blank = True)
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
 	phone = PhoneNumberField(unique = True,  verbose_name = 'Phone')
-	image = ResizedImageField(crop=['middle', 'center'], upload_to = '../static/Users/', default = '../static/Users/default-user-image.jpeg', verbose_name = 'Image')
+	image = models.CharField(max_length = 300, verbose_name = 'Image')
 	links = models.JSONField(null = True)
 	
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
@@ -61,4 +60,30 @@ class Client(AbstractBaseUser):
 		verbose_name_plural = 'Clients'
 		verbose_name = 'Client'
 		ordering = ['-updated_at']
+
+
 		
+class ClientCard(MainMixin):
+	client = models.ForeignKey(Client, on_delete = models.CASCADE, related_name = 'client_client_card', verbose_name = 'Client')
+
+	surname = models.CharField(max_length = 150, verbose_name = 'Surname', blank = True)
+	name = models.CharField(max_length = 150, verbose_name = 'Name')
+	patronymic = models.CharField(max_length = 150, verbose_name = 'Patronymic', blank = True)
+	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
+	phone = PhoneNumberField(unique = True,  verbose_name = 'Phone')
+	links = models.JSONField(null = True)
+	image = models.CharField(max_length = 300, verbose_name = 'Image')
+
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_client_card', verbose_name = 'Organization')
+
+
+	def __str__(self):
+		return f"id: {self.id} | client: {self.client.id} | organization : {self.organization.id}"
+
+
+	class Meta:
+		db_table = 'ClientCard'
+		unique_together = ('organization', 'phone')
+		verbose_name_plural = 'ClientsCards'
+		verbose_name = 'ClientCard'
+		ordering = ['-updated_at']

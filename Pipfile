@@ -11,6 +11,9 @@ djangorestframework-simplejwt = "*"
 pillow = "*"
 pyjwt = "*"
 requests = "*"
+django-resized = "*"
+psycopg2 = "*"
+whitenoise = "*"
 
 [dev-packages]
 
