@@ -44,6 +44,7 @@ class OrganizationRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPI
 
 
 
+
 class PermListAPIView(generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	queryset = CustomPermission.objects.all()
@@ -60,7 +61,7 @@ class RoleListAPIView(generics.ListAPIView):
 
 
 class RoleCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = RoleSerializer.RoleCSerializer
 
 
@@ -72,7 +73,7 @@ class RoleRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class RoleUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = Role.objects.all()
 	serializer_class = RoleSerializer.RoleUSerializer
@@ -90,7 +91,7 @@ class Organization_memberListAPIView(generics.ListAPIView):
 
 
 class Organization_memberCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = Organization_memberSerializer.Organization_memberCSerializer
 
 
@@ -102,7 +103,7 @@ class Organization_memberRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class Organization_memberUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = Organization_member.objects.all()
 	serializer_class = Organization_memberSerializer.Organization_memberUSerializer
@@ -120,7 +121,7 @@ class ServiceListAPIView(generics.ListAPIView):
 
 
 class ServiceCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = ServiceSerializer.ServiceCSerializer
 
 
@@ -132,7 +133,7 @@ class ServiceRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class ServiceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = Service.objects.all()
 	serializer_class = ServiceSerializer.ServiceUSerializer

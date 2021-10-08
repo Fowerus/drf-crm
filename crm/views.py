@@ -35,6 +35,19 @@ def get_clientData(requests):
 	return access_token_decode
 
 
+#Get organization id
+def get_orgId(requests):
+	if requests.method == 'GET':
+		organization = requests._request.resolver_match.kwargs.get('organization')
+	else:
+		if type(requests.data['organization']) == list:
+			organization = requests.data['organization'][0]
+		else:
+			organization = requests.data['organization']
+
+	return organization
+
+
 #Checking the required permissions
 def check_ReqPerm(role, permissions:list):
 	for i in role.permissions.all():
@@ -133,6 +146,7 @@ def check_orgServicePrice(serviceprice_id, org_id):
 
 
 
+#Get view name without prifex(like ListAPIView)
 def get_viewName(view):
 	view_name = view.__class__.__name__
 
@@ -164,4 +178,21 @@ def get_viewName(view):
 		view_name = view_name.lower()[:view_name.index('DestroyAPIView')]
 
 	return view_name
-	
+
+
+
+#List with all functions in crm.views.py
+validate_func_map = {
+	'client': check_orgClient,
+	'order': check_orgOrder,
+	'role':check_orgRole,
+	'service':check_orgService,
+	'organization_member':check_orgMember,
+	'devicetype':check_orgDeviceType,
+	'devicemaker':check_orgDeviceMaker,
+	'devicemodel':check_orgDeviceModel,
+	'devicekit':check_orgDeviceKit,
+	'deviceappearance':check_orgDeviceAppearance,
+	'devicedefect':check_orgDeviceDefect,
+	'serviceprice':check_orgServicePrice,
+}	

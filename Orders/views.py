@@ -1,5 +1,6 @@
 from rest_framework import generics
-from crm.customPerm import CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionGetUser
+from crm.customPerm import CustomPermissionVerificationRole, \
+CustomPermissionVerificationAffiliation, CustomPermissionGetUser, CustomPermissionCheckRelated
 from .models import Order
 from .serializers import OrderSerializer
 
@@ -26,7 +27,7 @@ class OrderCreatorListAPIView(generics.ListAPIView):
 
 
 class OrderCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = OrderSerializer.OrderCSerializer
 
 
@@ -38,7 +39,7 @@ class OrderRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class OrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = Order.objects.all()
 	serializer_class = OrderSerializer.OrderUSerializer

@@ -23,19 +23,19 @@ class DeviceTypeListAPIView(generics.ListAPIView):
 
 
 class DeviceTypeCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = DeviceTypeSerializer.DeviceTypeCSerializer
 
 
 class DeviceTypeRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
 	queryset = DeviceType.objects.all()
 	serializer_class = DeviceTypeSerializer
 
 
 class DeviceTypeUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = DeviceType.objects.all()
 	serializer_class = DeviceTypeSerializer.DeviceTypeUSerializer
@@ -53,19 +53,19 @@ class DeviceMakerListAPIView(generics.ListAPIView):
 
 
 class DeviceMakerCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = DeviceMakerSerializer.DeviceMakerCSerializer
 
 
 class DeviceMakerRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
 	queryset = DeviceMaker.objects.all()
 	serializer_class = DeviceMakerSerializer
 
 
 class DeviceMakerUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = DeviceMaker.objects.all()
 	serializer_class = DeviceMakerSerializer.DeviceMakerUSerializer
@@ -83,19 +83,19 @@ class DeviceModelListAPIView(generics.ListAPIView):
 
 
 class DeviceModelCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = DeviceModelSerializer.DeviceModelCSerializer
 
 
 class DeviceModelRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
 	queryset = DeviceModel.objects.all()
 	serializer_class = DeviceModelSerializer
 
 
 class DeviceModelUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = DeviceModel.objects.all()
 	serializer_class = DeviceModelSerializer.DeviceModelUSerializer
@@ -113,19 +113,19 @@ class DeviceKitListAPIView(generics.ListAPIView):
 
 
 class DeviceKitCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = DeviceKitSerializer.DeviceKitCSerializer
 
 
 class DeviceKitRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
 	queryset = DeviceKit.objects.all()
 	serializer_class = DeviceKitSerializer
 
 
 class DeviceKitUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = DeviceKit.objects.all()
 	serializer_class = DeviceKitSerializer.DeviceKitUSerializer
@@ -143,19 +143,19 @@ class DeviceAppearanceListAPIView(generics.ListAPIView):
 
 
 class DeviceAppearanceCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = DeviceAppearanceSerializer.DeviceAppearanceCSerializer
 
 
 class DeviceAppearanceRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
 	queryset = DeviceAppearance.objects.all()
 	serializer_class = DeviceAppearanceSerializer
 
 
 class DeviceAppearanceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = DeviceAppearance.objects.all()
 	serializer_class = DeviceAppearanceSerializer.DeviceAppearanceUSerializer
@@ -173,19 +173,19 @@ class DeviceDefectListAPIView(generics.ListAPIView):
 
 
 class DeviceDefectCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = DeviceDefectSerializer.DeviceDefectCSerializer
 
 
 class DeviceDefectRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
 	queryset = DeviceDefect.objects.all()
 	serializer_class = DeviceDefectSerializer
 
 
 class DeviceDefectUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = DeviceDefect.objects.all()
 	serializer_class = DeviceDefectSerializer.DeviceDefectUSerializer
@@ -203,19 +203,19 @@ class ServicePriceListAPIView(generics.ListAPIView):
 
 
 class ServicePriceCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	serializer_class = ServicePriceSerializer.ServicePriceCSerializer
 
 
 class ServicePriceRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
 	queryset = ServicePrice.objects.all()
 	serializer_class = ServicePriceSerializer
 
 
 class ServicePriceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = ServicePrice.objects.all()
 	serializer_class = ServicePriceSerializer.ServicePriceUSerializer
