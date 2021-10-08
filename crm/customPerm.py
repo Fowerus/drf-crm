@@ -11,11 +11,11 @@ class CustomPermissionVerificationOrganization(BasePermission):
 	def has_permission(self, requests, view):
 
 		try:
-			user_data = get_userData(requests)
 
 			if requests.method == 'GET':
 				return True
 
+			user_data = get_userData(requests)
 			id_obj = requests._request.resolver_match.kwargs.get('id')
 
 
@@ -43,6 +43,8 @@ class CustomPermissionVerificationRole(BasePermission):
 
 		try:
 			view_name = get_viewName(view)
+			organization = get_orgId(requests)
+			user_data = get_userData(requests)
 
 			perms_map = {
 				'creator':'organization_creator',
@@ -54,15 +56,6 @@ class CustomPermissionVerificationRole(BasePermission):
 				'delete':f'{view_name}_delete'
 			}
 
-			if requests.method == 'GET':
-				organization = requests._request.resolver_match.kwargs.get('organization')
-			else:
-				if type(requests.data['organization']) == list:
-					organization = requests.data['organization'][0]
-				else:
-					organization = requests.data['organization']
-
-			user_data = get_userData(requests)
 			permissions = [perms_map[str(requests.method).lower()], perms_map['guru'], perms_map['creator']]
 
 			return is_valid_member(user_data['user_id'], organization,  permissions)
@@ -76,51 +69,41 @@ class CustomPermissionVerificationAffiliation(BasePermission):
 	def has_permission(self, requests, view):
 
 		try:
-			if requests.method == 'GET':
-				organization = requests._request.resolver_match.kwargs.get('organization')
-			else:
-				if type(requests.data['organization']) == list:
-					organization = requests.data['organization'][0]
-				else:
-					organization = requests.data['organization']
-
-
+			organization = get_orgId(requests)
 			id_obj = requests._request.resolver_match.kwargs.get('id')
 			view_name = get_viewName(view)
-
-			validate_func_map = {
-				'client': check_orgClient,
-				'order': check_orgOrder,
-				'role':check_orgRole,
-				'service':check_orgService,
-				'organization_member':check_orgMember,
-				'devicetype':check_orgDeviceType,
-				'devicemaker':check_orgDeviceMaker,
-				'devicemodel':check_orgDeviceModel,
-				'devicekit':check_orgDeviceKit,
-				'deviceappearance':check_orgDeviceAppearance,
-				'devicedefect':check_orgDeviceDefect,
-				'serviceprice':check_orgServicePrice,
-			}
-
 			user_data = get_userData(requests)
-
-			if view_name == 'organization_member' and requests.method == 'POST':
-				return bool(check_confirmed(requests.data['user']) and validate_func_map['role'](requests.data['role'], organization))
-
-			elif view_name == 'order' and requests.method == 'POST':
-				return bool(validate_func_map[view_name](id_obj, organization)
-						and validate_func_map['service'](requests.data['service'], organization)
-						and validate_func_map['client'](requests.data['client'], organization))
-
-			elif view_name == 'devicekit' and (requests.method == 'POST' or requests.method == 'PATCH' or requests.method == 'PUT'):
-				return bool(validate_func_map[view_name](id_obj, organization)
-						and validate_func_map['devicetype'](requests.data['devicetype'], organization))
 
 			return validate_func_map[view_name](id_obj, organization)
 
 		except:
 			return False
+
+
+
+class CustomPermissionCheckRelated(BasePermission):
+
+	def has_permission(self, requests, view):
+		if requests.method != "DELETE":
+			try:
+				organization = get_orgId(requests)
+				view_name = get_viewName(view)
+				result = set()
+
+				if 'user' in requests.data:
+					result.add(check_confirmed(requests.data['user']))
+
+				for valid_key in requests.data.keys():
+					if valid_key in validate_func_map:
+						result.add(validate_func_map[valid_key](requests.data[valid_key], organization))
+
+				return not (False in result)
+
+			except:
+				return False
+
+		return True
+
 
 
 
@@ -130,6 +113,7 @@ class CustomPermissionGetUser(BasePermission):
 
 		try:
 			view_name = get_viewName(view)
+			
 			if view_name != 'client':
 				user_data = get_userData(requests)
 				id_obj = requests._request.resolver_match.kwargs.get('id')

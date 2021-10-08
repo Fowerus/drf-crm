@@ -137,5 +137,17 @@ class ProductOrder(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	price = models.FloatField(verbose_name = 'Price')
 
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product_order', verbose_name = 'Organization')
-	product = models.ForeignKey(Product, on_delete = models.CASCADE)
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product_done', verbose_name = 'Organization')
+	product = models.ForeignKey(Product, on_delete = models.PROTECT, related_name = 'product_product_order', verbose_name = 'Product')
+	order = models.ForeignKey(Order, on_delete = models.PROTECT, related_name = 'order_product_order', verbose_name = 'Order')
+	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_product_order', verbose_name = 'Service')
+
+	def __str__(self):
+		return f'id: {self.id} | price: {self.price} | organization: {self.organization.id} | product: {self.product.id}'
+
+
+	class Meta:
+		db_table = 'ProductOrder'
+		verbose_name_plural = 'ProductOrders'
+		verbose_name = 'ProductOrder'
+		ordering = ['-updated_at']

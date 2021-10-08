@@ -4,7 +4,7 @@ from rest_framework import generics
 
 from .serializers import *
 from .models import Client
-from crm.customPerm import CustomPermissionVerificationRole,CustomPermissionVerificationAffiliation
+from crm.customPerm import CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated
 
 from crm.views import *
 from crm.customPerm import CustomPermissionGetUser
@@ -43,7 +43,7 @@ class ClientListAPIView(generics.ListAPIView):
 
 
 class ClientCreateAPIView(generics.CreateAPIView):
-    permission_classes = [CustomPermissionVerificationRole]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
     serializer_class = ClientSerializer.ClientCSerializer
 
 
@@ -55,7 +55,7 @@ class ClientRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class ClientUpdateAPIView(generics.UpdateAPIView):
-    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
     lookup_field = 'id'
     queryset = Client.objects.all()
     serializer_class = ClientSerializer.ClientUSerializer

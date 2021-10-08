@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from Users.serializers import UserSerializer
 from Organizations.serializers import ServiceSerializer, OrganizationSerializer
-from Orders.models import Order
+from .models import Order
 
 
 
@@ -16,7 +16,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Order
-		fields = ['id', 'order_code', 'description', 'creator', 'executor', 'organization', 'client', 'done', 'service', 'created_at', 'updated_at']
+		fields = ['id', 'order_code', 'description', 
+		'creator', 'executor', 'organization', 'client', 
+		'done', 'service', 'order_status', 'created_at', 'updated_at',
+		'device_type', 'device_maker', 'device_model', 'device_kit', 'device_appearance',
+		'device_defect']
 
 
 	class OrderCSerializer(serializers.ModelSerializer):
@@ -29,12 +33,18 @@ class OrderSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Order
-			fields = ['description', 'creator', 'executor', 'client', 'service', 'organization']
+			fields = ['description', 
+		'creator', 'executor', 'organization', 'client', 
+		'done', 'service', 'order_status',
+		'device_type', 'device_maker', 'device_model', 'device_kit', 'device_appearance',
+		'device_defect']
 
 
 	class OrderUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Order
-			fields = ['description', 'executor']
+			fields = ['description', 'executor', 'order_status',
+		'device_type', 'device_maker', 'device_model', 'device_kit', 'device_appearance',
+		'device_defect']
 			
