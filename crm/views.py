@@ -1,17 +1,9 @@
 import jwt
 from django.conf import settings
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from Organizations.models import *
-from Clients.models import *
 from Users.models import User
-from rest_framework import permissions
-from Organizations.models import *
+from Organizations.models import Organization
 from Sessions.models import Session_user, Session_client 
-from Orders.models import Order
-from Handbook.models import *
 
 
 
@@ -112,38 +104,53 @@ def check_orgClient(client_id, org_id):
 
 #Checking an organizaions's device type
 def check_orgDeviceType(devicetype_id, org_id):
-	return DeviceType.objects.get(id = org_id).organization_device_type.all().filter(id = devicetype_id).exists()
+	return Organization.objects.get(id = org_id).organization_device_type.all().filter(id = devicetype_id).exists()
 
 
 #Checking an organizaions's device maker
 def check_orgDeviceMaker(devicemaker_id, org_id):
-	return DeviceMaker.objects.get(id = org_id).organization_device_maker.all().filter(id = devicemaker_id).exists()
+	return Organization.objects.get(id = org_id).organization_device_maker.all().filter(id = devicemaker_id).exists()
 
 
 #Checking an organizaions's device model
 def check_orgDeviceModel(devicemodel_id, org_id):
-	return DeviceModel.objects.get(id = org_id).organization_device_model.all().filter(id = devicemodel_id).exists()
+	return Organization.objects.get(id = org_id).organization_device_model.all().filter(id = devicemodel_id).exists()
 
 
 #Checking an organizaions's device kit
 def check_orgDeviceKit(devicekit_id, org_id):
-	return DeviceKit.objects.get(id = org_id).organization_device_kit.all().filter(id = devicekit_id).exists()
+	return Organization.objects.get(id = org_id).organization_device_kit.all().filter(id = devicekit_id).exists()
 
 
 #Checking an organizaions's device appearance
 def check_orgDeviceAppearance(deviceappearance_id, org_id):
-	return DeviceAppearance.objects.get(id = org_id).organization_device_appearance.all().filter(id = deviceappearance_id).exists()
+	return Organization.objects.get(id = org_id).organization_device_appearance.all().filter(id = deviceappearance_id).exists()
 
 
 #Checking an organizaions's device defect
 def check_orgDeviceDefect(devicedefect_id, org_id):
-	return DeviceDefect.objects.get(id = org_id).organization_device_defect.all().filter(id = devicedefect_id).exists()
+	return Organization.objects.get(id = org_id).organization_device_defect.all().filter(id = devicedefect_id).exists()
 
 
 #Checking an organizaions's service price
 def check_orgServicePrice(serviceprice_id, org_id):
-	return ServicePrice.objects.get(id = org_id).organization_service_price.all().filter(id = serviceprice_id).exists()
+	return Organization.objects.get(id = org_id).organization_service_price.all().filter(id = serviceprice_id).exists()
 
+
+# <Market>---------------------------------------------------------------
+
+#Checking an organizaions's cashbox
+def check_orgCashbox(cashbox_id, org_id):
+	return Organization.objects.get(id = org_id).organization_cashbox.all().filter(id = cashbox_id).exists() 
+
+#Checking an organizaions's purchase
+def check_orgPurchase(purchase_id, org_id):
+	return Organization.objects.get(id = org_id).organization_purchase.all().filter(id = purchase_id).exists() 
+
+
+#Checking an organizaions's sale
+def check_orgSale(sale_id, org_id):
+	return Organization.objects.get(id = org_id).organization_sale.all().filter(id = sale_id).exists() 
 
 
 #Get view name without prifex(like ListAPIView)
@@ -195,4 +202,7 @@ validate_func_map = {
 	'deviceappearance':check_orgDeviceAppearance,
 	'devicedefect':check_orgDeviceDefect,
 	'serviceprice':check_orgServicePrice,
+	'purchase':check_orgPurchase,
+	'sale':check_orgSale,
+	'cashbox':check_orgCashbox
 }	

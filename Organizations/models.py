@@ -77,7 +77,7 @@ class CustomPermission(models.Model):
 
 
 class Role(MainMixin):
-	name = models.CharField(max_length = 100, unique = True, verbose_name = 'Name')
+	name = models.CharField(max_length = 100, verbose_name = 'Name')
 	permissions = models.ManyToManyField(CustomPermission, related_name = 'permission_roles', verbose_name = 'Permissions')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_roles', verbose_name = 'Organization')
 

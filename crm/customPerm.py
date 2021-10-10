@@ -114,9 +114,9 @@ class CustomPermissionGetUser(BasePermission):
 		try:
 			view_name = get_viewName(view)
 			
+			id_obj = requests._request.resolver_match.kwargs.get('id')
 			if view_name != 'client':
 				user_data = get_userData(requests)
-				id_obj = requests._request.resolver_match.kwargs.get('id')
 
 				if id_obj:
 					return id_obj == user_data['user_id']
@@ -124,11 +124,15 @@ class CustomPermissionGetUser(BasePermission):
 				view.kwargs['id'] = user_data['user_id']
 						
 				return True
+			else:
+				client_data = get_clientData(requests)
+				if id_obj:
+					return id_obj == client_data['client_id']
 
-			client_data = get_clientData(requests)
-			view.kwargs['id'] = client_data['client_id']
+				view.kwargs['id'] = client_data['client_id']
+				return True
 
-			return True
+			return False
 		except:
 			return False
 

@@ -70,7 +70,7 @@ class ClientCard(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	patronymic = models.CharField(max_length = 150, verbose_name = 'Patronymic', blank = True)
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
-	phone = PhoneNumberField(unique = True,  verbose_name = 'Phone')
+	phone = PhoneNumberField(verbose_name = 'Phone')
 	links = models.JSONField(null = True)
 	image = models.CharField(max_length = 300, verbose_name = 'Image')
 
