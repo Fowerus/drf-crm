@@ -93,6 +93,11 @@ def check_orgOrder(order_id, org_id):
 	return Organization.objects.get(id = org_id).organization_orders.all().filter(id = order_id).exists()
 
 
+#Checking an organization's order status
+def check_orgOrderStatus(order_status_id, org_id):
+	return Organization.objects.get(id = org_id).organization_order_status.all().filter(id = order_status_id).exists()
+
+
 # <Client>---------------------------------------------------------------
 
 #Checking an organizaions's client
@@ -195,14 +200,15 @@ validate_func_map = {
 	'role':check_orgRole,
 	'service':check_orgService,
 	'organization_member':check_orgMember,
+	'serviceprice':check_orgServicePrice,
+	'purchase':check_orgPurchase,
+	'sale':check_orgSale,
+	'cashbox':check_orgCashbox,
+	'order_status':check_orgOrderStatus,
 	'devicetype':check_orgDeviceType,
 	'devicemaker':check_orgDeviceMaker,
 	'devicemodel':check_orgDeviceModel,
 	'devicekit':check_orgDeviceKit,
 	'deviceappearance':check_orgDeviceAppearance,
 	'devicedefect':check_orgDeviceDefect,
-	'serviceprice':check_orgServicePrice,
-	'purchase':check_orgPurchase,
-	'sale':check_orgSale,
-	'cashbox':check_orgCashbox
 }	

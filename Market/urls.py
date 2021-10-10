@@ -20,4 +20,19 @@ urlpatterns = [
     path('purchase-r/<int:id>/<int:organization>/', views.PurchaseRetrieveAPIView.as_view(), name = 'purchase_r'),
     path('purchase-c/', views.PurchaseCreateAPIView.as_view(), name = 'purchase_c'),
     path('purchase-ud/<int:id>/<int:organization>/', views.PurchaseUpdateDestroyAPIView.as_view(), name = 'purchase_ud'),
+
+    path('sale-l/<int:organization>/', views.SaleListAPIView.as_view(), name = 'sale_l'),
+    path('sale-r/<int:id>/<int:organization>/', views.SaleRetrieveAPIView.as_view(), name = 'sale_r'),
+    path('sale-c/', views.SaleCreateAPIView.as_view(), name = 'sale_c'),
+    path('sale-ud/<int:id>/<int:organization>/', views.SaleUpdateDestroyAPIView.as_view(), name = 'sale_ud'),
+
+    path('work-done-l/<int:organization>/', views.WorkDoneListAPIView.as_view(), name = 'work_done_l'),
+    path('work-done-r/<int:id>/<int:organization>/', views.WorkDoneRetrieveAPIView.as_view(), name = 'work_done_r'),
+    path('work-done-c/', views.WorkDoneCreateAPIView.as_view(), name = 'work_done_c'),
+    path('work-done-ud/<int:id>/<int:organization>/', views.WorkDoneUpdateDestroyAPIView.as_view(), name = 'work_done_ud'),
+
+    path('product-order-l/<int:organization>/', views.ProductOrderListAPIView.as_view(), name = 'product_order_l'),
+    path('product-order-r/<int:id>/<int:organization>/', views.ProductOrderRetrieveAPIView.as_view(), name = 'product_order_r'),
+    path('product-order-c/', views.ProductOrderCreateAPIView.as_view(), name = 'product_order_c'),
+    path('product-order-ud/<int:id>/<int:organization>/', views.ProductOrderUpdateDestroyAPIView.as_view(), name = 'product_order_ud'),
 ]

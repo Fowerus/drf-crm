@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from django.db import transaction
+from rest_framework import serializers
 
 
 from Users.serializers import UserSerializer
@@ -16,6 +16,19 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ProductCategory
 		fields = ['id', 'name', 'created_at', 'updated_at']
+
+
+
+class TransactionCSerializer(serializers.ModelSerializer):
+
+	def create(self, validated_data):
+		transaction = Transaction.objects.create(**validated_data)
+
+		return transaction
+
+	class Meta:
+		model = Transaction
+		fields = ['cashbox','purchase', 'organization']
 
 
 
@@ -62,7 +75,21 @@ class PurchaseSerializer(serializers.ModelSerializer):
 		def create(self, validated_data):
 			purchase = Purchase.objects.create(**validated_data)
 			purchase.cashbox.cash -= purchase.price
+			if purchase.cashbox.cash < 0:
+				raise ValueError('Insufficient money at the cashbox')
+
+			purchase.cashbox.save()
 			purchase.save()
+
+			transaction_data = {
+				"cashbox":validated_data['cashbox'].id,
+				"purchase":purchase.id,
+				"organization":validated_data['organization'].id
+			}
+
+			transaction = TransactionCSerializer(data = transaction_data)
+			transaction.is_valid()
+			transaction.save()
 
 			return purchase
 
@@ -96,7 +123,19 @@ class SaleSerializer(serializers.ModelSerializer):
 		def create(self, validated_data):
 			sale = Sale.objects.create(**validated_data)
 			sale.cashbox.cash += sale.cash + sale.card
+
+			sale.cashbox.save()
 			sale.save()
+
+			transaction_data = {
+				"cashbox":validated_data['cashbox'].id,
+				"purchase":purchase.id,
+				"organization":validated_data['organization'].id
+			}
+
+			transaction = TransactionCSerializer(data = transaction_data)
+			transaction.is_valid()
+			transaction.save()
 
 			return sale
 
@@ -197,8 +236,16 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
 	class ProductOrderCSerializer(serializers.ModelSerializer):
 
+		@transaction.atomic
 		def create(self, validated_data):
 			product_order = ProductOrder.objects.create(**validated_data)
+			product_order.product.count -= 1
+
+			if product_order.product.count < 0:
+				raise ValueError("The product's quantity is no enough")
+
+			product_order.product.save()
+			product_order.save()
 
 			return product_order
 
@@ -207,9 +254,30 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 			fields = ['name', 'price', 'organization', 'product', 
 			'order', 'service']
 
-	class ProductOrderUSerializer(serializers.ModelSerializer):
+	class ProductOrderUDSerializer(serializers.ModelSerializer):
+
+		@transaction.atomic
+		def delete(self, instance, validated_data):
+
+			instance.product.count += 1
+			instance.product.save()
+
+			return super().delete(instance, validated_data)
+
 
 		class Meta:
 			model = ProductOrder
 			fields = ['name', 'price', 'organization', 'product', 
 			'order', 'service']
+
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+	organization = OrganizationSerializer()
+	cashbox = CashboxSerializer()
+	sale = SaleSerializer()
+	purchase = PurchaseSerializer()
+
+	class Meta:
+		model = Transaction
+		fields = ['id', 'cashbox','purchase', 'sale', 'organization']

@@ -111,3 +111,96 @@ class PurchaseUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIVi
 	lookup_field = 'id'
 	queryset = Purchase.objects.all()
 	serializer_class = PurchaseSerializer.PurchaseUSerializer
+
+
+
+
+class SaleListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	queryset = Sale.objects.all()
+	serializer_class = SaleSerializer
+
+	def get_queryset(self):
+		return self.queryset.filter(organization = self.kwargs.get('organization'))
+
+
+class SaleCreateAPIView(generics.CreateAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+	queryset = Sale.objects.all()
+	serializer_class = SaleSerializer.SaleCSerializer
+
+
+class SaleRetrieveAPIView(generics.RetrieveAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	lookup_field = 'id'
+	queryset = Sale.objects.all()
+	serializer_class = SaleSerializer
+
+
+class SaleUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
+	lookup_field = 'id'
+	queryset = Sale.objects.all()
+	serializer_class = SaleSerializer.SaleUSerializer
+
+
+
+
+class WorkDoneListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	queryset = WorkDone.objects.all()
+	serializer_class = WorkDoneSerializer
+
+	def get_queryset(self):
+		return self.queryset.filter(organization = self.kwargs.get('organization'))
+
+
+class WorkDoneCreateAPIView(generics.CreateAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+	queryset = WorkDone.objects.all()
+	serializer_class = WorkDoneSerializer.WorkDoneCSerializer
+
+
+class WorkDoneRetrieveAPIView(generics.RetrieveAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	lookup_field = 'id'
+	queryset = WorkDone.objects.all()
+	serializer_class = WorkDoneSerializer
+
+
+class WorkDoneUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
+	lookup_field = 'id'
+	queryset = WorkDone.objects.all()
+	serializer_class = WorkDoneSerializer.WorkDoneUSerializer
+
+
+
+
+class ProductOrderListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	queryset = ProductOrder.objects.all()
+	serializer_class = ProductOrderSerializer
+
+	def get_queryset(self):
+		return self.queryset.filter(organization = self.kwargs.get('organization'))
+
+
+class ProductOrderCreateAPIView(generics.CreateAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+	queryset = ProductOrder.objects.all()
+	serializer_class = ProductOrderSerializer.ProductOrderCSerializer
+
+
+class ProductOrderRetrieveAPIView(generics.RetrieveAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	lookup_field = 'id'
+	queryset = ProductOrder.objects.all()
+	serializer_class = ProductOrderSerializer
+
+
+class ProductOrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
+	lookup_field = 'id'
+	queryset = ProductOrder.objects.all()
+	serializer_class = ProductOrderSerializer.ProductOrderUDSerializer

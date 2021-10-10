@@ -21,6 +21,7 @@ def crm_exception_handler(exc, context):
             response = Response({"error": True, "content": msg}, status=400)
 
     if response is None:
+        logger = logging.getLogger(__name__)
         set_rollback()
         logger.exception(exc)
         response = Response({"error": True, "content": str(exc)}, status=500)
