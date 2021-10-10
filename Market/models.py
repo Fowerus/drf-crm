@@ -26,11 +26,11 @@ class Product(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	code = models.CharField(max_length = 150, null = True, verbose_name = 'Code')
 	barcode = models.CharField(max_length = 150, null = True, verbose_name = 'Barcode')
-	purchase_price = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Purchase price')
-	sale_price = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Sale price')
-	count = models.IntegerField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Count')
+	purchase_price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Purchase price')
+	sale_price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Sale price')
+	count = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Count')
 	supplier = models.CharField(max_length = 150, verbose_name = 'Supplier')
-	irreducible_balance = models.FloatField(null = True)
+	irreducible_balance = models.FloatField(null = True, verbose_name = 'Irreducible balance')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product', verbose_name = 'Organization')
 	category = models.ForeignKey(ProductCategory, on_delete = models.SET_NULL, related_name = 'category_product', null = True, verbose_name = 'Category')
@@ -52,8 +52,8 @@ class Product(MainMixin):
 
 class Cashbox(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	cash = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Cash')
-	account_money = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Account money')
+	cash = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Cash')
+	account_money = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Account money')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_cashbox', verbose_name = 'Organization')
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_cashbox', verbose_name = 'Service')
@@ -71,7 +71,7 @@ class Cashbox(MainMixin):
 
 
 class Purchase(MainMixin):
-	price = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Price')
+	price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_purchase', verbose_name = 'Organization')
 	cashbox = models.ForeignKey(Cashbox, on_delete = models.CASCADE, related_name = 'cashbox_purchase', verbose_name = 'Cashbox')
@@ -92,10 +92,10 @@ class Purchase(MainMixin):
 
 
 class Sale(MainMixin):
-	cash = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Cash')
-	card = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Card')
-	bank_transfer = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Bank transfer')
-	discount = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Discount')
+	cash = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Cash')
+	card = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Card')
+	bank_transfer = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Bank transfer')
+	discount = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Discount')
 
 	client = models.ForeignKey(ClientCard, on_delete = models.SET_NULL, related_name = 'client_card_sale', null = True, verbose_name = 'ClientCard')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_sale', verbose_name = 'Organization')
@@ -116,7 +116,7 @@ class Sale(MainMixin):
 
 class WorkDone(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	price = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Price')
+	price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_work_done', verbose_name = 'Organization')
 	service_price = models.ForeignKey(ServicePrice, on_delete = models.SET_NULL, related_name = 'service_price_work_done', null = True, verbose_name = 'ServicePrice')
@@ -139,7 +139,7 @@ class WorkDone(MainMixin):
 
 class ProductOrder(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	price = models.FloatField(default = 0, validators=[MinValueValidator(0)], verbose_name = 'Price')
+	price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product_done', verbose_name = 'Organization')
 	product = models.ForeignKey(Product, on_delete = models.PROTECT, related_name = 'product_product_order', verbose_name = 'Product')
@@ -165,7 +165,14 @@ class Transaction(MainMixin):
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_transaction', verbose_name = 'Organization')
 
 	def __str__(self):
-		return f'id: {self.id} | organization: {self.organization.id} | purchase: {self.purchase.id} | sale: {self.sale.id}'
+		sale = ''
+		purchase = ''
+		if self.sale:
+			sale = f'| sale: {self.sale.id}'
+		if self.purchase:
+			purchase = f'| purchase: {self.purchase.id}'
+
+		return f'id: {self.id} | organization: {self.organization.id} {purchase} {sale}'
 
 
 	class Meta:

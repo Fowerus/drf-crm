@@ -2,15 +2,13 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 from Clients.models import Client
+from Organizations.models import MainMixin
 
 
 
-class Session_user(models.Model):
+class Session_user(MainMixin):
 	user = models.ForeignKey(get_user_model(), on_delete = models.CASCADE, related_name = 'user_sessions', verbose_name = 'User')
 	device = models.CharField(max_length = 150, verbose_name = 'Device')
-
-	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
-	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
 
 
 	def __str__(self):
@@ -26,13 +24,9 @@ class Session_user(models.Model):
 
 
 
-class Session_client(models.Model):
+class Session_client(MainMixin):
 	client = models.ForeignKey(Client, on_delete = models.CASCADE, related_name = 'client_sessions', verbose_name = 'Client')
 	device = models.CharField(max_length = 150, verbose_name = 'Device')
-
-	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
-	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
-
 
 	def __str__(self):
 		return f'user: {self.client} | device: {self.device}'
