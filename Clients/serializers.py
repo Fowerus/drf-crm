@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from rest_framework_simplejwt import exceptions
 
-from .models import Client
+from .models import Client, ClientCard
 from Users.serializers import UserSerializer, UserRegistrationSerializer
 from Organizations.serializers import OrganizationSerializer
 from Sessions.models import Session_client
@@ -15,32 +15,65 @@ from Sessions.models import Session_client
 class ClientSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer(many = True)
 
-	class ClientCSerializer(serializers.ModelSerializer):
+
+	class ClientUSerializer(serializers.ModelSerializer):
+
+		def update(self, instance, validated_data):
+			if 'password' in validated_data:
+				instance.set_password(validated_data['password'])
+				validated_data.pop('password')
+			if 'phone' in validated_data:
+				instance.phone = validated_data['phone']
+				instance.confirmed_phone = False
+				validated_data.pop('phone')
+
+			return super().update(instance, validated_data)
+
+
+	class Meta:
+		model = Client
+		fields = ['id', 'surname', 'name', 'patronymic', 'phone', 'address', 'confirmed_phone', 'organization', 'created_at', 'updated_at']
+
+
+
+class ClientCardSerializer(serializers.ModelSerializer):
+	organization = OrganizationSerializer()
+	client = ClientSerializer()
+
+	class ClientCardCSerializer(serializers.ModelSerializer):
 		password = serializers.CharField(max_length = 128, write_only = True)
 
 		def create(self, validated_data):
+			organization = validated_data.pop('organization')[0]
 			try:
 				client = Client.objects.get(phone = validated_data['phone'])
-				client.add(validated_data['organization'][0])
+				client.add(organization)
 				client.save()
-				return Client
+
 			except:
-				organization = validated_data.pop('organization')
 				password = validated_data['password']
 				client = Client.objects.create(**validated_data)
 				client.set_password(password)
-				client.organization.add(organization[0])
+				client.organization.add(organization)
 				client.save()
 
-				return client
+			try:
+				client_card = ClientCard.objects.filter(organization__id = organization).get(phone = validated_data['phone'])
+
+			except:
+
+				client_card = ClientCard.objects.create(organization = organization, client = client, **validated_data)
+
+			return client_card
+
 
 		class Meta:
-			model = Client
+			model = ClientCard
 			fields = ['surname', 'name', 'patronymic', 'phone', 'address', 'organization', 'password']
 
 
 
-	class ClientUSerializer(serializers.ModelSerializer):
+	class ClientCardUSerializer(serializers.ModelSerializer):
 		password = serializers.CharField(max_length = 128, write_only = True)
 
 		def update(self, instance, validated_data):
@@ -51,7 +84,7 @@ class ClientSerializer(serializers.ModelSerializer):
 				validated_data.pop('phone')
 
 			if 'password' in validated_data:
-				instance.set_password(validated_data['password'])
+				instance.client.set_password(validated_data['password'])
 				validated_data.pop('password')
 
 			return super().update(instance, validated_data)
@@ -64,7 +97,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Client
-		fields = ['id', 'surname', 'name', 'patronymic', 'phone', 'address', 'confirmed_phone', 'organization', 'created_at', 'updated_at']
+		fields = ['id', 'surname', 'name', 'patronymic', 'phone', 'address', 'confirmed_phone', 'organization', 'client', 'created_at', 'updated_at']
 
 
 

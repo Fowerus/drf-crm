@@ -1,6 +1,8 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework import permissions
 
 from .serializers import *
 from .models import Client
@@ -31,32 +33,44 @@ class ClientLoginAPIView(APIView):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 
-
-
-class ClientListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionVerificationRole]
+class ClientUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [CustomPermissionGetUser]
     queryset = Client.objects.all()
-    serializer_class = ClientSerializer
+    lookup_field = 'id'
+    serializer_class = ClientSerializer.ClientUSerializer
+
+
+
+class ClientCardListAPIView(generics.ListAPIView):
+    permission_classes = [CustomPermissionVerificationRole]
+    queryset = ClientCard.objects.all()
+    serializer_class = ClientCardSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(organization = self.kwargs.get('organization'))
+        if 'phone' in self.kwargs:
+            return self.queryset.filter(organization = self.kwargs.get(
+                'organization').filter(phone = self.kwargs.get('phone')))
+
+        elif 'fio' in self.kwargs:
+            return self.queryset.filter(organization = self.kwargs.get(
+                'organization').filter(name = self.kwargs.get('fio')))            
 
 
-class ClientCreateAPIView(generics.CreateAPIView):
+class ClientCardCreateAPIView(generics.CreateAPIView):
     permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
-    serializer_class = ClientSerializer.ClientCSerializer
+    serializer_class = ClientCardSerializer.ClientCardCSerializer
 
 
-class ClientRetrieveAPIView(generics.RetrieveAPIView):
+class ClientCardRetrieveAPIView(generics.RetrieveAPIView):
     permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
     lookup_field = 'id'
-    queryset = Client.objects.all()
-    serializer_class = ClientSerializer
+    queryset = ClientCard.objects.all()
+    serializer_class = ClientCardSerializer
 
 
-class ClientUpdateAPIView(generics.UpdateAPIView):
+class ClientCardUpdateAPIView(generics.UpdateAPIView):
     permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
     lookup_field = 'id'
-    queryset = Client.objects.all()
-    serializer_class = ClientSerializer.ClientUSerializer
+    queryset = ClientCard.objects.all()
+    serializer_class = ClientCardSerializer.ClientCardUSerializer
     

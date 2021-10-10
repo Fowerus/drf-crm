@@ -1,9 +1,10 @@
 from rest_framework import serializers
+from django.db import transaction
 
 
 from Users.serializers import UserSerializer
 from Organizations.serializers import ServiceSerializer, OrganizationSerializer
-from Client.serializers import ClientSerializer
+from Clients.serializers import ClientSerializer
 from Handbook.serializers import ServicePriceSerializer
 from Orders.serializers import OrderSerializer
 from .models import *
@@ -15,23 +16,6 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ProductCategory
 		fields = ['id', 'name', 'created_at', 'updated_at']
-
-	class ProductCategoryCSerializer(serializers.ModelSerializer):
-
-		def create(self, validated_data):
-			product_category = ProductCategory.objects.create(**validated_data)
-
-			return product_category
-
-		class Meta:
-			model = ProductCategory
-			fields = ['name']
-
-	class ProductCategoryUSerializer(serializers.ModelSerializer):
-
-		class Meta:
-			model = ProductCategory
-			fields = ['name']
 
 
 
@@ -74,10 +58,13 @@ class PurchaseSerializer(serializers.ModelSerializer):
 
 	class PurchaseCSerializer(serializers.ModelSerializer):
 
+		@transaction.atomic
 		def create(self, validated_data):
 			purchase = Purchase.objects.create(**validated_data)
+			purchase.cashbox.cash -= purchase.price
+			purchase.save()
 
-			return product
+			return purchase
 
 		class Meta:
 			model = Purchase
@@ -105,20 +92,26 @@ class SaleSerializer(serializers.ModelSerializer):
 
 	class SaleCSerializer(serializers.ModelSerializer):
 
+		@transaction.atomic
 		def create(self, validated_data):
 			sale = Sale.objects.create(**validated_data)
+			sale.cashbox.cash += sale.cash + sale.card
+			sale.save()
 
 			return sale
 
 		class Meta:
 			model = Sale
-			fields = ['price', 'organization', 'cashbox', 'service', 'is_deferred']
+			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
+		'organization', 'cashbox', 'service', 'is_deferred']
+
 
 	class SaleUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Sale
-			fields = ['price', 'cashbox', 'service', 'is_deferred']
+			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
+			'cashbox', 'service', 'is_deferred']
 
 
 
@@ -151,7 +144,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Product
-			fields = ['name', 'code', 'barcode', 'purchase_price', 'sale_price', 'count',
+			fields = ['name', 'purchase_price', 'sale_price', 'count',
 			'supplier', 'irreducible_balance', 'purchase', 'sale', 'service', 'category']
 
 

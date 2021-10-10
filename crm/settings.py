@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'Clients',
     'Sessions',
     'VerifyInfo',
+    'Market',
     'Handbook'
 ]
 
@@ -155,12 +156,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    "EXCEPTION_HANDLER": "crm.atomic_exception.crm_exception_handler",
+    
+
 }
 
 SIMPLE_JWT = {

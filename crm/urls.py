@@ -25,6 +25,7 @@ urlpatterns = [
     path('clients/', include('Clients.urls')),
     path('orders/', include('Orders.urls')),
     path('verify-info/', include('VerifyInfo.urls')),
+    path('market/', include('Market.urls')),
     path('handbook/', include('Handbook.urls'))
 ]
 
