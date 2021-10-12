@@ -15,8 +15,6 @@ class Organization(models.Model):
 	numbers = models.JSONField(null = True, blank = True)
 	links = models.JSONField(null = True, blank = True)
 
-	data = models.JSONField(null = True, blank = True)
-
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
 
