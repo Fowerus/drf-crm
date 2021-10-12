@@ -10,6 +10,8 @@ from Users.serializers import UserSerializer, UserRegistrationSerializer
 from Organizations.serializers import OrganizationSerializer
 from Sessions.models import Session_client
 
+from crm.atomic_exception import MyCustomError
+
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -140,9 +142,7 @@ class ClientLoginSerializer(serializers.Serializer):
 					return validated_data
 
 		except:
-			self.error_messages.clear()
-			raise exceptions.AuthenticationFailed(self.error_messages['detail'], 'No active account found with the given credentials')
+			raise MyCustomError('No active account found with the given credentials', 400)
 
-		self.error_messages.clear()
-		raise exceptions.AuthenticationFailed(self.error_messages['detail'], 'No active account found with the given credentials')
+		raise MyCustomError('No active account found with the given credentials', 400)
 		

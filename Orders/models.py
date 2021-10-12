@@ -24,8 +24,8 @@ class OrderStatus(MainMixin):
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_order_status', verbose_name = 'Organization')
 
 	is_default = models.BooleanField(default = True)
-	is_payment_required = models.BooleanField(default = False)
-	is_comment_required = models.BooleanField(default = False)
+	is_payment_required = models.BooleanField(default = True)
+	is_comment_required = models.BooleanField(default = True)
 
 	def __str__(self):
 		return f'id: {self.id} | type: {self.type} | organization: {self.organization.id} | is_default: {self.is_default} | is_payment_required: {self.is_payment_required} | is_comment_required: {self.is_comment_required}'

@@ -85,25 +85,24 @@ class CustomPermissionCheckRelated(BasePermission):
 
 	def has_permission(self, requests, view):
 		if requests.method != "DELETE":
-			try:
-				organization = get_orgId(requests)
-				view_name = get_viewName(view)
-				result = set()
+			global validate_func_map
 
-				if 'user' in requests.data:
-					result.add(check_confirmed(requests.data['user']))
+			organization = get_orgId(requests)
+			view_name = get_viewName(view)
+			result = set()
 
-				elif view_name == 'order':
-					validate_func_map = validate_func_map[:len(validate_func_map)-6]
+			if 'user' in requests.data:
+				result.add(check_confirmed(requests.data['user']))
 
-				for valid_key in requests.data.keys():
-					if valid_key in validate_func_map:
-						result.add(validate_func_map[valid_key](requests.data[valid_key], organization))
+			elif view_name == 'order':
+				validate_func_map = validate_func_map[:len(validate_func_map)-6]
 
-				return not (False in result)
+			for valid_key in requests.data.keys():
+				if valid_key in validate_func_map:
+					result.add(validate_func_map[valid_key](requests.data[valid_key], organization))
+			return not (False in result)
 
-			except:
-				return False
+
 
 		return True
 

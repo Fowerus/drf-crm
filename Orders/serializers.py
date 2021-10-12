@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from Users.serializers import UserSerializer
 from Organizations.serializers import ServiceSerializer, OrganizationSerializer
-from .models import Order
+from .models import Order, OrderStatus
 
 
 
@@ -42,9 +42,32 @@ class OrderSerializer(serializers.ModelSerializer):
 
 	class OrderUSerializer(serializers.ModelSerializer):
 
+
 		class Meta:
 			model = Order
 			fields = ['description', 'executor', 'order_status',
 		'device_type', 'device_maker', 'device_model', 'device_kit', 'device_appearance',
 		'device_defect']
+
+
+
+class OrderStatusSerializer(serializers.ModelSerializer):
+	organization = OrganizationSerializer()
+
+	class OrderStatusCSerializer(serializers.ModelSerializer):
+
+		def create(self, validated_data):
+			order_status = OrderStatus.objects.create(**validated_data)
+
+			return order_status
+
+		class Meta:
+			model = OrderStatus
+			fields = ['name', 'color', 'description', 'type']
+
+
+	class Meta:
+		model = OrderStatus
+		fields = ['id', 'name', 'color', 'description', 'type', 'organization', 'is_default',
+		'is_payment_required', 'is_payment_comment', 'updated_at', 'created_at']
 			

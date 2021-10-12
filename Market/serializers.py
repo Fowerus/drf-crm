@@ -9,6 +9,8 @@ from Handbook.serializers import ServicePriceSerializer
 from Orders.serializers import OrderSerializer
 from .models import *
 
+from crm.atomic_exception import MyCustomError
+
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
@@ -70,13 +72,19 @@ class PurchaseSerializer(serializers.ModelSerializer):
 		fields = ['id', 'price', 'organization', 'cashbox', 'service', 'is_deferred', 'created_at', 'updated_at']
 
 	class PurchaseCSerializer(serializers.ModelSerializer):
+		is_cash = serializers.BooleanField(default = False)
 
 		@transaction.atomic
 		def create(self, validated_data):
+			is_cash = validated_data.pop('is_cash')
 			purchase = Purchase.objects.create(**validated_data)
-			purchase.cashbox.cash -= purchase.price
-			if purchase.cashbox.cash < 0:
-				raise ValueError('Insufficient money at the cashbox')
+			if is_cash:
+				purchase.cashbox.cash -= purchase.price
+			else:
+				purchase.cashbox.account_money -= purchase.price
+
+			if purchase.cashbox.calculate_min_money < 0:
+				raise MyCustomError('Insufficient money at the cashbox', 400)
 
 			purchase.cashbox.save()
 			purchase.save()
@@ -95,7 +103,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Purchase
-			fields = ['price', 'organization', 'cashbox', 'service', 'is_deferred']
+			fields = ['price', 'organization', 'cashbox', 'service', 'is_deferred', 'is_cash']
 
 	class PurchaseUSerializer(serializers.ModelSerializer):
 
@@ -122,7 +130,8 @@ class SaleSerializer(serializers.ModelSerializer):
 		@transaction.atomic
 		def create(self, validated_data):
 			sale = Sale.objects.create(**validated_data)
-			sale.cashbox.cash += sale.cash + sale.card
+			sale.cashbox.cash += sale.cash*(1 + discount)
+			sale.cashbox.card += (sale.card + sale.bank_transfer)*(1 + discount)
 
 			sale.cashbox.save()
 			sale.save()
@@ -242,7 +251,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 			product_order.product.count -= 1
 
 			if product_order.product.count < 0:
-				raise ValueError("The product's quantity is no enough")
+				raise MyCustomError("The product's quantity is no enough")
 
 			product_order.product.save()
 			product_order.save()
