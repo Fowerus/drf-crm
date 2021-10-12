@@ -13,9 +13,9 @@ class CustomPermissionVerificationOrganization(BasePermission):
 		try:
 
 			if requests.method == 'GET':
+				user_data = get_userData(requests)
 				return True
 
-			user_data = get_userData(requests)
 			id_obj = requests._request.resolver_match.kwargs.get('id')
 
 
