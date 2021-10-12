@@ -61,6 +61,9 @@ class Cashbox(MainMixin):
 	def __str__(self):
 		return f'id: {self.id} | organization: {self.organization.id} | cash: {self.cash} bank: {self.account_money} | service: {self.service.id}'
 
+	@property
+	def calculate_min_money(self):
+		return min([self.cash, self.account_money])
 
 	class Meta:
 		db_table = 'Cashbox'

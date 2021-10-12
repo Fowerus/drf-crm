@@ -4,6 +4,18 @@ from rest_framework.response import Response
 from rest_framework.views import exception_handler, set_rollback
 
 
+
+
+class MyCustomError(Exception):
+    def __init__(self, message, status_code:int):
+        self.message = message
+        self.status_code = status_code
+
+    def __str__(self):
+        return self.message
+
+
+
 def crm_exception_handler(exc, context):
     """
     DRF custom exception handler.  This will allow us to add useful information
@@ -11,6 +23,7 @@ def crm_exception_handler(exc, context):
     """
 
     # Call REST framework's default exception handler first, to get the standard error response.
+    print(type(exc).__name__)
     response = exception_handler(exc, context)
 
     if not response and isinstance(exc, IntegrityError):
@@ -20,10 +33,10 @@ def crm_exception_handler(exc, context):
             msg = "Unique constraint violated: {exc}".format(exc=exc)
             response = Response({"error": True, "content": msg}, status=400)
 
-    if response is None:
+    if type(exc).__name__ == MyCustomError.__name__:
         logger = logging.getLogger(__name__)
         set_rollback()
         logger.exception(exc)
-        response = Response({"error": True, "content": str(exc)}, status=500)
+        response = Response({"detail": str(exc)}, status=int(exc.status_code))
 
     return response

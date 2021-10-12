@@ -4,6 +4,9 @@ from django.conf import settings
 from Users.models import User
 from Organizations.models import Organization
 from Sessions.models import Session_user, Session_client 
+from Handbook.models import OrderHistory, ActionHistory
+
+from crm.atomic_exception import MyCustomError
 
 
 
@@ -156,6 +159,9 @@ def check_orgPurchase(purchase_id, org_id):
 #Checking an organizaions's sale
 def check_orgSale(sale_id, org_id):
 	return Organization.objects.get(id = org_id).organization_sale.all().filter(id = sale_id).exists() 
+
+
+#Create OrderHistory
 
 
 #Get view name without prifex(like ListAPIView)

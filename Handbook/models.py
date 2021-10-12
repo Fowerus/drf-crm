@@ -1,6 +1,7 @@
 from django.db import models
 
 from Organizations.models import Organization, MainMixin
+from Orders.models import Order
 
 
 
@@ -122,4 +123,48 @@ class ServicePrice(MainMixin):
 		db_table = 'ServicePrice'
 		verbose_name_plural = "ServicePrices"
 		verbose_name = "ServicePrice"
+		ordering = ['-updated_at']
+
+
+
+class ActionHistory(MainMixin):
+	model_name = (
+		('0', 'ProductOrder'),
+		('1', 'WorkDone'),
+		('2', 'Sale'),
+		('3', 'Order'),
+		('4', 'OrderHistory'),
+	)
+
+	method = models.CharField(max_length = 150, null = True, verbose_name = 'Method')
+	process = models.CharField(max_length = 150, verbose_name = 'Process')
+	model = models.CharField(max_length = 150, choices = model_name, verbose_name = 'Model name')
+
+	def __str__(self):
+		return f'id: {self.id} | process: {self.process} | model: {self.model_name[int(self.model)][1]}'
+
+
+	class Meta:
+		db_table = 'ActionHistory'
+		verbose_name_plural = "ActionHistories"
+		verbose_name = "ActionHistory"
+		ordering = ['-updated_at']
+
+
+
+class OrderHistory(MainMixin):
+	order = models.ForeignKey(Order, on_delete = models.CASCADE, related_name = 'order_order_history', verbose_name = 'Order')
+	comment = models.TextField(null = True, verbose_name = 'Comment')
+	body = models.JSONField(null = True),
+	action_history = models.ForeignKey(ActionHistory, on_delete = models.PROTECT, related_name = 'action_history_order_history', verbose_name = 'Action history')
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_order_history', verbose_name = 'Organization')
+
+	def __str__(self):
+		return f'id: {self.id} | organization: {self.organization} | action_history: {self.action_history.process}'
+
+
+	class Meta:
+		db_table = 'OrderHistory'
+		verbose_name_plural = 'OrderHistories'
+		verbose_name = 'OrderHistory'
 		ordering = ['-updated_at']
