@@ -61,15 +61,48 @@ class CashboxSerializer(serializers.ModelSerializer):
 
 
 
+class ProductSerializer(serializers.ModelSerializer):
+	service = ServiceSerializer()
+	organization = OrganizationSerializer()
+	category = ProductCategorySerializer()
+
+
+	class Meta:
+		model = Product
+		fields = ['id', 'name', 'code', 'barcode', 'purchase_price', 'sale_price', 'count',
+		'supplier', 'irreducible_balance', 'organization', 'service', 'category', 'created_at', 'updated_at']
+
+	class ProductCSerializer(serializers.ModelSerializer):
+
+		def create(self, validated_data):
+			product = Product.objects.create(**validated_data)
+
+			return product
+
+		class Meta:
+			model = Product
+			fields = ['name', 'code', 'barcode', 'purchase_price', 'sale_price', 'count',
+			'supplier', 'irreducible_balance', 'organization', 'service', 'category']
+
+	class ProductUSerializer(serializers.ModelSerializer):
+
+		class Meta:
+			model = Product
+			fields = ['name', 'purchase_price', 'sale_price', 'count',
+			'supplier', 'irreducible_balance', 'service', 'category']
+
+
+
 class PurchaseSerializer(serializers.ModelSerializer):
 	cashbox = CashboxSerializer()
 	service = ServiceSerializer()
 	organization = OrganizationSerializer()
+	product = ProductSerializer()
 
 
 	class Meta:
 		model = Purchase
-		fields = ['id', 'price', 'organization', 'cashbox', 'service', 'is_deferred', 'created_at', 'updated_at']
+		fields = ['id', 'price', 'organization', 'cashbox', 'service', 'is_deferred', 'product', 'created_at', 'updated_at']
 
 	class PurchaseCSerializer(serializers.ModelSerializer):
 		is_cash = serializers.BooleanField(default = False)
@@ -103,7 +136,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Purchase
-			fields = ['price', 'organization', 'cashbox', 'service', 'is_deferred', 'is_cash']
+			fields = ['price', 'organization', 'cashbox', 'service', 'product', 'is_deferred', 'is_cash']
 
 	class PurchaseUSerializer(serializers.ModelSerializer):
 
@@ -118,12 +151,13 @@ class SaleSerializer(serializers.ModelSerializer):
 	service = ServiceSerializer()
 	organization = OrganizationSerializer()
 	client = ClientSerializer()
+	product = ProductSerializer()
 
 
 	class Meta:
 		model = Sale
 		fields = ['id', 'cash', 'card', 'bank_transfer', 'discount', 'client', 
-		'organization', 'cashbox', 'service', 'is_deferred', 'created_at', 'updated_at']
+		'organization', 'cashbox', 'product', 'service', 'is_deferred', 'created_at', 'updated_at']
 
 	class SaleCSerializer(serializers.ModelSerializer):
 
@@ -138,7 +172,7 @@ class SaleSerializer(serializers.ModelSerializer):
 
 			transaction_data = {
 				"cashbox":validated_data['cashbox'].id,
-				"purchase":purchase.id,
+				"sale":sale.id,
 				"organization":validated_data['organization'].id
 			}
 
@@ -151,7 +185,7 @@ class SaleSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = Sale
 			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
-		'organization', 'cashbox', 'service', 'is_deferred']
+		'organization', 'cashbox', 'product', 'service', 'is_deferred']
 
 
 	class SaleUSerializer(serializers.ModelSerializer):
@@ -160,40 +194,6 @@ class SaleSerializer(serializers.ModelSerializer):
 			model = Sale
 			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
 			'cashbox', 'service', 'is_deferred']
-
-
-
-class ProductSerializer(serializers.ModelSerializer):
-	service = ServiceSerializer()
-	organization = OrganizationSerializer()
-	sale = SaleSerializer()
-	purchase = PurchaseSerializer()
-	category = ProductCategorySerializer()
-
-
-	class Meta:
-		model = Product
-		fields = ['id', 'name', 'code', 'barcode', 'purchase_price', 'sale_price', 'count',
-		'supplier', 'irreducible_balance', 'organization', 'purchase', 'sale', 'service', 'category', 'created_at', 'updated_at']
-
-	class ProductCSerializer(serializers.ModelSerializer):
-
-		def create(self, validated_data):
-			product = Product.objects.create(**validated_data)
-
-			return product
-
-		class Meta:
-			model = Product
-			fields = ['name', 'code', 'barcode', 'purchase_price', 'sale_price', 'count',
-			'supplier', 'irreducible_balance', 'organization', 'purchase', 'sale', 'service', 'category']
-
-	class ProductUSerializer(serializers.ModelSerializer):
-
-		class Meta:
-			model = Product
-			fields = ['name', 'purchase_price', 'sale_price', 'count',
-			'supplier', 'irreducible_balance', 'purchase', 'sale', 'service', 'category']
 
 
 
