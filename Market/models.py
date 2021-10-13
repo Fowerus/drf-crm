@@ -35,7 +35,7 @@ class Product(MainMixin):
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product', verbose_name = 'Organization')
 	category = models.ForeignKey(ProductCategory, on_delete = models.SET_NULL, related_name = 'category_product', null = True, verbose_name = 'Category')
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_product', verbose_name = 'Service')
-	purchase = models.ForeignKey('Purchase', on_delete = models.PROTECT, related_name = 'purchase_product', verbose_name = 'Purchase')
+	purchase = models.ForeignKey('Purchase', on_delete = models.PROTECT, related_name = 'purchase_product', blank = True, null = True, verbose_name = 'Purchase')
 	sale = models.ForeignKey('Sale', on_delete = models.SET_NULL, related_name = 'sale_product', blank = True, null = True, verbose_name = 'Sale')
 
 	def __str__(self):
