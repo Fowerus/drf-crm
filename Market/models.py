@@ -35,8 +35,6 @@ class Product(MainMixin):
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product', verbose_name = 'Organization')
 	category = models.ForeignKey(ProductCategory, on_delete = models.SET_NULL, related_name = 'category_product', null = True, verbose_name = 'Category')
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_product', verbose_name = 'Service')
-	purchase = models.ForeignKey('Purchase', on_delete = models.PROTECT, related_name = 'purchase_product', blank = True, null = True, verbose_name = 'Purchase')
-	sale = models.ForeignKey('Sale', on_delete = models.SET_NULL, related_name = 'sale_product', blank = True, null = True, verbose_name = 'Sale')
 
 	def __str__(self):
 		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id} category: {self.category.name} purchase: {self.purchase.id}'
@@ -79,6 +77,7 @@ class Purchase(MainMixin):
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_purchase', verbose_name = 'Organization')
 	cashbox = models.ForeignKey(Cashbox, on_delete = models.CASCADE, related_name = 'cashbox_purchase', verbose_name = 'Cashbox')
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_purchase', verbose_name = 'Service')
+	product = models.ForeignKey(Product, on_delete = models.PROTECT, related_name = 'product_purchase', verbose_name = 'Product')
 
 	is_deferred = models.BooleanField(default = False, verbose_name = 'Deferred')
 
@@ -102,8 +101,9 @@ class Sale(MainMixin):
 
 	client = models.ForeignKey(ClientCard, on_delete = models.SET_NULL, related_name = 'client_card_sale', null = True, verbose_name = 'ClientCard')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_sale', verbose_name = 'Organization')
-	cashbox = models.ForeignKey(Cashbox, on_delete = models.CASCADE, related_name = 'cashbox_sale', verbose_name = 'Purchase')
+	cashbox = models.ForeignKey(Cashbox, on_delete = models.CASCADE, related_name = 'cashbox_sale', verbose_name = 'Cashbox')
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_sale', verbose_name = 'Service')
+	product = models.ForeignKey(Product, on_delete = models.PROTECT, related_name = 'product_sale', verbose_name = 'Product')
 
 	def __str__(self):
 		return f'id: {self.id} | organization: {self.organization.id} | cashbox: {self.cashbox.id} cash: {self.price} card: {self.card} | discount: {self.discount}'
