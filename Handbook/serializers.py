@@ -1,7 +1,10 @@
 from rest_framework import serializers
 
 from .models import *
+from crm.atomic_exception import MyCustomError
 from Organizations.serializers import OrganizationSerializer
+from Orders.serializers import OrderSerializer
+
 
 
 class DeviceTypeSerializer(serializers.ModelSerializer):
@@ -205,3 +208,55 @@ class ServicePriceSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = ServicePrice
 			fields = ['name', 'price']
+
+
+
+class ActionHistorySerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ActionHistory
+		fields = ['id', 'method', 'process', 'model', 'updated_at', 'created_at']
+
+
+
+class OrderHistorySerializer(serializers.ModelSerializer):
+	order = OrderSerializer()
+	organization = OrganizationSerializer()
+	action_history = ActionHistorySerializer()
+
+	class OrderHistoryCSerializerer(serializers.ModelSerializer):
+		model = serializers.CharField(max_length = 150, read_only = True)
+		method = serializers.CharField(max_length = 150, read_only = True)
+		
+		def create(self, validated_data):
+			order_history_data = {
+				'organization':validated_data['organization'],
+				'action_history':ActionHistory.objects.filter(organization = validated_data['organization'].id).filter(
+					model = validated_data['model']).get(method = validated_data['method']),
+			}
+			order_history = OrderHistory.objects.create(**order_history_data)
+
+			return order_history
+
+		class Meta:
+			model = OrderHistory
+			fields = ['organization', 'model', 'method']
+
+
+	class OrderHistoryUSerializer(serializers.ModelSerializer):
+
+		def update(self, instance, validated_data):
+			if instance.order.order_status.is_comment_required and 'comment' not in validated_data:
+				raise MyCustomError('Comment is required', 400)
+			elif instance.order.order_status.is_payment_required:
+				raise MyCustomError('Payment is required', 400)
+
+			return super().update(self, instance, validated_data) 
+
+		class Meta:
+			model = OrderHistory
+			fields = ['comment', 'body']
+
+
+	class Meta:
+		model = OrderHistory
+		fields = ['id', 'order', 'comment', 'action_history', 'body', 'organization']

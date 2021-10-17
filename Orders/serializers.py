@@ -63,7 +63,14 @@ class OrderStatusSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = OrderStatus
-			fields = ['name', 'color', 'description', 'type']
+			fields = ['name', 'color', 'description', 'type', 'organization', 'is_default']
+
+
+	class OrderStatusUSerializer(serializers.ModelSerializer):
+
+		class Meta:
+			model = OrderStatus
+			fields = ['name', 'color', 'description', 'type', 'is_default']
 
 
 	class Meta:

@@ -161,6 +161,14 @@ def check_orgSale(sale_id, org_id):
 	return Organization.objects.get(id = org_id).organization_sale.all().filter(id = sale_id).exists() 
 
 
+def check_orgProduct(product_id, org_id):
+	return Organization.objects.get(id = org_id).organization_product.all().filter(id = product_id).exists()
+
+
+def check_orgExecutor(executor_id, org_id):
+	return bool(check_confirmed(executor_id) and check_orgMember(executor_id, org_id))
+
+
 #Create OrderHistory
 
 
@@ -168,40 +176,44 @@ def check_orgSale(sale_id, org_id):
 def get_viewName(view):
 	view_name = view.__class__.__name__
 
-	if 'RetrieveUpdateDestroyAPIView' in view_name:
-		view_name = view_name.lower()[:view_name.index('RetrieveUpdateDestroyAPIView')]
+	if 'Serializer' in view_name:
+		return view_name.lower()[:view_name.index('Serializer')-1].capitalize()
+
+	elif 'RetrieveUpdateDestroyAPIView' in view_name:
+		return view_name.lower()[:view_name.index('RetrieveUpdateDestroyAPIView')]
 		
 	elif 'ListCreateAPIView' in view_name:
-		view_name = view_name.lower()[:view_name.index('ListCreateAPIView')]
+		return view_name.lower()[:view_name.index('ListCreateAPIView')]
 
 	elif 'CreatorListAPIView' in view_name:
-		view_name = view_name.lower()[:view_name.index('CreatorListAPIView')]
+		return view_name.lower()[:view_name.index('CreatorListAPIView')]
 
 	elif 'UpdateDestroyAPIView' in view_name:
-		view_name = view_name.lower()[:view_name.index('UpdateDestroyAPIView')]
+		return view_name.lower()[:view_name.index('UpdateDestroyAPIView')]
 
 	elif 'CreateAPIView' in view_name:
-		view_name = view_name.lower()[:view_name.index('CreateAPIView')]
+		return view_name.lower()[:view_name.index('CreateAPIView')]
 
 	elif 'ListAPIView' in view_name:
-		view_name = view_name.lower()[:view_name.index('ListAPIView')]
+		return view_name.lower()[:view_name.index('ListAPIView')]
 
 	elif 'RetrieveAPIView' in view_name:
-		view_name = view_name.lower()[:view_name.index('RetrieveAPIView')]
+		return view_name.lower()[:view_name.index('RetrieveAPIView')]
 
 	elif 'UpdateAPIView' in view_name:
-		view_name = view_name.lower()[:view_name.index('UpdateAPIView')]
+		return view_name.lower()[:view_name.index('UpdateAPIView')]
 
 	elif 'DestroyAPIView' in view_name:
-		view_name = view_name.lower()[:view_name.index('DestroyAPIView')]
-
-	return view_name
+		return view_name.lower()[:view_name.index('DestroyAPIView')]
+		
 
 
 
 #List with all functions in crm.views.py
 validate_func_map = {
 	'client': check_orgClient,
+	'executor': check_orgExecutor,
+	'product': check_orgProduct,
 	'order': check_orgOrder,
 	'role':check_orgRole,
 	'service':check_orgService,
