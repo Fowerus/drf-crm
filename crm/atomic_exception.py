@@ -23,7 +23,6 @@ def crm_exception_handler(exc, context):
     """
 
     # Call REST framework's default exception handler first, to get the standard error response.
-    print(type(exc).__name__)
     response = exception_handler(exc, context)
 
     if not response and isinstance(exc, IntegrityError):
