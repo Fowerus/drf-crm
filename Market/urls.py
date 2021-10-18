@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     path('product-category-l/', views.ProductCategoryListAPIView.as_view(), name = 'product_category_l'),
+    path('transaction-l/<int:organization>', views.TransactionListAPIView.as_view(), name = 'transaction_l'),
 
     path('product-l/<int:organization>/', views.ProductListAPIView.as_view(), name = 'product_l'),
     path('product-r/<int:id>/<int:organization>/', views.ProductRetrieveAPIView.as_view(), name = 'product_r'),
@@ -16,15 +17,24 @@ urlpatterns = [
     path('cashbox-c/', views.CashboxCreateAPIView.as_view(), name = 'cashbox_c'),
     path('cashbox-ud/<int:id>/<int:organization>/', views.CashboxUpdateDestroyAPIView.as_view(), name = 'cashbox_ud'),
 
-    path('purchase-l/<int:organization>/', views.PurchaseListAPIView.as_view(), name = 'purchase_l'),
-    path('purchase-r/<int:id>/<int:organization>/', views.PurchaseRetrieveAPIView.as_view(), name = 'purchase_r'),
-    path('purchase-c/', views.PurchaseCreateAPIView.as_view(), name = 'purchase_c'),
-    path('purchase-ud/<int:id>/<int:organization>/', views.PurchaseUpdateDestroyAPIView.as_view(), name = 'purchase_ud'),
+    path('purchase-request-l/<int:organization>/', views.PurchaseRequestListAPIView.as_view(), name = 'purchase_request_l'),
+    path('purchase-request-r/<int:id>/<int:organization>/', views.PurchaseRequestRetrieveAPIView.as_view(), name = 'purchase_request_r'),
+    path('purchase-request-c/', views.PurchaseRequestCreateAPIView.as_view(), name = 'purchase_request_c'),
+    path('purchase-request-ud/<int:id>/<int:organization>/', views.PurchaseRequestUpdateDestroyAPIView.as_view(), name = 'purchase_request_ud'),
 
-    path('sale-l/<int:organization>/', views.SaleListAPIView.as_view(), name = 'sale_l'),
-    path('sale-r/<int:id>/<int:organization>/', views.SaleRetrieveAPIView.as_view(), name = 'sale_r'),
-    path('sale-c/', views.SaleCreateAPIView.as_view(), name = 'sale_c'),
-    path('sale-ud/<int:id>/<int:organization>/', views.SaleUpdateDestroyAPIView.as_view(), name = 'sale_ud'),
+    path('purchase-accept-l/<int:organization>/', views.PurchaseAcceptListAPIView, name = 'purchase_l'),
+    path('purchase-accept-r/<int:id>/<int:organization>/', views.PurchaseAcceptRetrieveAPIView, name = 'purchase_r'),
+    path('purchase-accept-u/<int:id>/<int:organization>/', views.PurchaseAcceptUpdateAPIView, name = 'purchase_u'),
+
+    path('sale-product-l/<int:organization>/', views.SaleProductListAPIView.as_view(), name = 'sale_product_l'),
+    path('sale-product-r/<int:id>/<int:organization>/', views.SaleProductRetrieveAPIView.as_view(), name = 'sale_product_r'),
+    path('sale-product-c/', views.SaleProductCreateAPIView.as_view(), name = 'sale_product_c'),
+    path('sale-product-ud/<int:id>/<int:organization>/', views.SaleProductUpdateDestroyAPIView.as_view(), name = 'sale_product_ud'),
+
+    path('sale-order-l/<int:organization>/', views.SaleOrderListAPIView.as_view(), name = 'sale_order_l'),
+    path('sale-order-r/<int:id>/<int:organization>/', views.SaleOrderRetrieveAPIView.as_view(), name = 'sale_order_r'),
+    path('sale-order-c/', views.SaleOrderCreateAPIView.as_view(), name = 'sale_order_c'),
+    path('sale-order-ud/<int:id>/<int:organization>/', views.SaleOrderUpdateDestroyAPIView.as_view(), name = 'sale_order_ud'),
 
     path('work-done-l/<int:organization>/', views.WorkDoneListAPIView.as_view(), name = 'work_done_l'),
     path('work-done-r/<int:id>/<int:organization>/', views.WorkDoneRetrieveAPIView.as_view(), name = 'work_done_r'),

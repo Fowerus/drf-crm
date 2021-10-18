@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import transaction
 from rest_framework import serializers
 
@@ -22,7 +24,6 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 		fields = ['id', 'name', 'created_at', 'updated_at']
 
 
-
 class TransactionCSerializer(serializers.ModelSerializer):
 
 	def create(self, validated_data):
@@ -32,7 +33,7 @@ class TransactionCSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Transaction
-		fields = ['cashbox','purchase', 'organization']
+		fields = ['cashbox','purchase', 'sale_product', 'sale_order', 'organization']
 
 
 
@@ -63,6 +64,7 @@ class CashboxSerializer(serializers.ModelSerializer):
 
 
 
+
 class ProductSerializer(serializers.ModelSerializer):
 	service = ServiceSerializer()
 	organization = OrganizationSerializer()
@@ -78,14 +80,17 @@ class ProductSerializer(serializers.ModelSerializer):
 	class ProductCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
+			validated_data['code'] = str(uuid.uuid1().int)[:40]
+			validated_data['barcode'] = str(uuid.uuid1().int)[:40]
 			product = Product.objects.create(**validated_data)
 
 			return product
 
 		class Meta:
 			model = Product
-			fields = ['name', 'code', 'barcode', 'purchase_price', 'sale_price', 'count',
+			fields = ['name', 'purchase_price', 'sale_price', 'count',
 			'supplier', 'irreducible_balance', 'organization', 'service', 'category']
+
 
 	class ProductUSerializer(serializers.ModelSerializer):
 
@@ -96,7 +101,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 
-class PurchaseSerializer(serializers.ModelSerializer):
+
+class PurchaseRequestSerializer(serializers.ModelSerializer):
 	cashbox = CashboxSerializer()
 	service = ServiceSerializer()
 	organization = OrganizationSerializer()
@@ -104,100 +110,118 @@ class PurchaseSerializer(serializers.ModelSerializer):
 
 
 	class Meta:
-		model = Purchase
-		fields = ['id', 'price', 'organization', 'cashbox', 'service', 'is_deferred', 'product', 'created_at', 'updated_at']
+		model = PurchaseRequest
+		fields = ['id', 'price', 'organization', 'cashbox', 'service', 'is_deferred','product', 'count', 'created_at', 'updated_at']
 
-	class PurchaseCSerializer(serializers.ModelSerializer):
+	class PurchaseRequestCSerializer(serializers.ModelSerializer):
 		is_cash = serializers.BooleanField(default = False)
 
 		@transaction.atomic
 		def create(self, validated_data):
 
-			is_cash = validated_data.pop('is_cash')
-			purchase = Purchase.objects.create(**validated_data)
-			if is_cash:
-				purchase.cashbox.cash -= purchase.price
-			else:
-				purchase.cashbox.account_money -= purchase.price
+			if validated_data['product'].organization.id == validated_data['organization'].id:
+				raise MyCustomError('You cannot purchase your organization product', 400)
 
-			if purchase.cashbox.calculate_min_money < 0:
+			is_cash = validated_data.pop('is_cash')
+			purchase_request = PurchaseRequest.objects.create(**validated_data)
+
+			if is_cash:
+				purchase_request.cashbox.cash -= purchase_request.price
+			else:
+				purchase_request.cashbox.account_money -= purchase_request.price
+
+			if purchase_request.cashbox.calculate_min_money < 0:
 				raise MyCustomError('Insufficient money at the cashbox', 400)
 
-			purchase.cashbox.save()
-			purchase.save()
 
-			transaction_data = {
-				"cashbox":validated_data['cashbox'].id,
-				"purchase":purchase.id,
-				"organization":validated_data['organization'].id
-			}
+			purchase_accept = PurchaseAccpet.objects.create(purchase_request = purchase_request, is_cash = validated_data['is_cash'],
+				organization = validated_data['product'].organization)
 
-			transaction = TransactionCSerializer(data = transaction_data)
-			transaction.is_valid()
-			transaction.save()
-
-			return purchase
+			return purchase_request
 
 		class Meta:
-			model = Purchase
+			model = PurchaseRequest
 			fields = ['price', 'organization', 'cashbox', 'service', 'product', 'is_deferred', 'is_cash']
 
-	class PurchaseUSerializer(serializers.ModelSerializer):
+	class PurchaseRequestUSerializer(serializers.ModelSerializer):
 
 		class Meta:
-			model = Purchase
+			model = PurchaseRequest
 			fields = ['price', 'cashbox', 'service', 'is_deferred']
 
 
 
-class SaleSerializer(serializers.ModelSerializer):
-	cashbox = CashboxSerializer()
-	service = ServiceSerializer()
+class PurchaseAcceptSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
-	client = ClientSerializer()
-	product = ProductSerializer()
+	purchase_request = PurchaseRequestSerializer()
+
+
+	class PurchaseAcceptUSerializer(serializers.ModelSerializer):
+
+		@transaction.atomic
+		def update(self, instance, validated_data):
+
+			if not instance.accept:
+				if is_cash:
+					instance.purchase_request.cashbox.cash -= purchase_request.price
+				else:
+					instance.purchase_request.cashbox.account_money -= purchase_request.price
+
+				if instance.purchase_request.cashbox.calculate_min_money < 0:
+					instance.purchase_request.delete()
+					raise MyCustomError('Insufficient money at the buyer cashbox. The proposal was deleted', 400)
+
+				instance.purchase_request.product.count -= instance.count
+
+				if instance.purchase_request.product.count < 0:
+					raise MyCustomError('The quantity of product is not enough', 400)
+
+
+
+				product_data = {
+					"name":instance.purchase_request.product.name,
+					"purchase_price":instance.purchase_request.product.purchase_price,
+					"sale_price": instance.purchase_request.product.sale_price,
+					"count":instance.count,
+					"supplier":instance.purchase_request.product.organization.name,
+					"irreducible_balance":instance.purchase_request.product.irreducible_balance,
+					"organization": instance.purchase_request.organization,
+					"category": instance.purchase_request.product.category,
+					"service":instance.purchase_request.service
+				}
+				product = ProductSerializer(data = product_data)
+
+				if product.is_valid() != True:
+					raise MyCustomError('There is error on the server', 500)
+
+				product.save()
+				instance.accept = True
+				instance.save()
+
+				transaction_data = {
+					"cashbox":instance.purchase_request.cashbox.id,
+					"purchase":instance.purchase_request.id,
+					"organization":instance.purchase_request.organization.id
+				}
+
+				transaction = TransactionCSerializer(data = transaction_data)
+				if transaction.is_valid() != True:
+					raise MyCustomError('There is some error on the server', 500)
+					
+				transaction.save()
+
+			return instance
+
+
+		class Meta:
+			model = PurchaseAccept
+			fields = ['is_cash', 'accept']
 
 
 	class Meta:
-		model = Sale
-		fields = ['id', 'cash', 'card', 'bank_transfer', 'discount', 'client', 
-		'organization', 'cashbox', 'product', 'service', 'is_deferred', 'created_at', 'updated_at']
+		model = PurchaseAccept
+		fields = ['id', 'purchase_request', 'organization', 'is_cash', 'accept', 'updated_at', 'created_at']
 
-	class SaleCSerializer(serializers.ModelSerializer):
-
-		@transaction.atomic
-		def create(self, validated_data):
-			sale = Sale.objects.create(**validated_data)
-			sale.cashbox.cash += sale.cash*(1 + discount)
-			sale.cashbox.card += (sale.card + sale.bank_transfer)*(1 + discount)
-
-			sale.cashbox.save()
-			sale.save()
-
-			transaction_data = {
-				"cashbox":validated_data['cashbox'].id,
-				"sale":sale.id,
-				"organization":validated_data['organization'].id
-			}
-
-			transaction = TransactionCSerializer(data = transaction_data)
-			transaction.is_valid()
-			transaction.save()
-
-			return sale
-
-		class Meta:
-			model = Sale
-			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
-		'organization', 'cashbox', 'product', 'service', 'is_deferred']
-
-
-	class SaleUSerializer(serializers.ModelSerializer):
-
-		class Meta:
-			model = Sale
-			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
-			'cashbox', 'service', 'is_deferred']
 
 
 
@@ -235,9 +259,10 @@ class WorkDoneSerializer(serializers.ModelSerializer):
 			
 
 
+
 class ProductOrderSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
-	product = ProductSerializer()
+	product = ProductSerializer(many = True)
 	order = OrderSerializer()
 	service = ServiceSerializer()
 
@@ -252,19 +277,23 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 		@transaction.atomic
 		def create(self, validated_data):
 			product_order = ProductOrder.objects.create(**validated_data)
-			product_order.product.count -= 1
+			product_order.calculate_price
 
-			if product_order.product.count < 0:
-				raise MyCustomError("The product's quantity is no enough")
+			for item in validated_data['product']:
+				if item.count < 1:
+					raise MyCustomError(f"The quantity of product with id: {item.id} is not enough", 400)
+				item.count -= 1
+				item.save()
 
-			product_order.product.save()
+			product_order.product.set(set(validated_data['product']))
 			product_order.save()
 
 			return product_order
 
+
 		class Meta:
 			model = ProductOrder
-			fields = ['name', 'price', 'organization', 'product', 
+			fields = ['name', 'organization', 'product', 
 			'order', 'service']
 
 	class ProductOrderUDSerializer(serializers.ModelSerializer):
@@ -272,25 +301,141 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 		@transaction.atomic
 		def delete(self, instance, validated_data):
 
-			instance.product.count += 1
-			instance.product.save()
+			for item in instance.product.all():
+				item.count += 1
+				item.save()
+
 
 			return super().delete(instance, validated_data)
 
 
 		class Meta:
 			model = ProductOrder
-			fields = ['name', 'price', 'organization', 'product', 
+			fields = ['name', 'price', 'product', 
 			'order', 'service']
+
+
+
+
+class SaleProductSerializer(serializers.ModelSerializer):
+	cashbox = CashboxSerializer()
+	service = ServiceSerializer()
+	organization = OrganizationSerializer()
+	client = ClientSerializer()
+	product = ProductSerializer()
+
+
+	class Meta:
+		model = SaleProduct
+		fields = ['id', 'cash', 'card', 'bank_transfer', 'discount', 'client', 
+		'organization', 'cashbox', 'product', 'service', 'created_at', 'updated_at']
+
+	class SaleProductCSerializer(serializers.ModelSerializer):
+
+		@transaction.atomic
+		def create(self, validated_data):
+			sale_product = SaleProduct.objects.create(**validated_data)
+			sale_product.cashbox.cash += sale_product.cash*(1 + sale_product.discount)
+			sale_product.cashbox.account_money += (sale_product.card + sale_product.bank_transfer)*(1 + sale_product.discount)
+
+			if sale_product.product.count < 1:
+				raise MyCustomError("The quantity of product is not enough", 400)
+
+			sale_product.product.count =- 1
+			sale_product.product.save()
+			sale_product.cashbox.save()
+			sale_product.save()
+
+			transaction_data = {
+				"cashbox":validated_data['cashbox'].id,
+				"sale_product":sale_product.id,
+				"organization":validated_data['organization'].id
+			}
+
+			transaction = TransactionCSerializer(data = transaction_data)
+			if transaction.is_valid() != True:
+				raise MyCustomError('There is some error on the sever', 500)
+
+			transaction.save()
+
+			return sale_product
+
+		class Meta:
+			model = SaleProduct
+			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
+		'organization', 'cashbox', 'product', 'service']
+
+
+	class SaleProductUSerializer(serializers.ModelSerializer):
+
+		class Meta:
+			model = SaleProduct
+			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
+			'cashbox', 'service']
+
+
+
+
+class SaleOrderSerializer(serializers.ModelSerializer):
+	cashbox = CashboxSerializer()
+	service = ServiceSerializer()
+	organization = OrganizationSerializer()
+	client = ClientSerializer()
+	product_order = ProductOrderSerializer()
+
+
+	class Meta:
+		model = SaleOrder
+		fields = ['id', 'cash', 'card', 'bank_transfer', 'discount', 'client', 
+		'organization', 'cashbox', 'product_order', 'service', 'created_at', 'updated_at']
+
+	class SaleOrderCSerializer(serializers.ModelSerializer):
+
+		@transaction.atomic
+		def create(self, validated_data):
+			sale_order = SaleOrder.objects.create(**validated_data)
+			sale_order.cashbox.cash += sale_order.cash*(1 + sale_order.discount)
+			sale_order.cashbox.account_money += (sale_order.card + sale_order.bank_transfer)*(1 + sale_order.discount)
+
+			sale_order.cashbox.save()
+			sale_order.save()
+
+			transaction_data = {
+				"cashbox":validated_data['cashbox'].id,
+				"sale_order":sale_order.id,
+				"organization":validated_data['organization'].id
+			}
+
+			transaction = TransactionCSerializer(data = transaction_data)
+			if transaction.is_valid() != True:
+				raise MyCustomError('There is some error on the sever', 500)
+			transaction.save()
+
+			return sale_order
+
+		class Meta:
+			model = SaleOrder
+			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
+		'organization', 'cashbox', 'product_order', 'service']
+
+
+	class SaleOrderUSerializer(serializers.ModelSerializer):
+
+		class Meta:
+			model = SaleOrder
+			fields = ['cash', 'card', 'bank_transfer', 'discount', 'client', 
+			'cashbox', 'service']
 
 
 
 class TransactionSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
 	cashbox = CashboxSerializer()
-	sale = SaleSerializer()
-	purchase = PurchaseSerializer()
+	sale_product = SaleProductSerializer()
+	sale_order = SaleOrderSerializer()
+	purchase = PurchaseRequestSerializer()
+
 
 	class Meta:
 		model = Transaction
-		fields = ['id', 'cashbox','purchase', 'sale', 'organization']
+		fields = ['id', 'cashbox','purchase', 'sale_product', 'sale_order', 'organization']

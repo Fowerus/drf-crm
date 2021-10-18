@@ -18,6 +18,15 @@ class ProductCategoryListAPIView(generics.ListAPIView):
 
 
 
+class TransactionListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	queryset = Transaction.objects.all()
+	serializer_class = TransactionSerializer
+
+	def get_queryset(self):
+		return self.queryset.filter(organization = self.kwargs.get('organization'))
+
+
 
 class ProductListAPIView(generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
@@ -84,64 +93,119 @@ class CashboxUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIVie
 
 
 
-class PurchaseListAPIView(generics.ListAPIView):
+class PurchaseRequestListAPIView(generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
-	queryset = Purchase.objects.all()
-	serializer_class = PurchaseSerializer
+	queryset = PurchaseRequest.objects.all()
+	serializer_class = PurchaseRequestSerializer
 
 	def get_queryset(self):
 		return self.queryset.filter(organization = self.kwargs.get('organization'))
 
 
-class PurchaseCreateAPIView(generics.CreateAPIView):
+class PurchaseRequestCreateAPIView(generics.CreateAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
-	queryset = Purchase.objects.all()
-	serializer_class = PurchaseSerializer.PurchaseCSerializer
+	queryset = PurchaseRequest.objects.all()
+	serializer_class = PurchaseRequestSerializer.PurchaseRequestCSerializer
 
 
-class PurchaseRetrieveAPIView(generics.RetrieveAPIView):
+class PurchaseRequestRetrieveAPIView(generics.RetrieveAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
-	queryset = Purchase.objects.all()
-	serializer_class = PurchaseSerializer
+	queryset = PurchaseRequest.objects.all()
+	serializer_class = PurchaseRequestSerializer
 
 
-class PurchaseUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
+class PurchaseRequestUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
 	lookup_field = 'id'
-	queryset = Purchase.objects.all()
-	serializer_class = PurchaseSerializer.PurchaseUSerializer
+	queryset = PurchaseRequest.objects.all()
+	serializer_class = PurchaseRequestSerializer.PurchaseRequestUSerializer
 
 
 
 
-class SaleListAPIView(generics.ListAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
-	queryset = Sale.objects.all()
-	serializer_class = SaleSerializer
+class PurchaseAcceptListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole],
+	queryset = PurchaseAccept.objects.all()
+	serializer_class = PurchaseAcceptSerializer()
 
 	def get_queryset(self):
 		return self.queryset.filter(organization = self.kwargs.get('organization'))
 
 
-class SaleCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
-	queryset = Sale.objects.all()
-	serializer_class = SaleSerializer.SaleCSerializer
+class PurchaseAcceptRetrieveAPIView(generics.RetrieveAPIView):
+	permission_classes = [CustomPermissionVerificationRole],
+	lookup_field = 'id'
+	queryset = PurchaseAccept.objects.all()
+	serializer_class = PurchaseAcceptSerializer()
 
 
-class SaleRetrieveAPIView(generics.RetrieveAPIView):
+class PurchaseAcceptUpdateAPIView(generics.UpdateAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
-	queryset = Sale.objects.all()
-	serializer_class = SaleSerializer
+	queryset = PurchaseRequest.objects.all()
+	serializer_class = PurchaseAcceptSerializer.PurchaseAcceptUSerializer
 
 
-class SaleUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
+
+class SaleProductListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	queryset = SaleProduct.objects.all()
+	serializer_class = SaleProductSerializer
+
+	def get_queryset(self):
+		return self.queryset.filter(organization = self.kwargs.get('organization'))
+
+
+class SaleProductCreateAPIView(generics.CreateAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+	queryset = SaleProduct.objects.all()
+	serializer_class = SaleProductSerializer.SaleProductCSerializer
+
+
+class SaleProductRetrieveAPIView(generics.RetrieveAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	lookup_field = 'id'
+	queryset = SaleProduct.objects.all()
+	serializer_class = SaleProductSerializer
+
+
+class SaleProductUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
 	lookup_field = 'id'
-	queryset = Sale.objects.all()
-	serializer_class = SaleSerializer.SaleUSerializer
+	queryset = SaleProduct.objects.all()
+	serializer_class = SaleProductSerializer.SaleProductUSerializer
+
+
+
+
+class SaleOrderListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	queryset = SaleOrder.objects.all()
+	serializer_class = SaleOrderSerializer
+
+	def get_queryset(self):
+		return self.queryset.filter(organization = self.kwargs.get('organization'))
+
+
+class SaleOrderCreateAPIView(generics.CreateAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+	queryset = SaleOrder.objects.all()
+	serializer_class = SaleOrderSerializer.SaleOrderCSerializer
+
+
+class SaleOrderRetrieveAPIView(generics.RetrieveAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	lookup_field = 'id'
+	queryset = SaleOrder.objects.all()
+	serializer_class = SaleOrderSerializer
+
+
+class SaleOrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
+	lookup_field = 'id'
+	queryset = SaleOrder.objects.all()
+	serializer_class = SaleOrderSerializer.SaleOrderUSerializer
 
 
 
