@@ -119,7 +119,7 @@ class PurchaseRequestDestroyAPIView(generics.DestroyAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation],
 	lookup_field = 'id'
 	queryset = PurchaseRequest.objects.all()
-	serializer_class = PurchaseRequestSerializer.PurchaseRequestUSerializer
+	serializer_class = PurchaseRequestSerializer
 
 
 
