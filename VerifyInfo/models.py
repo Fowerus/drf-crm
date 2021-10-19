@@ -7,10 +7,15 @@ from Clients.models import Client
 
 
 class VerifyInfoUser(models.Model):
+	choices_code = (
+		(0, 'phone'),
+		(1, 'email'),
+		(2, 'reset')
+	)
 
 	user = models.ForeignKey(User, on_delete = models.CASCADE, verbose_name = 'User')
 	code = models.IntegerField(unique = True)
-	type_code = models.CharField(max_length = 10, verbose_name = 'Type_code')
+	type_code = models.CharField(max_length = 10, choices = choices_code, verbose_name = 'Type_code')
 
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 

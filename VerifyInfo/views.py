@@ -55,6 +55,39 @@ class UserVerifyInfoSendEmailAPIView(APIView):
 
 
 
+class UserResetPasswordAPIView(APIView):
+	permission_classes = [permissions.AllowAny]
+
+	def post(self, requests):
+		user_data = get_userData(requests)
+		user = User.objects.get(id = user_data['user_id'])
+		try:
+			current_info = VerifyInfoUser.objects.filter(user = user.id).get(type_code = 'reset')
+			current_info.raw_code
+		except:
+			try:
+				current_info = VerifyInfoUser(user = user, type_code = 'reset')
+				current_info.raw_code
+			except:
+				return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+		message = f'Введите это куда надо, а куда не надо не вводите (-_-).\n\n{current_info.code}'
+
+		try:
+			send_mail(
+				'Test app',
+				message, 
+				settings.EMAIL_HOST_USER,
+				[user.email],
+				fail_silently=False
+			)
+			current_info.save()
+		except:
+			return Response({'detail':'Cannot send the mail'}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+		return Response(status = status.HTTP_200_OK)
+
+
 
 class UserVerifyInfoAcceptAPIView(APIView):
 	permission_classes = [permissions.AllowAny]
@@ -68,15 +101,17 @@ class UserVerifyInfoAcceptAPIView(APIView):
 
 			if requests.data['type_code'] == 'phone':
 				user.confirmed_phone = True
-			else:
+			elif requests.data['type_code'] == 'email':
 				user.confirmed_email = True
+			else:
+				user.set_password(requests.data['password'])
 
 			user.save()
 			verify_info.delete()
 			return Response({'detail':'Successfully confirmed'}, status = status.HTTP_200_OK)
  
 		except:
-			return Response({'detail':'Invalid code or not exist'}, status = status.HTTP_400_BAD_REQUEST)
+			return Response({'detail':'Invalid input data or not exist'}, status = status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -96,5 +131,5 @@ class ClientVerifyInfoAcceptAPIView(APIView):
 			return Response({'detail':'Successfully confirmed'}, status = status.HTTP_200_OK)
 
 		except:
-			return Response({'error':'Invalid code or not exist'}, status = status.HTTP_400_BAD_REQUEST)
+			return Response({'error':'Invalid input data or not exist'}, status = status.HTTP_400_BAD_REQUEST)
 			

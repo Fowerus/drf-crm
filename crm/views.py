@@ -165,6 +165,15 @@ def check_orgProduct(product_id, org_id):
 	return Organization.objects.get(id = org_id).organization_product.all().filter(id = product_id).exists()
 
 
+def check_orgProductAll(product_id_list, org_id):
+	for i in product_id_list:
+		if check_orgProduct(product_id, org_id) == False:
+			raise MyCustomError('The product owner is not your organization', 400)
+
+	return True
+
+
+
 def check_orgExecutor(executor_id, org_id):
 	return bool(check_confirmed(executor_id) and check_orgMember(executor_id, org_id))
 
@@ -219,7 +228,8 @@ def get_viewName(view):
 validate_func_map = {
 	'client': check_orgClient,
 	'executor': check_orgExecutor,
-	# 'product': check_orgProduct,
+	'product': check_orgProduct,
+	'products': check_orgProductAll,
 	'order': check_orgOrder,
 	'role':check_orgRole,
 	'service':check_orgService,

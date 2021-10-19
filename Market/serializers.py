@@ -269,7 +269,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = ProductOrder
-		fields = ['id', 'name', 'price', 'organization', 'product', 
+		fields = ['id', 'name', 'price', 'organization', 'products', 
 		'order', 'service', 'created_at', 'updated_at']
 
 	class ProductOrderCSerializer(serializers.ModelSerializer):
@@ -279,13 +279,13 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 			product_order = ProductOrder.objects.create(**validated_data)
 			product_order.calculate_price
 
-			for item in validated_data['product']:
+			for item in validated_data['products']:
 				if item.count < 1:
 					raise MyCustomError(f"The quantity of product with id: {item.id} is not enough", 400)
 				item.count -= 1
 				item.save()
 
-			product_order.product.set(set(validated_data['product']))
+			product_order.product.set(set(validated_data['products']))
 			product_order.save()
 			create_orderHistory(order = validated_data['order'], model = 'ProductOrder', organization = validated_data['organization'], method = 'create')
 
@@ -294,20 +294,20 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = ProductOrder
-			fields = ['name', 'organization', 'product', 
+			fields = ['name', 'organization', 'products', 
 			'order', 'service']
 
 	class ProductOrderUDSerializer(serializers.ModelSerializer):
 
 		@transaction.atomic
 		def update(self, instance, validated_data):
-			if 'product' in validated_data:
+			if 'products' in validated_data:
 				old_product = set(instance.product.all())
-				instance.permissions.set(set(validated_data['product']))
+				instance.permissions.set(set(validated_data['products']))
 				add_remove_product = set(instance.product.all())
 				new_product = old_product ^ add_remove_product
 				instance.product.set(new_product)
-				validated_data.pop('product')
+				validated_data.pop('products')
 
 				instance.save()
 
@@ -328,7 +328,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = ProductOrder
-			fields = ['name', 'price', 'product', 'service']
+			fields = ['name', 'price', 'products', 'service']
 
 
 

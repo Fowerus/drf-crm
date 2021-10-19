@@ -44,6 +44,7 @@ class MainMixin(models.Model):
 
 
 class Service(MainMixin):
+	prefix = models.CharField(max_length = 10, unique = True, verbose_name = 'Prefix')
 	name = models.CharField(max_length = 150, unique = True, verbose_name = 'Name')
 	phone = PhoneNumberField(unique = True, verbose_name = 'Phone')
 	address = models.CharField(max_length = 200, verbose_name = 'Address')
