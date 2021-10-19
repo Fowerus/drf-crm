@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db import transaction
 
 from .models import *
 from crm.atomic_exception import MyCustomError
@@ -224,14 +225,15 @@ class OrderHistorySerializer(serializers.ModelSerializer):
 	action_history = ActionHistorySerializer()
 
 	class OrderHistoryCSerializerer(serializers.ModelSerializer):
-		model = serializers.CharField(max_length = 150, read_only = True)
-		method = serializers.CharField(max_length = 150, read_only = True)
 		
+		@transaction.atomic
 		def create(self, validated_data):
+			action_history = ActionHistory.objects.filter(model = 'OrderHistory').get(method = 'create-comment')
 			order_history_data = {
 				'organization':validated_data['organization'],
-				'action_history':ActionHistory.objects.filter(organization = validated_data['organization'].id).filter(
-					model = validated_data['model']).get(method = validated_data['method']),
+				'action_history':action_history,
+				'comment':validated_data['comment'],
+				'order':validated_data['order']
 			}
 			order_history = OrderHistory.objects.create(**order_history_data)
 
@@ -239,22 +241,7 @@ class OrderHistorySerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = OrderHistory
-			fields = ['organization', 'model', 'method']
-
-
-	class OrderHistoryUSerializer(serializers.ModelSerializer):
-
-		def update(self, instance, validated_data):
-			if instance.order.order_status.is_comment_required and 'comment' not in validated_data:
-				raise MyCustomError('Comment is required', 400)
-			elif instance.order.order_status.is_payment_required:
-				raise MyCustomError('Payment is required', 400)
-
-			return super().update(self, instance, validated_data) 
-
-		class Meta:
-			model = OrderHistory
-			fields = ['comment', 'body']
+			fields = ['order', 'comment', 'action_history', 'body', 'organization']
 
 
 	class Meta:

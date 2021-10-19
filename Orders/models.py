@@ -40,7 +40,7 @@ class OrderStatus(MainMixin):
 
 
 class Order(MainMixin):
-	order_code = models.BigIntegerField(unique = True, verbose_name = 'Order_code')
+	order_code = models.CharField(max_length = 300, unique = True, verbose_name = 'Order_code')
 	description = models.CharField(max_length = 500, verbose_name = 'Description')
 	client = models.ForeignKey(Client, on_delete = models.PROTECT, related_name = 'client_orders', verbose_name = 'Client')
 	executor = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'user_executor', verbose_name = 'Executor')
@@ -60,8 +60,23 @@ class Order(MainMixin):
 	done = models.BooleanField(default = False)
 	is_rush = models.BooleanField(default = False)
 
+
+	@property
+	def calculate_order_code(self):
+		last = self.__class__.objects.filter(service = self.service).filter(organization = self.organization)
+
+		if last.exists():
+			core_split = last.last().order_code.split('-')
+			self.order_code = '-'.join([core_split[0],str(int(core_split[1])+1)])
+
+		else:
+			self.order_code = self.service.prefix+'-'+'1'
+
+		return self.order_code
+
+
 	def __str__(self):
-		return f'id: {self.id} | creator: {self.creator} | client: {self.client} | executor: {self.executor}'
+		return f'id: {self.id} | order code: {self.order_code} |creator: {self.creator} | client: {self.client} | executor: {self.executor}'
 
 	class Meta:
 		db_table = 'Order'

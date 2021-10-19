@@ -1,5 +1,6 @@
 import uuid
 from rest_framework import serializers
+from django.db import transaction
 
 
 from Users.serializers import UserSerializer
@@ -26,9 +27,10 @@ class OrderSerializer(serializers.ModelSerializer):
 	class OrderCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
-			validated_data['order_code'] = int(str(uuid.uuid1().int)[:15])
 			order = Order.objects.create(**validated_data)
-			order.order.status
+			order.calculate_order_code
+			order.order_status = Organization.objects.organization_order_status.all().get(is_default = True)
+			order.save()
 
 			return order
 
@@ -42,6 +44,17 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 	class OrderUSerializer(serializers.ModelSerializer):
+
+		@transaction.atomic
+		def update(self, instance, validated_data):
+			if 'order_status' in validated_data:
+				order.order_status = validated_data['order_status']
+
+				create_orderHistory(order = instance.order, model = 'Order', organization = instance.organization, method = 'update')
+
+				validated_data.pop('order_status')
+
+			return super().update(instance, validated_data)
 
 
 		class Meta:

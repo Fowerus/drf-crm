@@ -96,7 +96,7 @@ class CustomPermissionCheckRelated(BasePermission):
 
 			elif view_name == 'order':
 				validate_func_map = validate_func_map[:len(validate_func_map)-6]
-
+				
 			for valid_key in requests.data.keys():
 				if valid_key in validate_func_map:
 					result.add(validate_func_map[valid_key](requests.data[valid_key], organization))

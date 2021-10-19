@@ -194,8 +194,8 @@ class ProductOrder(MainMixin):
 	price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product_done', verbose_name = 'Organization')
-	product = models.ManyToManyField(Product, related_name = 'product_product_order', verbose_name = 'Product')
-	order = models.ForeignKey(Order, on_delete = models.PROTECT, related_name = 'order_product_order', verbose_name = 'Order')
+	products = models.ManyToManyField(Product, related_name = 'product_product_order', verbose_name = 'Product')
+	order = models.OneToOneField(Order, on_delete = models.PROTECT, related_name = 'order_product_order', verbose_name = 'Order')
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_product_order', verbose_name = 'Service')
 
 	def __str__(self):
