@@ -115,8 +115,8 @@ class PurchaseRequestRetrieveAPIView(generics.RetrieveAPIView):
 	serializer_class = PurchaseRequestSerializer
 
 
-class PurchaseRequestUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
+class PurchaseRequestDestroyAPIView(generics.DestroyAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation],
 	lookup_field = 'id'
 	queryset = PurchaseRequest.objects.all()
 	serializer_class = PurchaseRequestSerializer.PurchaseRequestUSerializer

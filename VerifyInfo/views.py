@@ -86,9 +86,9 @@ class ClientVerifyInfoAcceptAPIView(APIView):
 
 	def post(self, requests):
 		try:
-			user_data = get_userData(requests)
+			client_data = get_clientData(requests)
 
-			client = Client.objects.get(id = user_data['client_id'])
+			client = Client.objects.get(id = client_data['client_id'])
 			verify_info = VerifyInfoClient.objects.filter(client = client.id)
 			client.confirmed_number = True
 			client.save()

@@ -126,9 +126,9 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
 			purchase_request = PurchaseRequest.objects.create(**validated_data)
 
 			if is_cash:
-				purchase_request.cashbox.cash -= purchase_request.price
+				purchase_request.cashbox.cash -= validated_data['count']*purchase_request.price
 			else:
-				purchase_request.cashbox.account_money -= purchase_request.price
+				purchase_request.cashbox.account_money -= validated_data['count']*purchase_request.price
 
 			if purchase_request.cashbox.calculate_min_money < 0:
 				raise MyCustomError('Insufficient money at the cashbox', 400)
@@ -141,13 +141,8 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = PurchaseRequest
-			fields = ['price', 'organization', 'cashbox', 'service', 'product', 'is_deferred', 'is_cash']
-
-	class PurchaseRequestUSerializer(serializers.ModelSerializer):
-
-		class Meta:
-			model = PurchaseRequest
-			fields = ['price', 'cashbox', 'service', 'is_deferred']
+			fields = ['price', 'organization', 'cashbox', 'service', 'product', 'count', 'is_deferred', 'is_cash']
+			
 
 
 
@@ -162,19 +157,20 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 		def update(self, instance, validated_data):
 
 			if not instance.accept:
-				if is_cash:
-					instance.purchase_request.cashbox.cash -= purchase_request.price
-				else:
-					instance.purchase_request.cashbox.account_money -= purchase_request.price
-
-				if instance.purchase_request.cashbox.calculate_min_money < 0:
-					instance.purchase_request.delete()
-					raise MyCustomError('Insufficient money at the buyer cashbox. The proposal was deleted', 400)
 
 				instance.purchase_request.product.count -= instance.count
 
 				if instance.purchase_request.product.count < 0:
 					raise MyCustomError('The quantity of product is not enough', 400)
+
+				if is_cash:
+					instance.purchase_request.cashbox.cash -= instance.purchase_request.count*instance.purchase_request.price
+				else:
+					instance.purchase_request.cashbox.account_money -= instance.purchase_request.count*instance.purchase_request.price
+
+				if instance.purchase_request.cashbox.calculate_min_money < 0:
+					instance.purchase_request.delete()
+					raise MyCustomError('Insufficient money at the buyer cashbox. The proposal deleted', 400)
 
 
 
@@ -182,7 +178,7 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 					"name":instance.purchase_request.product.name,
 					"purchase_price":instance.purchase_request.product.purchase_price,
 					"sale_price": instance.purchase_request.product.sale_price,
-					"count":instance.count,
+					"count":instance.purchase_request.count,
 					"supplier":instance.purchase_request.product.organization.name,
 					"irreducible_balance":instance.purchase_request.product.irreducible_balance,
 					"organization": instance.purchase_request.organization,
@@ -194,8 +190,8 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 				if product.is_valid() != True:
 					raise MyCustomError('There is error on the server', 500)
 
-				product.save()
 				instance.accept = True
+				product.save()
 				instance.save()
 
 				transaction_data = {
@@ -299,6 +295,22 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 	class ProductOrderUDSerializer(serializers.ModelSerializer):
 
 		@transaction.atomic
+		def update(self, instance, validated_data):
+			if 'product' in validated_data:
+				old_product = set(instance.product.all())
+				instance.permissions.set(set(validated_data['product']))
+				add_remove_product = set(instance.product.all())
+				new_product = old_product ^ add_remove_product
+				instance.product.set(new_product)
+				validated_data.pop('product')
+
+				instance.save()
+
+			return super().update(instance, validated_data)
+
+
+
+		@transaction.atomic
 		def delete(self, instance, validated_data):
 
 			for item in instance.product.all():
@@ -311,8 +323,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = ProductOrder
-			fields = ['name', 'price', 'product', 
-			'order', 'service']
+			fields = ['name', 'price', 'product', 'service']
 
 
 
