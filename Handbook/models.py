@@ -131,7 +131,7 @@ class ActionHistory(MainMixin):
 	model_name = (
 		('0', 'ProductOrder'),
 		('1', 'WorkDone'),
-		('2', 'Sale'),
+		('2', 'SaleOrder'),
 		('3', 'Order'),
 		('4', 'OrderHistory'),
 	)
@@ -145,6 +145,7 @@ class ActionHistory(MainMixin):
 
 
 	class Meta:
+		unique_together = ('method','model')
 		db_table = 'ActionHistory'
 		verbose_name_plural = "ActionHistories"
 		verbose_name = "ActionHistory"

@@ -13,7 +13,7 @@ from .models import *
 from Handbook.models import OrderHistory
 
 from crm.atomic_exception import MyCustomError
-from crm.views import get_viewName
+from crm.views import get_viewName, create_orderHistory
 
 
 
@@ -80,8 +80,8 @@ class ProductSerializer(serializers.ModelSerializer):
 	class ProductCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
-			validated_data['code'] = str(uuid.uuid1().int)[:40]
-			validated_data['barcode'] = str(uuid.uuid1().int)[:40]
+			validated_data['code'] = str(uuid.uuid1().int)[:15]
+			validated_data['barcode'] = str(uuid.uuid1().int)[:15]
 			product = Product.objects.create(**validated_data)
 
 			return product
@@ -238,6 +238,7 @@ class WorkDoneSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
 			work_done = WorkDone.objects.create(**validated_data)
+			create_orderHistory(order = validated_data['order'], model = 'WorkDone', organization = validated_data['organization'], method = 'create')
 
 			return work_done
 
@@ -248,10 +249,13 @@ class WorkDoneSerializer(serializers.ModelSerializer):
 
 	class WorkDoneUSerializer(serializers.ModelSerializer):
 
+		def delete(self, instance, validated_data):
+			create_orderHistory(order = instance.order, model = 'WorkDone', organization = validated_data['organization'], method = 'delete')
+			return super().delete(instance, validated_data)
+
 		class Meta:
 			model = WorkDone
-			fields = ['name', 'price', 'service_price', 
-			'user', 'order', 'service']
+			fields = ['name', 'price', 'service_price', 'service']
 			
 
 
@@ -283,6 +287,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
 			product_order.product.set(set(validated_data['product']))
 			product_order.save()
+			create_orderHistory(order = validated_data['order'], model = 'ProductOrder', organization = validated_data['organization'], method = 'create')
 
 			return product_order
 
@@ -317,7 +322,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 				item.count += 1
 				item.save()
 
-
+			create_orderHistory(order = instance.order, model = 'ProductOrder', organization = validated_data['organization'], method = 'delete')
 			return super().delete(instance, validated_data)
 
 
@@ -420,7 +425,9 @@ class SaleOrderSerializer(serializers.ModelSerializer):
 			transaction = TransactionCSerializer(data = transaction_data)
 			if transaction.is_valid() != True:
 				raise MyCustomError('There is some error on the sever', 500)
+
 			transaction.save()
+			create_orderHistory(order = validated_data['product_order'].order, model = 'SaleOrder', organization = validated_data['organization'], method = 'create')
 
 			return sale_order
 

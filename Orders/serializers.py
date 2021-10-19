@@ -28,6 +28,7 @@ class OrderSerializer(serializers.ModelSerializer):
 		def create(self, validated_data):
 			validated_data['order_code'] = int(str(uuid.uuid1().int)[:15])
 			order = Order.objects.create(**validated_data)
+			order.order.status
 
 			return order
 
@@ -35,7 +36,7 @@ class OrderSerializer(serializers.ModelSerializer):
 			model = Order
 			fields = ['description', 
 		'creator', 'executor', 'organization', 'client', 
-		'done', 'service', 'order_status',
+		'done', 'service',
 		'device_type', 'device_maker', 'device_model', 'device_kit', 'device_appearance',
 		'device_defect']
 

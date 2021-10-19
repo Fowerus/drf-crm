@@ -170,6 +170,12 @@ def check_orgExecutor(executor_id, org_id):
 
 
 #Create OrderHistory
+def create_orderHistory(method, model, order, organization):
+	action_history = ActionHistory.objects.filter(model = model).get(method = method)
+
+	order_history = OrderHistory.objects.create(action_history = action_history, order = order, organization = organization)
+
+	return order_history
 
 
 #Get view name without prifex(like ListAPIView)
@@ -213,7 +219,7 @@ def get_viewName(view):
 validate_func_map = {
 	'client': check_orgClient,
 	'executor': check_orgExecutor,
-	'product': check_orgProduct,
+	# 'product': check_orgProduct,
 	'order': check_orgOrder,
 	'role':check_orgRole,
 	'service':check_orgService,
