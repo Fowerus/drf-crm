@@ -6,7 +6,6 @@ from django.contrib.auth.models import PermissionsMixin
 from django.core import validators
 
 from phonenumber_field.modelfields import PhoneNumberField
-from django_resized import ResizedImageField
 
 
 
@@ -45,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	phone = PhoneNumberField(unique = True, blank = True, null = True, verbose_name = 'Phone')
 	address = models.CharField(max_length = 200, verbose_name = 'Address')
 
-	image = ResizedImageField(crop=['middle', 'center'], upload_to = '../static/Users/', default = '../static/Users/default-user-image.jpeg', verbose_name = 'Image')
+	image = models.CharField(max_length = 300, null = True, blank = True, verbose_name = 'Image')
 
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')
