@@ -63,7 +63,7 @@ class ClientCardSerializer(serializers.ModelSerializer):
 				client_card = ClientCard.objects.filter(organization__id = organization).get(phone = validated_data['phone'])
 
 			except:
-
+				validated_data.pop('password')
 				client_card = ClientCard.objects.create(organization = organization, client = client, **validated_data)
 
 			return client_card
