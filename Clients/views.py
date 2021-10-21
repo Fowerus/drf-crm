@@ -58,6 +58,7 @@ class ClientCardListAPIView(generics.ListAPIView):
 
 class ClientCardCreateAPIView(generics.CreateAPIView):
     permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+    queryset = ClientCard.objects.all()
     serializer_class = ClientCardSerializer.ClientCardCSerializer
 
 
