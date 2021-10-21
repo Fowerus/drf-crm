@@ -32,7 +32,7 @@ class OrderSerializer(serializers.ModelSerializer):
 			order.order_status = Organization.objects.organization_order_status.all().get(is_default = True)
 			order.save()
 
-			create_orderHistory(order = instance.order, model = 'Order', organization = instance.organization, method = 'create')
+			create_orderHistory(order = instance.order, model = '3', organization = instance.organization, method = 'create')
 
 			return order
 
@@ -52,7 +52,7 @@ class OrderSerializer(serializers.ModelSerializer):
 			if 'order_status' in validated_data:
 				order.order_status = validated_data['order_status']
 				order.save()
-				create_orderHistory(order = instance.order, model = 'Order', organization = instance.organization, method = 'update', body = instance.order.order_status)
+				create_orderHistory(order = instance.order, model = '3', organization = instance.organization, method = 'update', body = instance.order.order_status)
 
 				validated_data.pop('order_status')
 
