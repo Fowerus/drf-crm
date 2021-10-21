@@ -234,11 +234,19 @@ class WorkDoneSerializer(serializers.ModelSerializer):
 		fields = ['id', 'name', 'price', 'organization', 'service_price', 
 		'user', 'order', 'service', 'created_at', 'updated_at']
 
+
+	class WorkDoneForData(serializers.ModelSerializer):
+		class Meta:
+			model = WorkDone
+			fields = ['id', 'name']
+
+
 	class WorkDoneCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
 			work_done = WorkDone.objects.create(**validated_data)
-			create_orderHistory(order = validated_data['order'], model = 'WorkDone', organization = validated_data['organization'], method = 'create', data = work_done)
+			create_orderHistory(order = validated_data['order'], model = '1', organization = validated_data['organization'], method = 'create', 
+				body = {"id":work_done.id, "name":work_done.name})
 
 			return work_done
 
@@ -250,7 +258,9 @@ class WorkDoneSerializer(serializers.ModelSerializer):
 	class WorkDoneUSerializer(serializers.ModelSerializer):
 
 		def delete(self, instance, validated_data):
-			create_orderHistory(order = instance.order, model = 'WorkDone', organization = validated_data['organization'], method = 'delete', data = work_done)
+			create_orderHistory(order = instance.order, model = '1', organization = validated_data['organization'], method = 'delete', 
+				body = {"id":work_done.id, "name":work_done.name})
+
 			return super().delete(instance, validated_data)
 
 		class Meta:
@@ -272,6 +282,13 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 		fields = ['id', 'name', 'price', 'organization', 'products', 
 		'order', 'service', 'created_at', 'updated_at']
 
+
+	class WorkDoneForData(serializers.ModelSerializer):
+		class Meta:
+			model = WorkDone
+			fields = ['id', 'name', 'count']
+
+
 	class ProductOrderCSerializer(serializers.ModelSerializer):
 
 		@transaction.atomic
@@ -279,15 +296,27 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 			product_order = ProductOrder.objects.create(**validated_data)
 			product_order.calculate_price
 
+			body = list()
+
 			for item in validated_data['products']:
 				if item.count < 1:
 					raise MyCustomError(f"The quantity of product with id: {item.id} is not enough", 400)
+
+				data = {
+					"id":item.id,
+					"name":item.name,
+				}
+
+				if data not in body:
+					body.append(data)
+
 				item.count -= 1
 				item.save()
 
+
 			product_order.product.set(set(validated_data['products']))
 			product_order.save()
-			create_orderHistory(order = validated_data['order'], model = 'ProductOrder', organization = validated_data['organization'], method = 'create')
+			create_orderHistory(order = validated_data['order'], model = '0', organization = validated_data['organization'], method = 'create', body = body)
 
 			return product_order
 
@@ -301,6 +330,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
 		@transaction.atomic
 		def update(self, instance, validated_data):
+			
 			if 'products' in validated_data:
 				old_product = set(instance.product.all())
 				instance.permissions.set(set(validated_data['products']))
@@ -322,7 +352,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 				item.count += 1
 				item.save()
 
-			create_orderHistory(order = instance.order, model = 'ProductOrder', organization = validated_data['organization'], method = 'delete')
+			create_orderHistory(order = instance.order, model = '0', organization = validated_data['organization'], method = 'delete')
 			return super().delete(instance, validated_data)
 
 
@@ -427,7 +457,7 @@ class SaleOrderSerializer(serializers.ModelSerializer):
 				raise MyCustomError('There is some error on the sever', 500)
 
 			transaction.save()
-			create_orderHistory(order = validated_data['product_order'].order, model = 'SaleOrder', organization = validated_data['organization'], method = 'create')
+			create_orderHistory(order = validated_data['product_order'].order, model = '2', organization = validated_data['organization'], method = 'create')
 
 			return sale_order
 

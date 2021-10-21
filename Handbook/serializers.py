@@ -228,7 +228,7 @@ class OrderHistorySerializer(serializers.ModelSerializer):
 		
 		@transaction.atomic
 		def create(self, validated_data):
-			action_history = ActionHistory.objects.filter(model = 'OrderHistory').get(method = 'create-comment')
+			action_history = ActionHistory.objects.filter(model = '4').get(method = 'create-comment')
 			order_history_data = {
 				'organization':validated_data['organization'],
 				'action_history':action_history,

@@ -8,11 +8,11 @@ from Clients.models import Client
 
 class OrderStatus(MainMixin):
 	TYPES = (
-		(0, 'New'),
-		(1, 'Pending'),
-		(2, 'In progress'),
-		(3, 'Completed'),
-		(4, 'Issued'),
+		('0', 'New'),
+		('1', 'Pending'),
+		('2', 'In progress'),
+		('3', 'Completed'),
+		('4', 'Issued'),
 	)
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	color = models.CharField(max_length = 150, null = True, verbose_name = 'Color')
@@ -49,12 +49,12 @@ class Order(MainMixin):
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name='organization_orders', verbose_name = 'Organization')
 	order_status = models.ForeignKey(OrderStatus, null = True, on_delete = models.PROTECT, related_name = 'order_status_order', verbose_name = 'OrderStatus')
 
-	device_type = models.CharField(max_length = 300, null = True, verbose_name = 'DeviceType')
-	device_maker = models.CharField(max_length = 300, null = True, verbose_name = 'DeviceMaker')
-	device_model = models.CharField(max_length = 300, null = True, verbose_name = 'DeviceModel')
-	device_kit = models.TextField(null = True, verbose_name = 'DeviceKit')
-	device_appearance = models.TextField(null = True,verbose_name = 'DeviceAppearance')
-	device_defect = models.TextField(null = True, verbose_name = 'DeviceDefect')
+	device_type = models.CharField(max_length = 300, null = True, blank = True, verbose_name = 'DeviceType')
+	device_maker = models.CharField(max_length = 300, null = True, blank = True, verbose_name = 'DeviceMaker')
+	device_model = models.CharField(max_length = 300, null = True, blank = True, verbose_name = 'DeviceModel')
+	device_kit = models.TextField(null = True, blank = True, verbose_name = 'DeviceKit')
+	device_appearance = models.TextField(null = True, blank = True, verbose_name = 'DeviceAppearance')
+	device_defect = models.TextField(null = True, blank = True, verbose_name = 'DeviceDefect')
 
 	done = models.BooleanField(default = False)
 	is_rush = models.BooleanField(default = False)
