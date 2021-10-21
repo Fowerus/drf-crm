@@ -66,7 +66,7 @@ class Client(AbstractBaseUser):
 
 		
 class ClientCard(MainMixin):
-	client = models.ForeignKey(Client, on_delete = models.CASCADE, related_name = 'client_client_card', verbose_name = 'Client')
+	client = models.ForeignKey(Client, on_delete = models.SET_NULL, related_name = 'client_client_card', null = True, verbose_name = 'Client')
 
 	surname = models.CharField(max_length = 150, verbose_name = 'Surname', blank = True)
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
