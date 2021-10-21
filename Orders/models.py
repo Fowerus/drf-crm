@@ -11,9 +11,8 @@ class OrderStatus(MainMixin):
 		(0, 'New'),
 		(1, 'Pending'),
 		(2, 'In progress'),
-		(3, 'Pending'),
-		(4, 'Completed'),
-		(5, 'Issued'),
+		(3, 'Completed'),
+		(4, 'Issued'),
 	)
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	color = models.CharField(max_length = 150, null = True, verbose_name = 'Color')

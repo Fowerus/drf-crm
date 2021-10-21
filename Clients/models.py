@@ -74,7 +74,7 @@ class ClientCard(MainMixin):
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
 	phone = PhoneNumberField(verbose_name = 'Phone')
 	links = models.JSONField(null = True)
-	image = models.CharField(max_length = 300, verbose_name = 'Image')
+	image = models.CharField(max_length = 300, null = True, verbose_name = 'Image')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_client_card', verbose_name = 'Organization')
 
