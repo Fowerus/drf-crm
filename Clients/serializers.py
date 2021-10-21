@@ -93,12 +93,12 @@ class ClientCardSerializer(serializers.ModelSerializer):
 
 
 		class Meta:
-			model = Client
+			model = ClientCard
 			fields = ['surname', 'name', 'patronymic', 'phone', 'address', 'links', 'password']
 			
 
 	class Meta:
-		model = Client
+		model = ClientCard
 		fields = ['id', 'surname', 'name', 'patronymic', 'phone', 'address', 'confirmed_phone', 'organization', 'client', 'created_at', 'updated_at']
 
 
