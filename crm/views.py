@@ -179,10 +179,10 @@ def check_orgExecutor(executor_id, org_id):
 
 
 #Create OrderHistory
-def create_orderHistory(method, model, order, organization):
+def create_orderHistory(method, model, order, organization, body = None):
 	action_history = ActionHistory.objects.filter(model = model).get(method = method)
 
-	order_history = OrderHistory.objects.create(action_history = action_history, order = order, organization = organization)
+	order_history = OrderHistory.objects.create(action_history = action_history, order = order, organization = organization, body = body)
 
 	return order_history
 

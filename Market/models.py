@@ -16,7 +16,7 @@ class ProductCategory(MainMixin):
 		return str(self.name)
 
 	class Meta:
-		db_table = 'Category'
+		db_table = 'Category'.lower()
 		verbose_name_plural = 'Categories'
 		verbose_name = 'Category'
 		ordering = ['-updated_at']
@@ -42,7 +42,7 @@ class Product(MainMixin):
 
 
 	class Meta:
-		db_table = 'Product'
+		db_table = 'Product'.lower()
 		verbose_name_plural = "Products"
 		verbose_name = "Product"
 		ordering = ['-updated_at']
@@ -65,7 +65,7 @@ class Cashbox(MainMixin):
 		return min([self.cash, self.account_money])
 
 	class Meta:
-		db_table = 'Cashbox'
+		db_table = 'Cashbox'.lower()
 		verbose_name_plural = 'Cashboxes'
 		verbose_name = 'Cashbox'
 		ordering = ['-updated_at']
@@ -93,7 +93,7 @@ class PurchaseRequest(MainMixin):
 
 
 	class Meta:
-		db_table = 'PurchaseRequest'
+		db_table = 'PurchaseRequest'.lower()
 		verbose_name_plural = 'PurchaseRequests'
 		verbose_name = 'PurchaseRequest'
 		ordering = ['-updated_at']
@@ -112,7 +112,7 @@ class PurchaseAccept(MainMixin):
 
 
 	class Meta:
-		db_table = 'PurchaseAccept'
+		db_table = 'PurchaseAccept'.lower()
 		verbose_name_plural = 'PurchaseAccepts'
 		verbose_name = 'PurchaseAccept'
 		ordering = ['-updated_at']
@@ -136,7 +136,7 @@ class SaleProduct(MainMixin):
 
 
 	class Meta:
-		db_table = 'SaleProduct'
+		db_table = 'SaleProduct'.lower()
 		verbose_name_plural = 'SaleProducts'
 		verbose_name = 'SaleProduct'
 		ordering = ['-updated_at']
@@ -160,7 +160,7 @@ class SaleOrder(MainMixin):
 
 
 	class Meta:
-		db_table = 'SaleOrder'
+		db_table = 'SaleOrder'.lower()
 		verbose_name_plural = 'SaleOrders'
 		verbose_name = 'SaleOrder'
 		ordering = ['-updated_at']
@@ -182,7 +182,7 @@ class WorkDone(MainMixin):
 
 
 	class Meta:
-		db_table = 'WorkDone'
+		db_table = 'WorkDone'.lower()
 		verbose_name_plural = 'WorkDones'
 		verbose_name = 'WorkDone'
 		ordering = ['-updated_at']
@@ -212,7 +212,7 @@ class ProductOrder(MainMixin):
 
 
 	class Meta:
-		db_table = 'ProductOrder'
+		db_table = 'ProductOrder'.lower()
 		verbose_name_plural = 'ProductOrders'
 		verbose_name = 'ProductOrder'
 		ordering = ['-updated_at']
@@ -243,7 +243,7 @@ class Transaction(MainMixin):
 
 
 	class Meta:
-		db_table = 'Transaction'
+		db_table = 'Transaction'.lower()
 		verbose_name_plural = 'Transactions'
 		verbose_name = 'Transaction'
 		ordering = ['-updated_at']

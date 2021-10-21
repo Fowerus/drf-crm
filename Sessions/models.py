@@ -17,7 +17,7 @@ class Session_user(MainMixin):
 
 	class Meta:
 		unique_together = ('user', 'device')
-		db_table = 'Session_user'
+		db_table = 'Session_user'.lower()
 		verbose_name_plural = 'Sessions users'
 		verbose_name = 'Session user'
 		ordering = ['-updated_at']
@@ -34,7 +34,7 @@ class Session_client(MainMixin):
 
 	class Meta:
 		unique_together = ('client', 'device')
-		db_table = 'Session_client'
+		db_table = 'Session_client'.lower()
 		verbose_name_plural = 'Sessions clients'
 		verbose_name = 'Session client'
 		ordering = ['-updated_at']

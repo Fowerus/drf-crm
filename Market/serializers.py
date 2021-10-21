@@ -238,7 +238,7 @@ class WorkDoneSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
 			work_done = WorkDone.objects.create(**validated_data)
-			create_orderHistory(order = validated_data['order'], model = 'WorkDone', organization = validated_data['organization'], method = 'create')
+			create_orderHistory(order = validated_data['order'], model = 'WorkDone', organization = validated_data['organization'], method = 'create', data = work_done)
 
 			return work_done
 
@@ -250,7 +250,7 @@ class WorkDoneSerializer(serializers.ModelSerializer):
 	class WorkDoneUSerializer(serializers.ModelSerializer):
 
 		def delete(self, instance, validated_data):
-			create_orderHistory(order = instance.order, model = 'WorkDone', organization = validated_data['organization'], method = 'delete')
+			create_orderHistory(order = instance.order, model = 'WorkDone', organization = validated_data['organization'], method = 'delete', data = work_done)
 			return super().delete(instance, validated_data)
 
 		class Meta:

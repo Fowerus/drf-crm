@@ -31,7 +31,7 @@ class OrderStatus(MainMixin):
 
 
 	class Meta:
-		db_table = 'OrderStatus'
+		db_table = 'OrderStatus'.lower()
 		verbose_name_plural = 'OrderStatuses'
 		verbose_name = 'OrderStatus'
 		ordering = ['-updated_at']
@@ -78,7 +78,7 @@ class Order(MainMixin):
 		return f'id: {self.id} | order code: {self.order_code} |creator: {self.creator} | client: {self.client} | executor: {self.executor}'
 
 	class Meta:
-		db_table = 'Order'
+		db_table = 'Order'.lower()
 		verbose_name_plural = "Orders"
 		verbose_name = "Order"
 		ordering = ['-updated_at']

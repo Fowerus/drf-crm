@@ -36,7 +36,7 @@ class VerifyInfoUser(models.Model):
 
 	class Meta:
 		unique_together = ('user', 'type_code')
-		db_table = 'VerifyInfoUser'
+		db_table = 'VerifyInfoUser'.lower()
 		verbose_name_plural = 'VerifyInfoUsers'
 		verbose_name = 'VerifyInfoUser'
 		ordering = ['-created_at']
@@ -66,7 +66,7 @@ class VerifyInfoClient(models.Model):
 
 
 	class Meta:
-		db_table = 'VerifyInfoClient'
+		db_table = 'VerifyInfoClient'.lower()
 		verbose_name_plural = 'VerifyInfoClient'
 		verbose_name = 'VerifyInfoClient'
 		ordering = ['-created_at']
