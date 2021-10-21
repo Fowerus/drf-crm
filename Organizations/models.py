@@ -23,7 +23,7 @@ class Organization(models.Model):
 
 
 	class Meta:
-		db_table = 'Organization'
+		db_table = 'Organization'.lower()
 		unique_together = ("name","address")
 		verbose_name_plural = "Organizations"
 		verbose_name = "Organization"
@@ -55,7 +55,7 @@ class Service(MainMixin):
 
 	class Meta:
 		unique_together = ('name', 'organization')
-		db_table = 'Service'
+		db_table = 'Service'.lower()
 		verbose_name_plural = "Services"
 		verbose_name = "Service"
 		ordering = ['-updated_at']
@@ -72,7 +72,7 @@ class CustomPermission(models.Model):
 
 	class Meta:
 		unique_together = ('name', 'codename')
-		db_table = 'CustomPermission'
+		db_table = 'CustomPermission'.lower()
 		verbose_name_plural = 'CustomPermissions'
 		verbose_name = 'CustomPermission'
 		ordering = ['-created_at']
@@ -90,7 +90,7 @@ class Role(MainMixin):
 
 	class Meta:
 		unique_together = ('name', 'organization')
-		db_table = 'Role'
+		db_table = 'Role'.lower()
 		verbose_name_plural = 'Roles'
 		verbose_name = 'Role'
 		ordering = ['-updated_at']
@@ -107,7 +107,7 @@ class Organization_member(MainMixin):
 
 	class Meta:
 		unique_together = ('user', 'organization')
-		db_table = 'Organization_member'
+		db_table = 'Organization_member'.lower()
 		verbose_name_plural = 'Organizations members'
 		verbose_name = 'Organization member'
 		ordering = ['-updated_at']

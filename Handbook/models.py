@@ -16,7 +16,7 @@ class DeviceType(MainMixin):
 
 
 	class Meta:
-		db_table = 'DeviceType'
+		db_table = 'DeviceType'.lower()
 		verbose_name_plural = "DeviceTypes"
 		verbose_name = "DeviceType"
 		ordering = ['-updated_at']
@@ -33,7 +33,7 @@ class DeviceMaker(MainMixin):
 
 
 	class Meta:
-		db_table = 'DeviceMaker'
+		db_table = 'DeviceMaker'.lower()
 		verbose_name_plural = "DeviceMakers"
 		verbose_name = "DeviceMaker"
 		ordering = ['-updated_at']
@@ -50,7 +50,7 @@ class DeviceModel(MainMixin):
 
 
 	class Meta:
-		db_table = 'DeviceModel'
+		db_table = 'DeviceModel'.lower()
 		verbose_name_plural = "DeviceModels"
 		verbose_name = "DeviceModel"
 		ordering = ['-updated_at']
@@ -68,7 +68,7 @@ class DeviceKit(MainMixin):
 
 
 	class Meta:
-		db_table = 'DeviceKit'
+		db_table = 'DeviceKit'.lower()
 		verbose_name_plural = "DeviceKits"
 		verbose_name = "DeviceKit"
 		ordering = ['-updated_at']
@@ -85,7 +85,7 @@ class DeviceAppearance(MainMixin):
 
 
 	class Meta:
-		db_table = 'DeviceAppearance'
+		db_table = 'DeviceAppearance'.lower()
 		verbose_name_plural = "DeviceAppearances"
 		verbose_name = "DeviceAppearance"
 		ordering = ['-updated_at']
@@ -102,7 +102,7 @@ class DeviceDefect(MainMixin):
 
 
 	class Meta:
-		db_table = 'DeviceDefect'
+		db_table = 'DeviceDefect'.lower()
 		verbose_name_plural = "DeviceDefects"
 		verbose_name = "DeviceDefect"
 		ordering = ['-updated_at']
@@ -120,7 +120,7 @@ class ServicePrice(MainMixin):
 
 
 	class Meta:
-		db_table = 'ServicePrice'
+		db_table = 'ServicePrice'.lower()
 		verbose_name_plural = "ServicePrices"
 		verbose_name = "ServicePrice"
 		ordering = ['-updated_at']
@@ -146,7 +146,7 @@ class ActionHistory(MainMixin):
 
 	class Meta:
 		unique_together = ('method','model')
-		db_table = 'ActionHistory'
+		db_table = 'ActionHistory'.lower()
 		verbose_name_plural = "ActionHistories"
 		verbose_name = "ActionHistory"
 		ordering = ['-updated_at']
@@ -165,7 +165,7 @@ class OrderHistory(MainMixin):
 
 
 	class Meta:
-		db_table = 'OrderHistory'
+		db_table = 'OrderHistory'.lower()
 		verbose_name_plural = 'OrderHistories'
 		verbose_name = 'OrderHistory'
 		ordering = ['-updated_at']

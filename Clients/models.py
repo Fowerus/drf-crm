@@ -58,7 +58,7 @@ class Client(AbstractBaseUser):
 
 
 	class Meta:
-		db_table = 'Client'
+		db_table = 'Client'.lower()
 		verbose_name_plural = 'Clients'
 		verbose_name = 'Client'
 		ordering = ['-updated_at']
@@ -84,7 +84,7 @@ class ClientCard(MainMixin):
 
 
 	class Meta:
-		db_table = 'ClientCard'
+		db_table = 'ClientCard'.lower()
 		unique_together = ('organization', 'phone')
 		verbose_name_plural = 'ClientsCards'
 		verbose_name = 'ClientCard'
