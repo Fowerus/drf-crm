@@ -88,6 +88,13 @@ class MyTokenObtainPairPhoneSerializer(MyTokenObtainForPhoneSerializer):
 				Session_user.objects.create(user = self.user, device = device)
 				refresh = self.get_token(self.user)
 
+				refresh['name'] = self.user.name
+				refresh['surname'] = self.user.surname
+				refresh['second_name'] = self.user.second_name
+
+				refresh['email'] = self.user.email
+				refresh['phone'] = self.user.phone
+
 				data['refresh'] = str(refresh)
 				data['access'] = str(refresh.access_token)
 
@@ -127,6 +134,13 @@ class MyTokenObtainPairEmailSerializer(MyTokenObtainForEmailSerializer):
 				Session_user.objects.create(user = self.user, device = device)
 				refresh = self.get_token(self.user)
 
+				refresh['name'] = self.user.name
+				refresh['surname'] = self.user.surname
+				refresh['second_name'] = self.user.second_name
+
+				refresh['email'] = self.user.email
+				refresh['phone'] = self.user.phone
+
 				data['refresh'] = str(refresh)
 				data['access'] = str(refresh.access_token)
 
@@ -165,11 +179,18 @@ class MyTokenRefreshSerializer(serializers.Serializer):
 			current_session = Session_user.objects.filter(user = user.id).get(device = device)
 			refresh = self.get_token(user)
 
+			refresh['name'] = user.name
+			refresh['surname'] = user.surname
+			refresh['second_name'] = user.second_name
+
+			refresh['email'] = user.email
+			refresh['phone'] = user.phone
+
 			data['refresh'] = str(refresh)
 			data['access'] = str(refresh.access_token)
 
 			if api_settings.UPDATE_LAST_LOGIN:
-				update_last_login(None, self.user)
+				update_last_login(None, user)
 
 			return data
 
