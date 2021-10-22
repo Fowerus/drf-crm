@@ -202,7 +202,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = User
-			fields = ['surname','name','patronymic', 'address', 'phone', 'password']
+			fields = ['surname','name','second_name', 'address', 'phone', 'password']
 
 
 	class UserRegistrationForEmail(serializers.ModelSerializer):
@@ -216,12 +216,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = User
-			fields = ['surname','name','patronymic', 'address', 'email', 'password']
+			fields = ['surname','name','second_name', 'address', 'email', 'password']
 
 
 	class Meta:
 		model = User
-		fields = ['surname','name','patronymic', 'address', 'email','phone', 'password']
+		fields = ['surname','name','second_name', 'address', 'email','phone', 'password']
 
 
 
@@ -229,7 +229,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = User
-		fields = ['id', 'surname', 'name', 'patronymic', 'address', 'email', 'phone', 'image', 'confirmed_email', 'confirmed_phone', 'created_at', 'updated_at']
+		fields = ['id', 'surname', 'name', 'second_name', 'address', 'email', 'phone', 'image', 'confirmed_email', 'confirmed_phone', 'created_at', 'updated_at']
 
 	class UserUSerializer(serializers.ModelSerializer):
 		password = serializers.CharField(write_only = True)
@@ -254,5 +254,5 @@ class UserSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = User 
-			fields = ['surname', 'name', 'patronymic','address', 'email', 'phone', 'image', 'password']
+			fields = ['surname', 'name', 'second_name','address', 'email', 'phone', 'image', 'password']
 			

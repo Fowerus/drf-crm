@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
+from django.core import validators
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -101,6 +102,19 @@ class Organization_member(MainMixin):
 	user = models.ForeignKey(get_user_model(), on_delete = models.CASCADE, related_name = 'user_member', verbose_name = 'User')
 	role = models.ForeignKey(Role, on_delete = models.SET_NULL, null = True, related_name = 'role_member', verbose_name = 'Role')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_members', verbose_name = 'Organization')
+
+	surname = models.CharField(max_length = 150, null = True, blank = True, verbose_name = 'Surname')
+	name = models.CharField(max_length = 150, null = True, blank = True, verbose_name = 'Name')
+	second_name = models.CharField(max_length = 150, null = True, blank = True, verbose_name = 'Patronymic')
+
+	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, unique = True, blank = True, null = True, verbose_name = 'Email')
+	phone = PhoneNumberField(unique = True, blank = True, null = True, verbose_name = 'Phone')
+	address = models.CharField(max_length = 200, null = True, blank = True, verbose_name = 'Address')
+
+	image = models.CharField(max_length = 300, null = True, blank = True, verbose_name = 'Image')
+
+	pass_series = models.CharField(max_length = 4, null = True, blank = True, verbose_name = 'Passport series')
+	pass_number = models.CharField(max_length = 6, null = True, blank = True, verbose_name = 'Passport number')
 
 	def __str__(self):
 		return f'id: {self.id} | user: {self.user} | role: {self.role}'
