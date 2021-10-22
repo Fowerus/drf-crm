@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import *
 from Users.serializers import UserSerializer
+from crm.views import get_userData
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -54,6 +55,8 @@ class RoleSerializer(serializers.ModelSerializer):
 	class RoleCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
+			print(get_userData(self.context['request']))
+			raise KeyError('Test')
 			role = Role.objects.create(name = validated_data['name'], organization = validated_data['organization'])
 			role.permissions.set(set(validated_data['permissions']))
 			role.save()
