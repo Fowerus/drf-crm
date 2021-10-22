@@ -64,7 +64,11 @@ class CashboxSerializer(serializers.ModelSerializer):
 
 		@transaction.atomic
 		def update(self, instance, validated_data):
-			user = get_user_model().objects.get(id = get_userData(self.context['request'])['id'])
+			user = self.context['request']
+			user.pop('token_type')
+			user.pop('exp')
+			user.pop('jti')
+			
 			data = {"user":user}
 			if 'cash' in validated_data:
 				if prefix == '-':
