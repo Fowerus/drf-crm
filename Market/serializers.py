@@ -1,5 +1,7 @@
 import uuid
 
+
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_framework import serializers
 
@@ -13,7 +15,7 @@ from .models import *
 from Handbook.models import OrderHistory
 
 from crm.atomic_exception import MyCustomError
-from crm.views import get_viewName, create_orderHistory
+from crm.views import get_viewName, create_orderHistory, get_userData
 
 
 
@@ -26,6 +28,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 
 class TransactionCSerializer(serializers.ModelSerializer):
 
+	@transaction.atomic
 	def create(self, validated_data):
 		transaction = Transaction.objects.create(**validated_data)
 
@@ -57,6 +60,38 @@ class CashboxSerializer(serializers.ModelSerializer):
 			fields = ['name', 'cash', 'account_money', 'organization', 'service']
 
 	class CashboxUSerializer(serializers.ModelSerializer):
+		prefix = serializers.CharField(max_length = 1, default = "0")
+
+		@transaction.atomic
+		def update(self, instance, validated_data):
+			user = get_user_model().objects.get(id = get_userData(self.context['request'])['id'])
+			data = {"user":user}
+			if 'cash' in validated_data:
+				if prefix == '-':
+					if instance.cash - validated_data['cash'] < 0:
+						raise MyCustomError('Insufficient money at the cashbox(cash)', 400)
+
+				data['cash'] = {"money": prefix + eval(f"{instance.cash}{prefix}{validated_data['cash']}")}
+				validated_data.pop('cash')
+
+			if 'account_money' in validated_data:
+				if prefix == '-':
+					if instance.account_money - validated_data['account_money'] < 0:
+						raise MyCustomError('Insufficient money at the cashbox(account_money)', 400)
+
+				data['account_money'] = {"money": prefix + eval(f"{instance.account_money}{prefix}{validated_data['account_money']}")}
+				validated_data.pop('account_money')
+
+			if len(data) > 1:
+				instance.cash = eval(f"{instance.cash}{prefix}{data['cash']}")
+				instance.account_money = eval(f"{instance.account_money}{prefix}{data['account_money']}")
+				instance.save()
+				transaction = TransactionCSerializer(data = {"cashbox":instance, "organization": instance.organization, "data":data})
+				transaction.is_valid()
+				transaction.save()
+
+			return super().update(instance)
+
 
 		class Meta:
 			model = Cashbox

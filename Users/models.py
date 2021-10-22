@@ -38,7 +38,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
 	surname = models.CharField(max_length = 150, verbose_name = 'Surname')
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	patronymic = models.CharField(max_length = 150, verbose_name = 'Patronymic')
+	second_name = models.CharField(max_length = 150, verbose_name = 'Patronymic')
 
 	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, unique = True, blank = True, null = True, verbose_name = 'Email')
 	phone = PhoneNumberField(unique = True, blank = True, null = True, verbose_name = 'Phone')

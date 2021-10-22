@@ -94,13 +94,23 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization_member
-		fields = ['id', 'user','role', 'organization', 'created_at', 'updated_at']
+		fields = ['id', 'user','role', 'name', 'surname', 'second_name',
+		'address', 'phone', 'email', 'image', 'pass_series', 'pass_number', 'organization', 'created_at', 'updated_at']
 
 
 	class Organization_memberCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
-			organization_member = Organization_member.objects.create(**validated_data)
+			user_data = {
+				"name": validated_data['user'].name,
+				"surname":validated_data['user'].surname,
+				"second_name":validated_data['user'].second_name,
+				"phone":validated_data['user'].phone,
+				"email":validated_data['user'].email,
+				"address":validated_data['user'].address,
+				"image":validated_data['user'].image
+			}
+			organization_member = Organization_member.objects.create(**validated_data, **user_data)
 
 			return organization_member
 
@@ -112,9 +122,10 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 
 	class Organization_memberUSerializer(serializers.ModelSerializer):
 
+
 		class Meta:
 			model = Organization_member
-			fields = ['role']
+			fields = ['role', 'name', 'surname', 'second_name', 'address', 'phone', 'email', 'image', 'pass_series', 'pass_number']
 
 
 
