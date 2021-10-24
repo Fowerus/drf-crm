@@ -28,4 +28,3 @@ urlpatterns = [
     path('market/', include('Market.urls')),
     path('handbook/', include('Handbook.urls'))
 ]
-

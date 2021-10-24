@@ -16,7 +16,7 @@ from Organizations.models import Organization, MainMixin
 class Client(AbstractBaseUser):
 	surname = models.CharField(max_length = 150, verbose_name = 'Surname', blank = True)
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	patronymic = models.CharField(max_length = 150, verbose_name = 'Patronymic', blank = True)
+	second_name = models.CharField(max_length = 150, verbose_name = 'Second name', blank = True)
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
 	phone = PhoneNumberField(unique = True,  verbose_name = 'Phone')
 	image = models.CharField(max_length = 300, null = True, blank = True, verbose_name = 'Image')
@@ -50,7 +50,7 @@ class Client(AbstractBaseUser):
 			'client_id': self.pk,
 			'surname':self.surname,
 			'first_name':self.name,
-			'patronymic':str(self.patronymic),
+			'second_name':str(self.second_name),
 			'phone':self.phone.raw_input,
 		}, settings.SECRET_KEY, algorithm='HS256')
 
@@ -70,7 +70,7 @@ class ClientCard(MainMixin):
 
 	surname = models.CharField(max_length = 150, verbose_name = 'Surname', blank = True)
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	patronymic = models.CharField(max_length = 150, verbose_name = 'Patronymic', blank = True)
+	second_name = models.CharField(max_length = 150, verbose_name = 'Second name', blank = True)
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
 	phone = PhoneNumberField(verbose_name = 'Phone')
 	links = models.JSONField(null = True)

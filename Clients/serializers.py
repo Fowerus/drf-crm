@@ -34,7 +34,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Client
-		fields = ['id', 'surname', 'name', 'patronymic', 'phone', 'address', 'confirmed_phone', 'organization', 'created_at', 'updated_at']
+		fields = ['id', 'surname', 'name', 'second_name', 'phone', 'address', 'confirmed_phone', 'organization', 'created_at', 'updated_at']
 
 
 
@@ -71,7 +71,7 @@ class ClientCardSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = ClientCard
-			fields = ['surname', 'name', 'patronymic', 'phone', 'address', 'organization', 'password']
+			fields = ['surname', 'name', 'second_name', 'phone', 'address', 'organization', 'password']
 
 
 
@@ -94,12 +94,12 @@ class ClientCardSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = ClientCard
-			fields = ['surname', 'name', 'patronymic', 'phone', 'address', 'links', 'password']
+			fields = ['surname', 'name', 'second_name', 'phone', 'address', 'links', 'password']
 			
 
 	class Meta:
 		model = ClientCard
-		fields = ['id', 'surname', 'name', 'patronymic', 'phone', 'address', 'confirmed_phone', 'organization', 'client', 'created_at', 'updated_at']
+		fields = ['id', 'surname', 'name', 'second_name', 'phone', 'address', 'confirmed_phone', 'organization', 'client', 'created_at', 'updated_at']
 
 
 
