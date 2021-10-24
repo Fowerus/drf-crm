@@ -1,4 +1,4 @@
-# **Organizations API documentation** - **`/organizations/`**   
+# **Organizations API documentation** - **`/handbook/`**   
 
 
 ## **Token error**
@@ -18,7 +18,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 ```  
 
 
-## **Organizations Create/List**  
+## **DeviceType**  
 **Headers**  
 ```json  
 {
@@ -26,8 +26,8 @@ If you do not have enough rights or the account is not confirmed or the session 
 	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMyMjI4NDYyLCJqdGkiOiIwZDEwZjNiYzNhM2M0NzdiODQyZWVjNzQ5ZTY5MGI5OSIsInVzZXJfaWQiOjV9.aYGVJfdEXxsp9_ggjdtc6BMYW7qIp7DCH3BPvabllQ0"
 }
 ```  
-* **POST** `organization-lc/`        
-	**Empty request body**     
+* **POST** `device-type-c/`        
+	**Emplty request body**     
 	**Response**  
 	*`Response 400`*    
 	```json  
@@ -134,7 +134,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```   
 * **PUT** `organization-rud/1/`    
-	**Empty request body**     
+	**Emplty request body**     
 	**Response**    
 	*`Response 400`*   
 	```json    
@@ -177,7 +177,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```  
 * **PATCH** `organization-rud/1/`   
-	**Empty request body**    
+	**Emplty request body**    
 	**Response**   
 	*`Response 200`*  
 	```json   
@@ -240,7 +240,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 }
 ```  
 *	**POST** `member-c/`   
-	**Empty request body**   
+	**Emplty request body**   
 	**Response**   
 	*`Response 403`*   
 	```json   
@@ -467,7 +467,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	]
 	```   
 * **PUT** `member-ud/2/`   
-	**Empty request body**   
+	**Emplty request body**   
 	**Response**   
 	*`Response 403`*   
 	```json   
@@ -491,7 +491,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```   
 * **PATCH** `member-ud/2/`   
-	**Empty request body**   
+	**Emplty request body**   
 	**Response**   
 	*`Response 403`*   
 	```json   
@@ -522,7 +522,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```  
 * **DELETE** `member-ud/2/`  
-	**Empty request body**  
+	**Emplty request body**  
 	**Response**  
 	*`Response 403`*  
 	```json  
@@ -650,7 +650,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 }
 ```  
 * **POST** `role-c/`  
-	**Empty request body**  
+	**Emplty request body**  
 	**Response**  
 	*`Response 403`*  
 	```json  
@@ -865,7 +865,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	]
 	```   
 * **PUT** `role-ud/1/`   
-	**Empty request body**   
+	**Emplty request body**   
 	**Response**   
 	*`Response 403`*   
 	```json   
@@ -917,7 +917,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```   
 * **PATCH** `role-ud/1/`  
-	**Empty request body**   
+	**Emplty request body**   
 	**Response**   
 	*`Response 403`*   
 	```json  
@@ -970,7 +970,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```   
 * **DELETE** `role-ud/2/`   
-	**Empty request body**   
+	**Emplty request body**   
 	**Response**   
 	*`Response 403`*  
 	```json  
@@ -1108,7 +1108,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 }
 ```  
 * **POST** `service-c/`   
-	**Empty request body**   
+	**Emplty request body**   
 	**Response**   
 	*`Response 403`*   
 	```json   
@@ -1159,7 +1159,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```   
 * **PUT** `service-ud/1/`   
-	**Empty request body**   
+	**Emplty request body**   
 	**Response**   
 	*`Response 403`*   
 	```json   
@@ -1209,7 +1209,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```  
 * **PATCH** `service-ud/1/`  
-	**Empty request body**  
+	**Emplty request body**  
 	**Response**  
 	*`Response 403`*  
 	```json  
@@ -1253,7 +1253,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```  
 * **DELETE** `service-ud/1/`   
-	**Empty request body**   
+	**Emplty request body**   
 	**Response**  
 	*`Response 403`*  
 	```json  

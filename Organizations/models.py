@@ -105,7 +105,7 @@ class Organization_member(MainMixin):
 
 	surname = models.CharField(max_length = 150, null = True, blank = True, verbose_name = 'Surname')
 	name = models.CharField(max_length = 150, null = True, blank = True, verbose_name = 'Name')
-	second_name = models.CharField(max_length = 150, null = True, blank = True, verbose_name = 'Patronymic')
+	second_name = models.CharField(max_length = 150, null = True, blank = True, verbose_name = 'Second name')
 
 	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, unique = True, blank = True, null = True, verbose_name = 'Email')
 	phone = PhoneNumberField(unique = True, blank = True, null = True, verbose_name = 'Phone')
