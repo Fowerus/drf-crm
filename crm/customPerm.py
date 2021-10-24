@@ -55,7 +55,6 @@ class CustomPermissionVerificationRole(BasePermission):
 				'put':f'{view_name}_change',
 				'delete':f'{view_name}_delete'
 			}
-
 			permissions = [perms_map[str(requests.method).lower()], perms_map['guru'], perms_map['creator']]
 
 			return is_valid_member(user_data['user_id'], organization,  permissions)

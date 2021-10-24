@@ -97,11 +97,11 @@ class DeviceModelSerializer(serializers.ModelSerializer):
 
 class DeviceKitSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
-	device_type = DeviceTypeSerializer()
+	devicetype = DeviceTypeSerializer()
 
 	class Meta:
 		model = DeviceKit
-		fields = ['id','name','organization', 'device_type', 'created_at', 'updated_at']
+		fields = ['id','name','organization', 'devicetype', 'created_at', 'updated_at']
 
 
 	class DeviceKitCSerializer(serializers.ModelSerializer):
@@ -114,14 +114,14 @@ class DeviceKitSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceKit
-			fields = ['name', 'organization', 'device_type']
+			fields = ['name', 'organization', 'devicetype']
 
 
 	class DeviceKitUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceKit
-			fields = ['name', 'device_type']
+			fields = ['name', 'devicetype']
 
 
 

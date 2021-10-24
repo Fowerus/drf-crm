@@ -127,6 +127,7 @@ def check_orgDeviceModel(devicemodel_id, org_id):
 
 #Checking an organizaions's device kit
 def check_orgDeviceKit(devicekit_id, org_id):
+	print(234)
 	return Organization.objects.get(id = org_id).organization_device_kit.all().filter(id = devicekit_id).exists()
 
 
