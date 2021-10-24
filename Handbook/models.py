@@ -60,11 +60,11 @@ class DeviceModel(MainMixin):
 class DeviceKit(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_kit', verbose_name = 'Organization')
-	device_type = models.ForeignKey(DeviceType, on_delete = models.CASCADE, related_name = 'device_type_device_kit', verbose_name = 'DeviceType')
+	devicetype = models.ForeignKey(DeviceType, on_delete = models.CASCADE, related_name = 'device_type_device_kit', verbose_name = 'DeviceType')
 
 
 	def __str__(self):
-		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id} | device type: {self.device_type}'
+		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id} | device type: {self.devicetype}'
 
 
 	class Meta:

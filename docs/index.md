@@ -8,6 +8,7 @@
 * [Order API documentation](./orders.md)
 * [Client API documentation](./clients.md)
 * [Verify-Info API documentation](./verify_info.md)
+* [Handbook API documentation](./handbook.md)
 
 ## **Token error**
 If you inserted an incorrect token or an expired token in the header, it will give    
@@ -25,3 +26,8 @@ If you inserted an incorrect token or an expired token in the header, it will gi
     ]
 }
 ```
+## **403 error**
+You actually need to add an organization field in your request body, except url related with user api functionality.  
+If you will not do that the response will be 403 error.   
+
+In the API documentation, the expression "empty request" means that a request with an organization field.   
