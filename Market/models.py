@@ -121,10 +121,10 @@ class PurchaseAccept(MainMixin):
 
 
 class SaleProduct(MainMixin):
-	cash = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Cash')
-	card = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Card')
-	bank_transfer = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Bank transfer')
-	discount = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Discount')
+	cash = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Cash')
+	card = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Card')
+	bank_transfer = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Bank transfer')
+	discount = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Discount')
 
 	client = models.ForeignKey(ClientCard, on_delete = models.SET_NULL, related_name = 'client_card_sale_product', null = True, verbose_name = 'ClientCard')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_sale_product', verbose_name = 'Organization')
@@ -133,7 +133,7 @@ class SaleProduct(MainMixin):
 	product = models.ForeignKey(Product, on_delete = models.PROTECT, related_name = 'product_sale_product', verbose_name = 'Product')
 
 	def __str__(self):
-		return f'id: {self.id} | organization: {self.organization.id} | cashbox: {self.cashbox.id} cash: {self.price} card: {self.card} | bank_transfer: {self.bank_transfer} | discount: {self.discount} | product: {self.product}'
+		return f'id: {self.id} | organization: {self.organization.id} | cashbox: {self.cashbox.id} cash: {self.cash} card: {self.card} | bank_transfer: {self.bank_transfer} | discount: {self.discount} | product: {self.product}'
 
 
 	class Meta:
@@ -192,20 +192,20 @@ class WorkDone(MainMixin):
 
 class ProductOrder(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
+	price = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
 
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product_done', verbose_name = 'Organization')
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product_order', verbose_name = 'Organization')
 	products = models.ManyToManyField(Product, related_name = 'product_product_order', verbose_name = 'Product')
 	order = models.OneToOneField(Order, on_delete = models.PROTECT, related_name = 'order_product_order', verbose_name = 'Order')
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_product_order', verbose_name = 'Service')
 
 	def __str__(self):
-		return f'id: {self.id} | price: {self.price} | organization: {self.organization.id} | product list length: {len(self.product.all())}'
+		return f'id: {self.id} | price: {self.price} | organization: {self.organization.id}'
 
-	@property
-	def calculate_price(self):
+
+	def calculate_price(self, products_list):
 		cost = 0
-		for item in self.product.all():
+		for item in products_list:
 			cost += item.sale_price
 
 		self.price = cost

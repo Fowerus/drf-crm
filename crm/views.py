@@ -32,15 +32,18 @@ def get_clientData(requests):
 
 #Get organization id
 def get_orgId(requests):
-	if requests.method == 'GET':
-		organization = requests._request.resolver_match.kwargs.get('organization')
-	else:
-		if type(requests.data['organization']) == list:
-			organization = requests.data['organization'][0]
+	try:
+		if requests.method == 'GET':
+			organization = requests._request.resolver_match.kwargs.get('organization')
 		else:
-			organization = requests.data['organization']
+			if type(requests.data['organization']) == list:
+				organization = requests.data['organization'][0]
+			else:
+				organization = requests.data['organization']
 
-	return organization
+		return organization
+	except:
+		raise MyCustomError('The organization field is required', 400)
 
 
 #Checking the required permissions
@@ -157,32 +160,45 @@ def check_orgPurchase(purchase_id, org_id):
 	return Organization.objects.get(id = org_id).organization_purchase.all().filter(id = purchase_id).exists() 
 
 
-#Checking an organizaions's sale
-def check_orgSale(sale_id, org_id):
-	return Organization.objects.get(id = org_id).organization_sale.all().filter(id = sale_id).exists() 
+#Checking an organization's saleProduct
+def check_orgSaleProduct(saleproduct_id, org_id):
+	return Organization.objects.get(id = org_id).organization_sale_product.all().filter(id = saleproduct_id).exists() 
 
 
+#Checking an organization's saleOrder
+def check_orgSaleOrder(saleorder_id, org_id):
+	return Organization.objects.get(id = org_id).organization_sale_product.all().filter(id = saleorder_id).exists()
+
+
+#Checking an organization's product
 def check_orgProduct(product_id, org_id):
 	return Organization.objects.get(id = org_id).organization_product.all().filter(id = product_id).exists()
 
 
+def check_orgProductOrder(productorder_id, org_id):
+	return Organization.objects.get(id = org_id).organization_product_order.all().filter(id = productorder_id).exists()
+
+
+#Checking an organization's products in ProductOrder
 def check_orgProductAll(product_id_list, org_id):
 	for i in product_id_list:
-		if check_orgProduct(product_id, org_id) == False:
-			raise MyCustomError('The product owner is not your organization', 400)
+		if check_orgProduct(i, org_id) == False:
+			raise MyCustomError(f'The product owner is not your organization({i})', 400)
 
 	return True
 
 
+#Checking an organization's PurchaseRequest
 def check_orgPurchaseRequest(purchaserequest_id, org_id):
 	return Organization.objects.get(id = org_id).organization_purchase_request.all().filter(id = purchaserequest_id).exists()
 
 
+#Checking an organization's PurchaseAccept
 def check_orgPurchaseAccept(purchaseaccept_id, org_id):
 	return Organization.objects.get(id = org_id).organization_purchase_accept.all().filter(id = purchaseaccept_id).exists()
 
 
-
+#Checking an Executor
 def check_orgExecutor(executor_id, org_id):
 	return bool(check_confirmed(executor_id) and check_orgMember(executor_id, org_id))
 
@@ -190,8 +206,9 @@ def check_orgExecutor(executor_id, org_id):
 #Create OrderHistory
 def create_orderHistory(method, model, order, organization, body = None):
 	action_history = ActionHistory.objects.filter(model = model).get(method = method)
+	print(action_history)
 
-	order_history = OrderHistory.objects.create(action_history = action_history, order = order, organization = organization, body = body)
+	order_history = OrderHistory.objects.create(action_history = action_history, order = order, organization = organization, data = body)
 
 	return order_history
 
@@ -246,7 +263,9 @@ validate_func_map = {
 	'purchaseaccept':check_orgPurchaseAccept,
 	'serviceprice':check_orgServicePrice,
 	'purchase':check_orgPurchase,
-	'sale':check_orgSale,
+	'saleproduct':check_orgSaleProduct,
+	'saleorder':check_orgSaleOrder,
+	'productorder':check_orgProductOrder,
 	'cashbox':check_orgCashbox,
 	'order_status':check_orgOrderStatus,
 	'product': check_orgProduct,
