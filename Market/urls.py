@@ -4,8 +4,8 @@ from . import views
 
 
 urlpatterns = [
-    path('product-category-l/', views.ProductCategoryListAPIView.as_view(), name = 'product_category_l'),
-    path('transaction-l/<int:organization>', views.TransactionListAPIView.as_view(), name = 'transaction_l'),
+    path('product-category-l/<int:organization>/', views.ProductCategoryListAPIView.as_view(), name = 'product_category_l'),
+    path('transaction-l/<int:organization>/', views.TransactionListAPIView.as_view(), name = 'transaction_l'),
 
     path('product-l/<int:organization>/', views.ProductListAPIView.as_view(), name = 'product_l'),
     path('product-r/<int:id>/<int:organization>/', views.ProductRetrieveAPIView.as_view(), name = 'product_r'),

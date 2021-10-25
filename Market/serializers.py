@@ -2,6 +2,7 @@ import uuid
 
 
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import transaction
 from rest_framework import serializers
 
@@ -36,7 +37,7 @@ class TransactionCSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Transaction
-		fields = ['cashbox','purchase', 'sale_product', 'sale_order', 'organization']
+		fields = ['cashbox','purchase', 'sale_product', 'sale_order', 'organization', "data"]
 
 
 
@@ -64,42 +65,45 @@ class CashboxSerializer(serializers.ModelSerializer):
 
 		@transaction.atomic
 		def update(self, instance, validated_data):
-			user = self.context['request']
+			user = get_userData(self.context['request'])
 			user.pop('token_type')
 			user.pop('exp')
 			user.pop('jti')
 			
 			data = {"user":user}
-			if 'cash' in validated_data:
-				if prefix == '-':
-					if instance.cash - validated_data['cash'] < 0:
-						raise MyCustomError('Insufficient money at the cashbox(cash)', 400)
+			if 'cash' in validated_data and validated_data['prefix'] in ['-', '+']:
+				expession = eval(f"{instance.cash}{validated_data['prefix']}{validated_data['cash']}")
+				if expession < 0:
+					raise MyCustomError('Insufficient money at the cashbox(cash)', 400)
 
-				data['cash'] = {"money": prefix + eval(f"{instance.cash}{prefix}{validated_data['cash']}")}
+				data['cash'] = f"{validated_data['prefix']}{ validated_data['cash'] }"
 				validated_data.pop('cash')
+				instance.cash = expession
 
-			if 'account_money' in validated_data:
-				if prefix == '-':
-					if instance.account_money - validated_data['account_money'] < 0:
-						raise MyCustomError('Insufficient money at the cashbox(account_money)', 400)
 
-				data['account_money'] = {"money": prefix + eval(f"{instance.account_money}{prefix}{validated_data['account_money']}")}
+			if 'account_money' in validated_data and validated_data['prefix'] in ['-', '+']:
+				expession = eval(f"{instance.account_money}{validated_data['prefix']}{validated_data['account_money']}")
+				if expession < 0:
+					raise MyCustomError('Insufficient money at the cashbox(account_money)', 400)
+
+				data['account_money'] = f"{validated_data['prefix']}{ validated_data['account_money'] }"
 				validated_data.pop('account_money')
+				instance.account_money = expession
+
+
 
 			if len(data) > 1:
-				instance.cash = eval(f"{instance.cash}{prefix}{data['cash']}")
-				instance.account_money = eval(f"{instance.account_money}{prefix}{data['account_money']}")
 				instance.save()
-				transaction = TransactionCSerializer(data = {"cashbox":instance, "organization": instance.organization, "data":data})
+				transaction = TransactionCSerializer(data = {"cashbox":instance.id, "organization": instance.organization.id, "data":data})
 				transaction.is_valid()
 				transaction.save()
 
-			return super().update(instance)
+			return super().update(instance, validated_data)
 
 
 		class Meta:
 			model = Cashbox
-			fields = ['name', 'cash', 'account_money', 'service']
+			fields = ['name', 'cash', 'account_money', 'service', 'prefix']
 
 
 
