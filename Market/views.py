@@ -204,7 +204,7 @@ class SaleOrderRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class SaleOrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = SaleOrder.objects.all()
 	serializer_class = SaleOrderSerializer.SaleOrderUSerializer
@@ -235,7 +235,7 @@ class WorkDoneRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class WorkDoneUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = WorkDone.objects.all()
 	serializer_class = WorkDoneSerializer.WorkDoneUSerializer
