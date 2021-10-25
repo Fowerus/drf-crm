@@ -179,7 +179,7 @@ class WorkDone(MainMixin):
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_work_done', verbose_name = 'Service')
 
 	def __str__(self):
-		return f'id: {self.id} | organization: {self.organizatin.id} | user: {self.user.id} | order: {self.order.id} | price: {self.price}'
+		return f'id: {self.id} | organization: {self.organization.id} | user: {self.user.id} | order: {self.order.id} | price: {self.price}'
 
 
 	class Meta:
