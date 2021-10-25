@@ -41,24 +41,21 @@ class CustomPermissionVerificationRole(BasePermission):
 
 	def has_permission(self, requests, view):
 
-		try:
-			view_name = get_viewName(view)
-			organization = get_orgId(requests)
-			user_data = get_userData(requests)
+		view_name = get_viewName(view)
+		organization = get_orgId(requests)
+		user_data = get_userData(requests)
 
-			perms_map = {
-				'creator':'organization_creator',
-				'guru':f'{view_name}_guru',
-				'get':f'{view_name}_view',
-				'post':f'{view_name}_create',
-				'patch':f'{view_name}_change',
-				'put':f'{view_name}_change',
-				'delete':f'{view_name}_delete'
-			}
-			permissions = [perms_map[str(requests.method).lower()], perms_map['guru'], perms_map['creator']]
-			return is_valid_member(user_data['user_id'], organization,  permissions)
-		except:
-			return False
+		perms_map = {
+			'creator':'organization_creator',
+			'guru':f'{view_name}_guru',
+			'get':f'{view_name}_view',
+			'post':f'{view_name}_create',
+			'patch':f'{view_name}_change',
+			'put':f'{view_name}_change',
+			'delete':f'{view_name}_delete'
+		}
+		permissions = [perms_map[str(requests.method).lower()], perms_map['guru'], perms_map['creator']]
+		return is_valid_member(user_data['user_id'], organization,  permissions)
 
 
 

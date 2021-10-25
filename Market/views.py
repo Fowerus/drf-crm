@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import status, permissions
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -172,7 +173,7 @@ class SaleProductRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class SaleProductUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = SaleProduct.objects.all()
 	serializer_class = SaleProductSerializer.SaleProductUSerializer
@@ -265,7 +266,15 @@ class ProductOrderRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class ProductOrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated],
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = ProductOrder.objects.all()
-	serializer_class = ProductOrderSerializer.ProductOrderUDSerializer
+	serializer_class = ProductOrderSerializer.ProductOrderUSerializer
+
+
+	@transaction.atomic
+	def delete(self, requests, **kwargs):
+		instance = self.get_object()
+		create_orderHistory(order = instance.order, model = '0', organization = instance.order.organization, method = 'delete')
+		self.perform_destroy(instance)
+		return Response(status=status.HTTP_204_NO_CONTENT)

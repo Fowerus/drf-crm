@@ -162,26 +162,24 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
 
 		@transaction.atomic
 		def create(self, validated_data):
-			try:
-				if validated_data['product'].organization.id == validated_data['organization'].id:
-					raise MyCustomError('You cannot purchase your organization product', 400)
 
-				purchase_request = PurchaseRequest.objects.create(**validated_data, price = validated_data['count']*validated_data['product'].purchase_price)
+			if validated_data['product'].organization.id == validated_data['organization'].id:
+				raise MyCustomError('You cannot purchase your organization product', 400)
 
-				if validated_data['is_cash']:
-					purchase_request.cashbox.cash -= purchase_request.price
-				else:
-					purchase_request.cashbox.account_money -= purchase_request.price
+			purchase_request = PurchaseRequest.objects.create(**validated_data, price = validated_data['count']*validated_data['product'].purchase_price)
 
-				if purchase_request.cashbox.calculate_min_money < 0:
-					raise MyCustomError('Insufficient money at the cashbox', 400)
+			if validated_data['is_cash']:
+				purchase_request.cashbox.cash -= purchase_request.price
+			else:
+				purchase_request.cashbox.account_money -= purchase_request.price
+
+			if purchase_request.cashbox.calculate_min_money < 0:
+				raise MyCustomError('Insufficient money at the cashbox', 400)
 
 
-				purchase_accept = PurchaseAccept.objects.create(purchase_request = purchase_request, is_cash = validated_data['is_cash'],
-					organization = validated_data['product'].organization)
+			purchase_accept = PurchaseAccept.objects.create(purchase_request = purchase_request, is_cash = validated_data['is_cash'],
+				organization = validated_data['product'].organization)
 
-			except:
-				raise MyCustomError('There are some problem on the server', 500)
 
 			return purchase_request
 
@@ -238,6 +236,7 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 
 				instance.accept = True
 				instance.purchase_request.cashbox.save()
+				instance.purchase_request.product.save()
 				product.save()
 				instance.save()
 
@@ -319,7 +318,7 @@ class WorkDoneSerializer(serializers.ModelSerializer):
 
 class ProductOrderSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
-	product = ProductSerializer(many = True)
+	products = ProductSerializer(many = True)
 	order = OrderSerializer()
 	service = ServiceSerializer()
 
@@ -330,30 +329,26 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 		'order', 'service', 'created_at', 'updated_at']
 
 
-	class WorkDoneForData(serializers.ModelSerializer):
-		class Meta:
-			model = WorkDone
-			fields = ['id', 'name', 'count']
-
-
 	class ProductOrderCSerializer(serializers.ModelSerializer):
 
 		@transaction.atomic
 		def create(self, validated_data):
+			products_list = validated_data.pop('products')
 			product_order = ProductOrder.objects.create(**validated_data)
-			product_order.calculate_price
+			product_order.products.set(products_list)
+			product_order.calculate_price(products_list)
 
 			body = list()
 
-			for item in validated_data['products']:
+			for item in products_list:
 				if item.count < 1:
-					raise MyCustomError(f"The quantity of product with id: {item.id} is not enough", 400)
+					raise MyCustomError(f"The quantity of product with id {item.id} is not enough", 400)
 
 				data = {
 					"id":item.id,
 					"name":item.name,
 				}
-
+				data['count'] = products_list.count(item)
 				if data not in body:
 					body.append(data)
 
@@ -361,7 +356,6 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 				item.save()
 
 
-			product_order.product.set(set(validated_data['products']))
 			product_order.save()
 			create_orderHistory(order = validated_data['order'], model = '0', organization = validated_data['organization'], method = 'create', body = body)
 
@@ -373,40 +367,11 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 			fields = ['name', 'organization', 'products', 
 			'order', 'service']
 
-	class ProductOrderUDSerializer(serializers.ModelSerializer):
-
-		@transaction.atomic
-		def update(self, instance, validated_data):
-			
-			if 'products' in validated_data:
-				old_product = set(instance.product.all())
-				instance.permissions.set(set(validated_data['products']))
-				add_remove_product = set(instance.product.all())
-				new_product = old_product ^ add_remove_product
-				instance.product.set(new_product)
-				validated_data.pop('products')
-
-				instance.save()
-
-			return super().update(instance, validated_data)
-
-
-
-		@transaction.atomic
-		def delete(self, instance, validated_data):
-
-			for item in instance.product.all():
-				item.count += 1
-				item.save()
-
-			create_orderHistory(order = instance.order, model = '0', organization = validated_data['organization'], method = 'delete')
-			return super().delete(instance, validated_data)
-
+	class ProductOrderUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = ProductOrder
-			fields = ['name', 'price', 'products', 'service']
-
+			fields = ['name', 'price', 'service']
 
 
 
