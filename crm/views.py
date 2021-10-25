@@ -111,6 +111,11 @@ def check_orgClient(client_id, org_id):
 	return Organization.objects.get(id = org_id).organization_clients.all().filter(id = client_id).exists()
 
 
+#Checking an organizaions's ClientCard
+def check_orgClientCard(client_id, org_id):
+	return Organization.objects.get(id = org_id).organization_client_card.all().filter(id = client_id).exists()
+
+
 # <Handbook>-------------------------------------------------------------
 
 #Checking an organizaions's device type
@@ -258,6 +263,7 @@ def get_viewName(view):
 #List with all functions in crm.views.py
 validate_func_map = {
 	'client': check_orgClient,
+	'clientcard': check_orgClientCard,
 	'executor': check_orgExecutor,
 	'products': check_orgProductAll,
 	'order': check_orgOrder,
