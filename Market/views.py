@@ -240,6 +240,14 @@ class WorkDoneUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIVi
 	queryset = WorkDone.objects.all()
 	serializer_class = WorkDoneSerializer.WorkDoneUSerializer
 
+	@transaction.atomic
+	def delete(self, requests, **kwargs):
+		instance = self.get_object()
+		create_orderHistory(order = instance.order, model = '1', organization = instance.order.organization, method = 'delete', 
+				body = {"id":instance.id, "name":instance.name})
+		self.perform_destroy(instance)
+		return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 

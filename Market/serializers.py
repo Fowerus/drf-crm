@@ -303,12 +303,6 @@ class WorkDoneSerializer(serializers.ModelSerializer):
 
 	class WorkDoneUSerializer(serializers.ModelSerializer):
 
-		def delete(self, instance, validated_data):
-			create_orderHistory(order = instance.order, model = '1', organization = validated_data['organization'], method = 'delete', 
-				body = {"id":work_done.id, "name":work_done.name})
-
-			return super().delete(instance, validated_data)
-
 		class Meta:
 			model = WorkDone
 			fields = ['name', 'price', 'service_price', 'service']
