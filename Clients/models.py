@@ -80,7 +80,7 @@ class ClientCard(MainMixin):
 
 
 	def __str__(self):
-		return f"id: {self.id} | client: {self.client.id} | organization : {self.organization.id}"
+		return f"id: {self.id} | client: {self.client} | organization : {self.organization.id}"
 
 
 	class Meta:

@@ -49,11 +49,13 @@ class ClientCardListAPIView(generics.ListAPIView):
     def get_queryset(self):
         if 'phone' in self.kwargs:
             return self.queryset.filter(organization = self.kwargs.get(
-                'organization').filter(phone = self.kwargs.get('phone')))
+                'organization')).filter(phone = self.kwargs.get('phone'))
 
         elif 'fio' in self.kwargs:
             return self.queryset.filter(organization = self.kwargs.get(
-                'organization').filter(name = self.kwargs.get('fio')))            
+                'organization')).filter(name = self.kwargs.get('fio'))  
+        else:
+            return self.queryset.filter(organization = self.kwargs.get('organization'))          
 
 
 class ClientCardCreateAPIView(generics.CreateAPIView):
@@ -69,7 +71,7 @@ class ClientCardRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = ClientCardSerializer
 
 
-class ClientCardUpdateAPIView(generics.UpdateAPIView):
+class ClientCardUpdateAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
     permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
     lookup_field = 'id'
     queryset = ClientCard.objects.all()

@@ -17,7 +17,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 }
 ```  
 
-## **Clients**  
+## **ClientCard**  
 **Headers**  
 ```json  
 {
@@ -25,23 +25,9 @@ If you do not have enough rights or the account is not confirmed or the session 
 	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjMyMjI4NDYyLCJqdGkiOiIwZDEwZjNiYzNhM2M0NzdiODQyZWVjNzQ5ZTY5MGI5OSIsInVzZXJfaWQiOjV9.aYGVJfdEXxsp9_ggjdtc6BMYW7qIp7DCH3BPvabllQ0"
 }
 ``` 
-* **POST** `client-c/`    
+* **POST** `client-card-c/`    
 	**Emplty request body**  
-	**Response**  
-	*`Response 403`*  
-	```json  
-	{
-	    "detail": "You do not have permission to perform this action."
-	}
-	```  
-	If you specify the *id* of the organization and your rights allow you to create a client, it will return (In this case, you should place *id* in *organization* in an array or set, if there are several *id*, it will be taken at index 0)  
-	**Input data**  
-	```json  
-	{
-		"organization":[1]
-	}
-	```  
-	**Response**  
+	**Response**    
 	*`Response 400`*  
 	```json   
 	{
@@ -56,14 +42,14 @@ If you do not have enough rights or the account is not confirmed or the session 
 	    ]
 	}
 	```   
-	The correct request    
+	Surname, second_name, address, image, links, data
 	**Input data**  
-	```json   
+	```json  
 	{
-		"name":"Client1",
-		"organization":[1],
-		"phone":"+79517586284",
-		"password":"client1client1",
+	    "organization":1,
+	    "name":"TestClient",
+	    "phone":"+79517487295",
+	    "password":"clientclient"
 	}
 	```  
 	**Response**  
@@ -71,202 +57,503 @@ If you do not have enough rights or the account is not confirmed or the session 
 	```json  
 	{
 	    "surname": "",
-	    "name": "Client1",
-	    "patronymic": "",
-	    "phone": "+79517586284",
+	    "name": "TestClient",
+	    "second_name": "",
+	    "phone": "+79517487295",
 	    "address": "",
-	    "organization": [
-	        1
-	    ]
+	    "organization": 1
 	}
 	```  
-* **GET** `client-l/1/`      
+* **GET** `client-card-l/1/`      
 	*`Response 200`*  
 	```json  
 	[
 	    {
-	        "id": 1,
+	        "id": 2,
 	        "surname": "",
-	        "name": "Client1",
-	        "patronymic": "",
-	        "phone": "+79517586284",
+	        "name": "TestClient",
+	        "second_name": "",
+	        "phone": "+79517487295",
 	        "address": "",
-	        "confirmed_phone": false,
-	        "organization": [
-	            {
+	        "organization": {
+	            "id": 1,
+	            "name": "Test",
+	            "description": "Test",
+	            "address": "Test",
+	            "creator": {
 	                "id": 1,
-	                "name": "Organization2",
-	                "description": "Organization2",
-	                "address": "Organization2",
-	                "creator": {
+	                "surname": "a",
+	                "name": "a",
+	                "second_name": "a",
+	                "address": "a",
+	                "email": "a@gmail.com",
+	                "phone": null,
+	                "image": "../static/Users/default-user-image.jpeg",
+	                "confirmed_email": true,
+	                "confirmed_phone": false,
+	                "created_at": "2021-10-21T15:38:07.599042Z",
+	                "updated_at": "2021-10-22T10:52:18.483765Z"
+	            },
+	            "numbers": null,
+	            "links": null,
+	            "created_at": "2021-10-21T15:45:34.434734Z",
+	            "updated_at": "2021-10-21T15:45:34.434767Z"
+	        },
+	        "client": {
+	            "id": 3,
+	            "surname": "",
+	            "name": "TestClient",
+	            "second_name": "",
+	            "phone": "+79517487295",
+	            "address": "",
+	            "confirmed_phone": false,
+	            "organization": [
+	                {
+	                    "id": 2,
+	                    "name": "Test2",
+	                    "description": "Test2",
+	                    "address": "Test2",
+	                    "creator": {
+	                        "id": 2,
+	                        "surname": "a2",
+	                        "name": "a2",
+	                        "second_name": "a2",
+	                        "address": "a2",
+	                        "email": "a2@gmail.com",
+	                        "phone": null,
+	                        "image": null,
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-24T11:46:46.122045Z",
+	                        "updated_at": "2021-10-24T11:46:46.122074Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-24T12:51:25.358058Z",
+	                    "updated_at": "2021-10-24T12:51:25.358111Z"
+	                },
+	                {
 	                    "id": 1,
-	                    "surname": "a",
-	                    "name": "a",
-	                    "patronymic": "a",
-	                    "address": "a",
-	                    "email": "a@gmail.com",
-	                    "phone": null,
-	                    "image": "host/clients/client-l/1/static/Users/default-user-image.jpeg",
-	                    "confirmed_email": false,
-	                    "confirmed_phone": false,
-	                    "created_at": "2021-09-08T12:03:41.729216Z",
-	                    "updated_at": "2021-09-08T12:03:41.729257Z"
-	                },
-	                "created_at": "2021-09-08T15:13:41.218868Z",
-	                "numbers": {
-	                    "main": "+79999999999"
-	                },
-	                "links": {
-	                    "vk": "vk.com"
-	                },
-	                "updated_at": "2021-09-09T03:03:04.127339Z"
-	            }
-	        ],
-	        "created_at": "2021-09-09T04:10:19.375717Z",
-	        "updated_at": "2021-09-09T04:10:19.755395Z"
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                }
+	            ],
+	            "created_at": "2021-10-25T18:49:24.278461Z",
+	            "updated_at": "2021-10-25T19:00:47.741996Z"
+	        },
+	        "created_at": "2021-10-25T18:49:24.549258Z",
+	        "updated_at": "2021-10-25T18:49:24.549305Z"
 	    }
 	]
 	```  
-* **PUT** `client-u/1/`  
+* **GET** `client-card-l/1/p+79517487295/`      
+	*`Response 200`*  
+	```json  
+	[
+	    {
+	        "id": 2,
+	        "surname": "",
+	        "name": "TestClient",
+	        "second_name": "",
+	        "phone": "+79517487295",
+	        "address": "",
+	        "organization": {
+	            "id": 1,
+	            "name": "Test",
+	            "description": "Test",
+	            "address": "Test",
+	            "creator": {
+	                "id": 1,
+	                "surname": "a",
+	                "name": "a",
+	                "second_name": "a",
+	                "address": "a",
+	                "email": "a@gmail.com",
+	                "phone": null,
+	                "image": "../static/Users/default-user-image.jpeg",
+	                "confirmed_email": true,
+	                "confirmed_phone": false,
+	                "created_at": "2021-10-21T15:38:07.599042Z",
+	                "updated_at": "2021-10-22T10:52:18.483765Z"
+	            },
+	            "numbers": null,
+	            "links": null,
+	            "created_at": "2021-10-21T15:45:34.434734Z",
+	            "updated_at": "2021-10-21T15:45:34.434767Z"
+	        },
+	        "client": {
+	            "id": 3,
+	            "surname": "",
+	            "name": "TestClient",
+	            "second_name": "",
+	            "phone": "+79517487295",
+	            "address": "",
+	            "confirmed_phone": false,
+	            "organization": [
+	                {
+	                    "id": 2,
+	                    "name": "Test2",
+	                    "description": "Test2",
+	                    "address": "Test2",
+	                    "creator": {
+	                        "id": 2,
+	                        "surname": "a2",
+	                        "name": "a2",
+	                        "second_name": "a2",
+	                        "address": "a2",
+	                        "email": "a2@gmail.com",
+	                        "phone": null,
+	                        "image": null,
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-24T11:46:46.122045Z",
+	                        "updated_at": "2021-10-24T11:46:46.122074Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-24T12:51:25.358058Z",
+	                    "updated_at": "2021-10-24T12:51:25.358111Z"
+	                },
+	                {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                }
+	            ],
+	            "created_at": "2021-10-25T18:49:24.278461Z",
+	            "updated_at": "2021-10-25T19:00:47.741996Z"
+	        },
+	        "created_at": "2021-10-25T18:49:24.549258Z",
+	        "updated_at": "2021-10-25T18:49:24.549305Z"
+	    }
+	]
+	```  
+* **GET** `client-card-l/1/fTestClient/`      
+	*`Response 200`*  
+	```json  
+	[
+	    {
+	        "id": 2,
+	        "surname": "",
+	        "name": "TestClient",
+	        "second_name": "",
+	        "phone": "+79517487295",
+	        "address": "",
+	        "organization": {
+	            "id": 1,
+	            "name": "Test",
+	            "description": "Test",
+	            "address": "Test",
+	            "creator": {
+	                "id": 1,
+	                "surname": "a",
+	                "name": "a",
+	                "second_name": "a",
+	                "address": "a",
+	                "email": "a@gmail.com",
+	                "phone": null,
+	                "image": "../static/Users/default-user-image.jpeg",
+	                "confirmed_email": true,
+	                "confirmed_phone": false,
+	                "created_at": "2021-10-21T15:38:07.599042Z",
+	                "updated_at": "2021-10-22T10:52:18.483765Z"
+	            },
+	            "numbers": null,
+	            "links": null,
+	            "created_at": "2021-10-21T15:45:34.434734Z",
+	            "updated_at": "2021-10-21T15:45:34.434767Z"
+	        },
+	        "client": {
+	            "id": 3,
+	            "surname": "",
+	            "name": "TestClient",
+	            "second_name": "",
+	            "phone": "+79517487295",
+	            "address": "",
+	            "confirmed_phone": false,
+	            "organization": [
+	                {
+	                    "id": 2,
+	                    "name": "Test2",
+	                    "description": "Test2",
+	                    "address": "Test2",
+	                    "creator": {
+	                        "id": 2,
+	                        "surname": "a2",
+	                        "name": "a2",
+	                        "second_name": "a2",
+	                        "address": "a2",
+	                        "email": "a2@gmail.com",
+	                        "phone": null,
+	                        "image": null,
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-24T11:46:46.122045Z",
+	                        "updated_at": "2021-10-24T11:46:46.122074Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-24T12:51:25.358058Z",
+	                    "updated_at": "2021-10-24T12:51:25.358111Z"
+	                },
+	                {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                }
+	            ],
+	            "created_at": "2021-10-25T18:49:24.278461Z",
+	            "updated_at": "2021-10-25T19:00:47.741996Z"
+	        },
+	        "created_at": "2021-10-25T18:49:24.549258Z",
+	        "updated_at": "2021-10-25T18:49:24.549305Z"
+	    }
+	]
+	```  
+* **PUT** `client-card-ud/2/`  
 	**Empty request data**  
 	**Response**  
-	*`Response 403`*  
-	```json  
-	{
-	    "detail": "You do not have permission to perform this action."
-	}
-	```  
-	If you specify the *id* of the organization and your rights allow you to create a client, it will return (In this case, you should place *id* in *organization* in an array or set, if there are several *id*, it will be taken at index 0)  
-	**Input data**  
-	```json  
-	{
-		"organization":[1]
-	}
-	```  
-	**Response**  
 	*`Response 400`*  
-	```json   
+	```json  
 	{
 	    "name": [
 	        "This field is required."
 	    ],
 	    "phone": [
 	        "This field is required."
-	    ],
-	    "password": [
-	        "This field is required."
 	    ]
 	}
-	```   
-	The correct request  
-	At the client, you can change name, surname, patronymic, phone, password, address, links  
+	```  
+	Surname, second_name, address, image, links, data 
 	**Input data**  
 	```json  
 	{
-		"name":"Client1Changed",
-		"surname":"Client1Changed",
-		"patronymic":"Client1Changed",
-		"phone":"+79517486294",
-		"address":"Client1Changed",
-		"links":{"vk":"vk.com"},
-		"password":"client1client1changed",
-        "organization":[1]
-	}
-	```  
-	**Response**  
-	*`Response 200`*  
-	```json  
-	{
-	    "surname": "Client1Changed",
-	    "name": "Client1Changed",
-	    "patronymic": "Client1Changed",
-	    "phone": "+79517486294",
-	    "address": "Client1Changed",
-	    "links": {
-	        "vk": "vk.com"
-	    }
-	}
-	```  
-* **PATCH** `client-u/1/`  
-	**Empty request data**  
-	**Response**  
-	*`Response 403`*  
-	```json  
-	{
-	    "detail": "You do not have permission to perform this action."
-	}
-	```   
-	If you specify the *id* of the organization and your rights allow you to create a client, it will return (In this case, you should place *id* in *organization* in an array or set, if there are several *id*, it will be taken at index 0)  
-	**Input data**  
-	```json  
-	{
-		"organization":[1]
+	    "organization":1,
+	    "name":"Test2",
+	    "surname":"Surname",
+	    "second_name":"Patronymic(-_-)",
+	    "address":"gdeto",
+	    "phone":"+79992638361"
 	}
 	```  
 	**Response**  
 	*`Response 200`*  
 	```json   
 	{
-	    "surname": "Client1Changed",
-	    "name": "Client1Changed",
-	    "patronymic": "Client1Changed",
-	    "phone": "+79517486294",
-	    "address": "Client1Changed",
-	    "links": {
-	        "vk": "vk.com"
-	    }
+	    "surname": "Surname",
+	    "name": "Test2",
+	    "second_name": "Patronymic(-_-)",
+	    "phone": "+79992638361",
+	    "address": "gdeto",
+	    "links": null
 	}
 	```   
-	The correct request    
-	At the client, you can change name, surname, patronymic, phone, password, address, links  
+* **PATCH** `client-client-card-ud/2/`  
+	**Empty request data**  
+	**Response**  
+	*`Response 400`*  
+	```json  
+	{
+	    "surname": "Surname",
+	    "name": "Test2",
+	    "second_name": "Patronymic(-_-)",
+	    "phone": "+79992638361",
+	    "address": "gdeto",
+	    "links": null
+	}
+	```  
+	Surname, second_name, address, image, links, data 
 	**Input data**  
 	```json  
 	{
-		"name":"Client1",
-		"surname":"Client1",
-		"patronymic":"Client1",
-		"phone":"+79967486294",
-		"address":"Client1",
-		"links":{"vk2":"vk.com"},
-		"password":"client1client1",
-        "organization":[1]
+	    "organization":1,
+	    "name":"Test2",
+	    "surname":"---",
+	    "second_name":"---",
+	    "address":"gdeto",
+	    "phone":"+79993623361",
 	}
 	```  
 	**Response**  
 	*`Response 200`*  
-	```json  
+	```json   
 	{
-	    "surname": "Client1",
-	    "name": "Client1",
-	    "patronymic": "Client1",
-	    "phone": "+79967486294",
-	    "address": "Client1",
-	    "links": {
-	        "vk2": "vk.com"
-	    }
+	    "name":"Test2",
+	    "surname":"---",
+	    "second_name":"---",
+	    "address":"gdeto",
+	    "phone":"+79993623361",
 	}
 	```  
-* **DELETE** `clients-r/1/1/`  
-	**Empty request data**  
-	**Response**  
-	*`Response 403`*  
-	```json  
-	{
-	    "detail": "You do not have permission to perform this action."
-	}
-	```   
-	If you specify the *id* of the organization and your rights allow you to create a client, it will return (In this case, you should place *id* in *organization* in an array or set, if there are several *id*, it will be taken at index 0)  
-	**Input data**  
-	```json  
-	{
-		"organization":[1]
-	}
-	```  
-	**Response**  
-	*`Response 204`*  
+* **DELETE** `client-client-card-ud/2/`
+	**Input data**       
+	```json   
+	{     
+		"organization":1
+	}  
+	```     
+	**Response**    
+	*`Response 204`*   
 	```json   
 	{
 	}
+	```   
+* **GET** `client-card-r/2/1/`  
+	**Response**  
+	*`Response 200`*  
+	```json   
+    {
+        "id": 2,
+        "surname": "",
+        "name": "TestClient",
+        "second_name": "",
+        "phone": "+79517487295",
+        "address": "",
+        "organization": {
+            "id": 1,
+            "name": "Test",
+            "description": "Test",
+            "address": "Test",
+            "creator": {
+                "id": 1,
+                "surname": "a",
+                "name": "a",
+                "second_name": "a",
+                "address": "a",
+                "email": "a@gmail.com",
+                "phone": null,
+                "image": "../static/Users/default-user-image.jpeg",
+                "confirmed_email": true,
+                "confirmed_phone": false,
+                "created_at": "2021-10-21T15:38:07.599042Z",
+                "updated_at": "2021-10-22T10:52:18.483765Z"
+            },
+            "numbers": null,
+            "links": null,
+            "created_at": "2021-10-21T15:45:34.434734Z",
+            "updated_at": "2021-10-21T15:45:34.434767Z"
+        },
+        "client": {
+            "id": 3,
+            "surname": "",
+            "name": "TestClient",
+            "second_name": "",
+            "phone": "+79517487295",
+            "address": "",
+            "confirmed_phone": false,
+            "organization": [
+                {
+                    "id": 2,
+                    "name": "Test2",
+                    "description": "Test2",
+                    "address": "Test2",
+                    "creator": {
+                        "id": 2,
+                        "surname": "a2",
+                        "name": "a2",
+                        "second_name": "a2",
+                        "address": "a2",
+                        "email": "a2@gmail.com",
+                        "phone": null,
+                        "image": null,
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-24T11:46:46.122045Z",
+                        "updated_at": "2021-10-24T11:46:46.122074Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-24T12:51:25.358058Z",
+                    "updated_at": "2021-10-24T12:51:25.358111Z"
+                },
+                {
+                    "id": 1,
+                    "name": "Test",
+                    "description": "Test",
+                    "address": "Test",
+                    "creator": {
+                        "id": 1,
+                        "surname": "a",
+                        "name": "a",
+                        "second_name": "a",
+                        "address": "a",
+                        "email": "a@gmail.com",
+                        "phone": null,
+                        "image": "../static/Users/default-user-image.jpeg",
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-21T15:38:07.599042Z",
+                        "updated_at": "2021-10-22T10:52:18.483765Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-21T15:45:34.434734Z",
+                    "updated_at": "2021-10-21T15:45:34.434767Z"
+                }
+            ],
+            "created_at": "2021-10-25T18:49:24.278461Z",
+            "updated_at": "2021-10-25T19:00:47.741996Z"
+        },
+        "created_at": "2021-10-25T18:49:24.549258Z",
+        "updated_at": "2021-10-25T18:49:24.549305Z"
+    }
 	```  
 
 ## **Client Auth**

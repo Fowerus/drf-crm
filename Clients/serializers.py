@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 
 from rest_framework import serializers
 from rest_framework.response import Response
@@ -45,22 +46,23 @@ class ClientCardSerializer(serializers.ModelSerializer):
 	class ClientCardCSerializer(serializers.ModelSerializer):
 		password = serializers.CharField(max_length = 128, write_only = True)
 
+		@transaction.atomic
 		def create(self, validated_data):
-			organization = validated_data.pop('organization')[0]
+			organization = validated_data.pop('organization')
 			try:
 				client = Client.objects.get(phone = validated_data['phone'])
-				client.add(organization)
+				client.organization.add(organization)
 				client.save()
 
 			except:
 				password = validated_data['password']
-				client = Client.objects.create(**validated_data)
+				client = Client.objects.create(**validated_data, phone = validated_data('phone'))
 				client.set_password(password)
 				client.organization.add(organization)
 				client.save()
 
 			try:
-				client_card = ClientCard.objects.filter(organization__id = organization).get(phone = validated_data['phone'])
+				client_card = ClientCard.objects.filter(organization = organization).get(phone = validated_data['phone'])
 
 			except:
 				validated_data.pop('password')
@@ -71,35 +73,20 @@ class ClientCardSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = ClientCard
-			fields = ['surname', 'name', 'second_name', 'phone', 'address', 'organization', 'password']
+			fields = ['surname', 'name', 'second_name', 'phone', 'address', 'organization']
 
 
 
 	class ClientCardUSerializer(serializers.ModelSerializer):
-		password = serializers.CharField(max_length = 128, write_only = True)
-
-		def update(self, instance, validated_data):
-
-			if 'phone' in validated_data:
-				instance.phone = validated_data['phone']
-				instance.confirmed_phone = False
-				validated_data.pop('phone')
-
-			if 'password' in validated_data:
-				instance.client.set_password(validated_data['password'])
-				validated_data.pop('password')
-
-			return super().update(instance, validated_data)
-
 
 		class Meta:
 			model = ClientCard
-			fields = ['surname', 'name', 'second_name', 'phone', 'address', 'links', 'password']
+			fields = ['surname', 'name', 'second_name', 'phone', 'address', 'links']
 			
 
 	class Meta:
 		model = ClientCard
-		fields = ['id', 'surname', 'name', 'second_name', 'phone', 'address', 'confirmed_phone', 'organization', 'client', 'created_at', 'updated_at']
+		fields = ['id', 'surname', 'name', 'second_name', 'phone', 'address', 'organization', 'client', 'created_at', 'updated_at']
 
 
 
