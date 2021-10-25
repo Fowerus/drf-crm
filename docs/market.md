@@ -3056,3 +3056,1583 @@ If you do not have enough rights or the account is not confirmed or the session 
         "updated_at": "2021-10-25T15:38:53.301514Z"
     }
 	```    
+## **SaleOrder**  
+**Headers**  
+```json  
+{
+	"Content-Type":"application/json",
+	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
+}
+```  
+* **POST** `sale-order-c/`        
+	**Empty request body**     
+	**Response**  
+	*`Response 400`*    
+	```json  
+	{
+	    "cash": [
+	        "This field is required."
+	    ],
+	    "card": [
+	        "This field is required."
+	    ],
+	    "bank_transfer": [
+	        "This field is required."
+	    ],
+	    "discount": [
+	        "This field is required."
+	    ],
+	    "cashbox": [
+	        "This field is required."
+	    ],
+	    "product_order": [
+	        "This field is required."
+	    ],
+	    "service": [
+	        "This field is required."
+	    ]
+	}
+	```
+	Also you can add client field in request body     
+	**Input data**     
+	```json  
+	{
+	    "organization":1,
+	    "cash":"30.00",
+	    "card":0,
+	    "bank_transfer":0,
+	    "discount":"0",
+	    "cashbox":1,
+	    "service":1,
+	    "product_order":9
+	}
+	```  
+	**Response**  
+	*`Response 201`*    
+	```json  
+	{
+	    "cash": "30.00",
+	    "card": "0.00",
+	    "bank_transfer": "0.00",
+	    "discount": "0.00",
+	    "client": null,
+	    "organization": 1,
+	    "cashbox": 1,
+	    "product_order": 9,
+	    "service": 1
+	}
+	```  
+* **GET** `sale-order-l/1/`    
+	**Response**  
+	*`Response 200`*    
+	```json   
+	[
+	    {
+	        "id": 1,
+	        "cash": "30.00",
+	        "card": "0.00",
+	        "bank_transfer": "0.00",
+	        "discount": "0.00",
+	        "client": null,
+	        "organization": {
+	            "id": 1,
+	            "name": "Test",
+	            "description": "Test",
+	            "address": "Test",
+	            "creator": {
+	                "id": 1,
+	                "surname": "a",
+	                "name": "a",
+	                "second_name": "a",
+	                "address": "a",
+	                "email": "a@gmail.com",
+	                "phone": null,
+	                "image": "../static/Users/default-user-image.jpeg",
+	                "confirmed_email": true,
+	                "confirmed_phone": false,
+	                "created_at": "2021-10-21T15:38:07.599042Z",
+	                "updated_at": "2021-10-22T10:52:18.483765Z"
+	            },
+	            "numbers": null,
+	            "links": null,
+	            "created_at": "2021-10-21T15:45:34.434734Z",
+	            "updated_at": "2021-10-21T15:45:34.434767Z"
+	        },
+	        "cashbox": {
+	            "id": 1,
+	            "name": "Cashbox",
+	            "cash": "53.00",
+	            "account_money": "10.00",
+	            "organization": {
+	                "id": 1,
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
+	            },
+	            "service": {
+	                "id": 1,
+	                "name": "Test",
+	                "address": "Test",
+	                "phone": "+79999999999",
+	                "organization": {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                },
+	                "created_at": "2021-10-21T15:46:42.682220Z",
+	                "updated_at": "2021-10-21T15:46:42.682258Z"
+	            },
+	            "created_at": "2021-10-25T09:38:44.934208Z",
+	            "updated_at": "2021-10-25T17:34:49.358778Z"
+	        },
+	        "product_order": {
+	            "id": 9,
+	            "name": "Test4",
+	            "price": "30.00",
+	            "organization": {
+	                "id": 1,
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
+	            },
+	            "products": [
+	                {
+	                    "id": 5,
+	                    "name": "Org2product",
+	                    "code": "574426714052815",
+	                    "barcode": "574426714845097",
+	                    "purchase_price": "10.00",
+	                    "sale_price": "10.00",
+	                    "count": 3,
+	                    "supplier": "Test2",
+	                    "irreducible_balance": "0.00",
+	                    "organization": {
+	                        "id": 1,
+	                        "name": "Test",
+	                        "description": "Test",
+	                        "address": "Test",
+	                        "creator": {
+	                            "id": 1,
+	                            "surname": "a",
+	                            "name": "a",
+	                            "second_name": "a",
+	                            "address": "a",
+	                            "email": "a@gmail.com",
+	                            "phone": null,
+	                            "image": "../static/Users/default-user-image.jpeg",
+	                            "confirmed_email": true,
+	                            "confirmed_phone": false,
+	                            "created_at": "2021-10-21T15:38:07.599042Z",
+	                            "updated_at": "2021-10-22T10:52:18.483765Z"
+	                        },
+	                        "numbers": null,
+	                        "links": null,
+	                        "created_at": "2021-10-21T15:45:34.434734Z",
+	                        "updated_at": "2021-10-21T15:45:34.434767Z"
+	                    },
+	                    "service": {
+	                        "id": 1,
+	                        "name": "Test",
+	                        "address": "Test",
+	                        "phone": "+79999999999",
+	                        "organization": {
+	                            "id": 1,
+	                            "name": "Test",
+	                            "description": "Test",
+	                            "address": "Test",
+	                            "creator": {
+	                                "id": 1,
+	                                "surname": "a",
+	                                "name": "a",
+	                                "second_name": "a",
+	                                "address": "a",
+	                                "email": "a@gmail.com",
+	                                "phone": null,
+	                                "image": "../static/Users/default-user-image.jpeg",
+	                                "confirmed_email": true,
+	                                "confirmed_phone": false,
+	                                "created_at": "2021-10-21T15:38:07.599042Z",
+	                                "updated_at": "2021-10-22T10:52:18.483765Z"
+	                            },
+	                            "numbers": null,
+	                            "links": null,
+	                            "created_at": "2021-10-21T15:45:34.434734Z",
+	                            "updated_at": "2021-10-21T15:45:34.434767Z"
+	                        },
+	                        "created_at": "2021-10-21T15:46:42.682220Z",
+	                        "updated_at": "2021-10-21T15:46:42.682258Z"
+	                    },
+	                    "category": {
+	                        "id": 1,
+	                        "name": "Phone",
+	                        "created_at": "2021-10-25T08:14:57.130029Z",
+	                        "updated_at": "2021-10-25T08:14:57.130065Z"
+	                    },
+	                    "created_at": "2021-10-25T13:26:32.306469Z",
+	                    "updated_at": "2021-10-25T16:32:58.474888Z"
+	                },
+	                {
+	                    "id": 9,
+	                    "name": "Test item",
+	                    "code": "tryukhjbmgftryukmnbg",
+	                    "barcode": "wt4eyuiykj",
+	                    "purchase_price": "10.00",
+	                    "sale_price": "2.00",
+	                    "count": 3,
+	                    "supplier": "I",
+	                    "irreducible_balance": "0.00",
+	                    "organization": {
+	                        "id": 1,
+	                        "name": "Test",
+	                        "description": "Test",
+	                        "address": "Test",
+	                        "creator": {
+	                            "id": 1,
+	                            "surname": "a",
+	                            "name": "a",
+	                            "second_name": "a",
+	                            "address": "a",
+	                            "email": "a@gmail.com",
+	                            "phone": null,
+	                            "image": "../static/Users/default-user-image.jpeg",
+	                            "confirmed_email": true,
+	                            "confirmed_phone": false,
+	                            "created_at": "2021-10-21T15:38:07.599042Z",
+	                            "updated_at": "2021-10-22T10:52:18.483765Z"
+	                        },
+	                        "numbers": null,
+	                        "links": null,
+	                        "created_at": "2021-10-21T15:45:34.434734Z",
+	                        "updated_at": "2021-10-21T15:45:34.434767Z"
+	                    },
+	                    "service": {
+	                        "id": 1,
+	                        "name": "Test",
+	                        "address": "Test",
+	                        "phone": "+79999999999",
+	                        "organization": {
+	                            "id": 1,
+	                            "name": "Test",
+	                            "description": "Test",
+	                            "address": "Test",
+	                            "creator": {
+	                                "id": 1,
+	                                "surname": "a",
+	                                "name": "a",
+	                                "second_name": "a",
+	                                "address": "a",
+	                                "email": "a@gmail.com",
+	                                "phone": null,
+	                                "image": "../static/Users/default-user-image.jpeg",
+	                                "confirmed_email": true,
+	                                "confirmed_phone": false,
+	                                "created_at": "2021-10-21T15:38:07.599042Z",
+	                                "updated_at": "2021-10-22T10:52:18.483765Z"
+	                            },
+	                            "numbers": null,
+	                            "links": null,
+	                            "created_at": "2021-10-21T15:45:34.434734Z",
+	                            "updated_at": "2021-10-21T15:45:34.434767Z"
+	                        },
+	                        "created_at": "2021-10-21T15:46:42.682220Z",
+	                        "updated_at": "2021-10-21T15:46:42.682258Z"
+	                    },
+	                    "category": {
+	                        "id": 1,
+	                        "name": "Phone",
+	                        "created_at": "2021-10-25T08:14:57.130029Z",
+	                        "updated_at": "2021-10-25T08:14:57.130065Z"
+	                    },
+	                    "created_at": "2021-10-25T16:17:57.120771Z",
+	                    "updated_at": "2021-10-25T16:32:58.473126Z"
+	                }
+	            ],
+	            "order": {
+	                "id": 1,
+	                "order_code": "eawtt",
+	                "description": "retw4bt54t43",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "executor": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "organization": {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                },
+	                "client": 1,
+	                "done": false,
+	                "service": {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "address": "Test",
+	                    "phone": "+79999999999",
+	                    "organization": {
+	                        "id": 1,
+	                        "name": "Test",
+	                        "description": "Test",
+	                        "address": "Test",
+	                        "creator": {
+	                            "id": 1,
+	                            "surname": "a",
+	                            "name": "a",
+	                            "second_name": "a",
+	                            "address": "a",
+	                            "email": "a@gmail.com",
+	                            "phone": null,
+	                            "image": "../static/Users/default-user-image.jpeg",
+	                            "confirmed_email": true,
+	                            "confirmed_phone": false,
+	                            "created_at": "2021-10-21T15:38:07.599042Z",
+	                            "updated_at": "2021-10-22T10:52:18.483765Z"
+	                        },
+	                        "numbers": null,
+	                        "links": null,
+	                        "created_at": "2021-10-21T15:45:34.434734Z",
+	                        "updated_at": "2021-10-21T15:45:34.434767Z"
+	                    },
+	                    "created_at": "2021-10-21T15:46:42.682220Z",
+	                    "updated_at": "2021-10-21T15:46:42.682258Z"
+	                },
+	                "order_status": 1,
+	                "created_at": "2021-10-21T15:54:30.332013Z",
+	                "updated_at": "2021-10-21T15:54:30.332050Z",
+	                "device_type": "rer",
+	                "device_maker": "werwer",
+	                "device_model": "werwerewrwe",
+	                "device_kit": "",
+	                "device_appearance": "",
+	                "device_defect": ""
+	            },
+	            "service": {
+	                "id": 1,
+	                "name": "Test",
+	                "address": "Test",
+	                "phone": "+79999999999",
+	                "organization": {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                },
+	                "created_at": "2021-10-21T15:46:42.682220Z",
+	                "updated_at": "2021-10-21T15:46:42.682258Z"
+	            },
+	            "created_at": "2021-10-25T17:22:07.109240Z",
+	            "updated_at": "2021-10-25T17:22:07.109277Z"
+	        },
+	        "service": {
+	            "id": 1,
+	            "name": "Test",
+	            "address": "Test",
+	            "phone": "+79999999999",
+	            "organization": {
+	                "id": 1,
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
+	            },
+	            "created_at": "2021-10-21T15:46:42.682220Z",
+	            "updated_at": "2021-10-21T15:46:42.682258Z"
+	        },
+	        "created_at": "2021-10-25T17:34:49.339012Z",
+	        "updated_at": "2021-10-25T17:34:49.362932Z"
+	    }
+	]
+	```   
+* **PUT** `sale-order-ud/1/`    
+	**Empty request body**     
+	**Response**    
+	*`Response 400`*   
+	```json    
+	{
+	    "cash": [
+	        "This field is required."
+	    ],
+	    "card": [
+	        "This field is required."
+	    ],
+	    "bank_transfer": [
+	        "This field is required."
+	    ],
+	    "discount": [
+	        "This field is required."
+	    ],
+	    "cashbox": [
+	        "This field is required."
+	    ],
+	    "service": [
+	        "This field is required."
+	    ]
+	}
+	```   
+	Also you can add client field in request body     
+	**Input data**      
+	```json   
+	{
+	    "organization":1,
+	    "cash":"20.00",
+	    "card":0,
+	    "bank_transfer":0,
+	    "discount":"0",
+	    "cashbox":1,
+	    "service":1,
+	    "product_order":9
+	}
+	```   
+	**Response**   
+	*`Response 200`*  
+	```json  
+	{
+	    "cash":"20.00",
+	    "card":0,
+	    "bank_transfer":0,
+	    "discount":"0",
+	    "cashbox":1,
+	    "service":1,
+	    "product_order":9
+	}
+	```  
+* **PATCH** `sale-order-ud/1/`   
+	**Empty request body**    
+	**Response**   
+	*`Response 200`*  
+	```json   
+	{
+	    "cash": "20.00",
+	    "card": "0.00",
+	    "bank_transfer": "0.00",
+	    "discount": "0.00",
+	    "client": null,
+	    "cashbox": 1,
+	    "service": 1
+	}
+	```   
+	**Input data**      
+	```json  
+	{
+	    "cash": "30.00",
+	    "card": "0.00",
+	    "bank_transfer": "0.00",
+	    "discount": "0.00",
+	    "client": null,
+	    "cashbox": 1,
+	    "service": 1
+	}
+	```   
+	**Response**  
+	*`Response 200`*   
+	```json   
+	{
+	    "cash": "30.00",
+	    "card": "0.00",
+	    "bank_transfer": "0.00",
+	    "discount": "0.00",
+	    "client": null,
+	    "cashbox": 1,
+	    "service": 1
+	}
+	```  
+* **DELETE** `sale-order-ud/1/`  
+	**Input data**  
+	```json   
+	{     
+		"organization":1
+	}  
+	```     
+	**Response**    
+	*`Response 204`*   
+	```json   
+	{
+	}
+	```  
+* **GET** `sale-product-r/1/1/`   
+	**Response**  
+	*`Response 200`*  
+	```json  
+	{
+        "id": 1,
+        "cash": "30.00",
+        "card": "0.00",
+        "bank_transfer": "0.00",
+        "discount": "0.00",
+        "client": null,
+        "organization": {
+            "id": 1,
+            "name": "Test",
+            "description": "Test",
+            "address": "Test",
+            "creator": {
+                "id": 1,
+                "surname": "a",
+                "name": "a",
+                "second_name": "a",
+                "address": "a",
+                "email": "a@gmail.com",
+                "phone": null,
+                "image": "../static/Users/default-user-image.jpeg",
+                "confirmed_email": true,
+                "confirmed_phone": false,
+                "created_at": "2021-10-21T15:38:07.599042Z",
+                "updated_at": "2021-10-22T10:52:18.483765Z"
+            },
+            "numbers": null,
+            "links": null,
+            "created_at": "2021-10-21T15:45:34.434734Z",
+            "updated_at": "2021-10-21T15:45:34.434767Z"
+        },
+        "cashbox": {
+            "id": 1,
+            "name": "Cashbox",
+            "cash": "53.00",
+            "account_money": "10.00",
+            "organization": {
+                "id": 1,
+                "name": "Test",
+                "description": "Test",
+                "address": "Test",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-21T15:45:34.434734Z",
+                "updated_at": "2021-10-21T15:45:34.434767Z"
+            },
+            "service": {
+                "id": 1,
+                "name": "Test",
+                "address": "Test",
+                "phone": "+79999999999",
+                "organization": {
+                    "id": 1,
+                    "name": "Test",
+                    "description": "Test",
+                    "address": "Test",
+                    "creator": {
+                        "id": 1,
+                        "surname": "a",
+                        "name": "a",
+                        "second_name": "a",
+                        "address": "a",
+                        "email": "a@gmail.com",
+                        "phone": null,
+                        "image": "../static/Users/default-user-image.jpeg",
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-21T15:38:07.599042Z",
+                        "updated_at": "2021-10-22T10:52:18.483765Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-21T15:45:34.434734Z",
+                    "updated_at": "2021-10-21T15:45:34.434767Z"
+                },
+                "created_at": "2021-10-21T15:46:42.682220Z",
+                "updated_at": "2021-10-21T15:46:42.682258Z"
+            },
+            "created_at": "2021-10-25T09:38:44.934208Z",
+            "updated_at": "2021-10-25T17:34:49.358778Z"
+        },
+        "product_order": {
+            "id": 9,
+            "name": "Test4",
+            "price": "30.00",
+            "organization": {
+                "id": 1,
+                "name": "Test",
+                "description": "Test",
+                "address": "Test",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-21T15:45:34.434734Z",
+                "updated_at": "2021-10-21T15:45:34.434767Z"
+            },
+            "products": [
+                {
+                    "id": 5,
+                    "name": "Org2product",
+                    "code": "574426714052815",
+                    "barcode": "574426714845097",
+                    "purchase_price": "10.00",
+                    "sale_price": "10.00",
+                    "count": 3,
+                    "supplier": "Test2",
+                    "irreducible_balance": "0.00",
+                    "organization": {
+                        "id": 1,
+                        "name": "Test",
+                        "description": "Test",
+                        "address": "Test",
+                        "creator": {
+                            "id": 1,
+                            "surname": "a",
+                            "name": "a",
+                            "second_name": "a",
+                            "address": "a",
+                            "email": "a@gmail.com",
+                            "phone": null,
+                            "image": "../static/Users/default-user-image.jpeg",
+                            "confirmed_email": true,
+                            "confirmed_phone": false,
+                            "created_at": "2021-10-21T15:38:07.599042Z",
+                            "updated_at": "2021-10-22T10:52:18.483765Z"
+                        },
+                        "numbers": null,
+                        "links": null,
+                        "created_at": "2021-10-21T15:45:34.434734Z",
+                        "updated_at": "2021-10-21T15:45:34.434767Z"
+                    },
+                    "service": {
+                        "id": 1,
+                        "name": "Test",
+                        "address": "Test",
+                        "phone": "+79999999999",
+                        "organization": {
+                            "id": 1,
+                            "name": "Test",
+                            "description": "Test",
+                            "address": "Test",
+                            "creator": {
+                                "id": 1,
+                                "surname": "a",
+                                "name": "a",
+                                "second_name": "a",
+                                "address": "a",
+                                "email": "a@gmail.com",
+                                "phone": null,
+                                "image": "../static/Users/default-user-image.jpeg",
+                                "confirmed_email": true,
+                                "confirmed_phone": false,
+                                "created_at": "2021-10-21T15:38:07.599042Z",
+                                "updated_at": "2021-10-22T10:52:18.483765Z"
+                            },
+                            "numbers": null,
+                            "links": null,
+                            "created_at": "2021-10-21T15:45:34.434734Z",
+                            "updated_at": "2021-10-21T15:45:34.434767Z"
+                        },
+                        "created_at": "2021-10-21T15:46:42.682220Z",
+                        "updated_at": "2021-10-21T15:46:42.682258Z"
+                    },
+                    "category": {
+                        "id": 1,
+                        "name": "Phone",
+                        "created_at": "2021-10-25T08:14:57.130029Z",
+                        "updated_at": "2021-10-25T08:14:57.130065Z"
+                    },
+                    "created_at": "2021-10-25T13:26:32.306469Z",
+                    "updated_at": "2021-10-25T16:32:58.474888Z"
+                },
+                {
+                    "id": 9,
+                    "name": "Test item",
+                    "code": "tryukhjbmgftryukmnbg",
+                    "barcode": "wt4eyuiykj",
+                    "purchase_price": "10.00",
+                    "sale_price": "2.00",
+                    "count": 3,
+                    "supplier": "I",
+                    "irreducible_balance": "0.00",
+                    "organization": {
+                        "id": 1,
+                        "name": "Test",
+                        "description": "Test",
+                        "address": "Test",
+                        "creator": {
+                            "id": 1,
+                            "surname": "a",
+                            "name": "a",
+                            "second_name": "a",
+                            "address": "a",
+                            "email": "a@gmail.com",
+                            "phone": null,
+                            "image": "../static/Users/default-user-image.jpeg",
+                            "confirmed_email": true,
+                            "confirmed_phone": false,
+                            "created_at": "2021-10-21T15:38:07.599042Z",
+                            "updated_at": "2021-10-22T10:52:18.483765Z"
+                        },
+                        "numbers": null,
+                        "links": null,
+                        "created_at": "2021-10-21T15:45:34.434734Z",
+                        "updated_at": "2021-10-21T15:45:34.434767Z"
+                    },
+                    "service": {
+                        "id": 1,
+                        "name": "Test",
+                        "address": "Test",
+                        "phone": "+79999999999",
+                        "organization": {
+                            "id": 1,
+                            "name": "Test",
+                            "description": "Test",
+                            "address": "Test",
+                            "creator": {
+                                "id": 1,
+                                "surname": "a",
+                                "name": "a",
+                                "second_name": "a",
+                                "address": "a",
+                                "email": "a@gmail.com",
+                                "phone": null,
+                                "image": "../static/Users/default-user-image.jpeg",
+                                "confirmed_email": true,
+                                "confirmed_phone": false,
+                                "created_at": "2021-10-21T15:38:07.599042Z",
+                                "updated_at": "2021-10-22T10:52:18.483765Z"
+                            },
+                            "numbers": null,
+                            "links": null,
+                            "created_at": "2021-10-21T15:45:34.434734Z",
+                            "updated_at": "2021-10-21T15:45:34.434767Z"
+                        },
+                        "created_at": "2021-10-21T15:46:42.682220Z",
+                        "updated_at": "2021-10-21T15:46:42.682258Z"
+                    },
+                    "category": {
+                        "id": 1,
+                        "name": "Phone",
+                        "created_at": "2021-10-25T08:14:57.130029Z",
+                        "updated_at": "2021-10-25T08:14:57.130065Z"
+                    },
+                    "created_at": "2021-10-25T16:17:57.120771Z",
+                    "updated_at": "2021-10-25T16:32:58.473126Z"
+                }
+            ],
+            "order": {
+                "id": 1,
+                "order_code": "eawtt",
+                "description": "retw4bt54t43",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "executor": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "organization": {
+                    "id": 1,
+                    "name": "Test",
+                    "description": "Test",
+                    "address": "Test",
+                    "creator": {
+                        "id": 1,
+                        "surname": "a",
+                        "name": "a",
+                        "second_name": "a",
+                        "address": "a",
+                        "email": "a@gmail.com",
+                        "phone": null,
+                        "image": "../static/Users/default-user-image.jpeg",
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-21T15:38:07.599042Z",
+                        "updated_at": "2021-10-22T10:52:18.483765Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-21T15:45:34.434734Z",
+                    "updated_at": "2021-10-21T15:45:34.434767Z"
+                },
+                "client": 1,
+                "done": false,
+                "service": {
+                    "id": 1,
+                    "name": "Test",
+                    "address": "Test",
+                    "phone": "+79999999999",
+                    "organization": {
+                        "id": 1,
+                        "name": "Test",
+                        "description": "Test",
+                        "address": "Test",
+                        "creator": {
+                            "id": 1,
+                            "surname": "a",
+                            "name": "a",
+                            "second_name": "a",
+                            "address": "a",
+                            "email": "a@gmail.com",
+                            "phone": null,
+                            "image": "../static/Users/default-user-image.jpeg",
+                            "confirmed_email": true,
+                            "confirmed_phone": false,
+                            "created_at": "2021-10-21T15:38:07.599042Z",
+                            "updated_at": "2021-10-22T10:52:18.483765Z"
+                        },
+                        "numbers": null,
+                        "links": null,
+                        "created_at": "2021-10-21T15:45:34.434734Z",
+                        "updated_at": "2021-10-21T15:45:34.434767Z"
+                    },
+                    "created_at": "2021-10-21T15:46:42.682220Z",
+                    "updated_at": "2021-10-21T15:46:42.682258Z"
+                },
+                "order_status": 1,
+                "created_at": "2021-10-21T15:54:30.332013Z",
+                "updated_at": "2021-10-21T15:54:30.332050Z",
+                "device_type": "rer",
+                "device_maker": "werwer",
+                "device_model": "werwerewrwe",
+                "device_kit": "",
+                "device_appearance": "",
+                "device_defect": ""
+            },
+            "service": {
+                "id": 1,
+                "name": "Test",
+                "address": "Test",
+                "phone": "+79999999999",
+                "organization": {
+                    "id": 1,
+                    "name": "Test",
+                    "description": "Test",
+                    "address": "Test",
+                    "creator": {
+                        "id": 1,
+                        "surname": "a",
+                        "name": "a",
+                        "second_name": "a",
+                        "address": "a",
+                        "email": "a@gmail.com",
+                        "phone": null,
+                        "image": "../static/Users/default-user-image.jpeg",
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-21T15:38:07.599042Z",
+                        "updated_at": "2021-10-22T10:52:18.483765Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-21T15:45:34.434734Z",
+                    "updated_at": "2021-10-21T15:45:34.434767Z"
+                },
+                "created_at": "2021-10-21T15:46:42.682220Z",
+                "updated_at": "2021-10-21T15:46:42.682258Z"
+            },
+            "created_at": "2021-10-25T17:22:07.109240Z",
+            "updated_at": "2021-10-25T17:22:07.109277Z"
+        },
+        "service": {
+            "id": 1,
+            "name": "Test",
+            "address": "Test",
+            "phone": "+79999999999",
+            "organization": {
+                "id": 1,
+                "name": "Test",
+                "description": "Test",
+                "address": "Test",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-21T15:45:34.434734Z",
+                "updated_at": "2021-10-21T15:45:34.434767Z"
+            },
+            "created_at": "2021-10-21T15:46:42.682220Z",
+            "updated_at": "2021-10-21T15:46:42.682258Z"
+        },
+        "created_at": "2021-10-25T17:34:49.339012Z",
+        "updated_at": "2021-10-25T17:34:49.362932Z"
+    }
+	```    
+## **WorkDone**  
+**Headers**  
+```json  
+{
+	"Content-Type":"application/json",
+	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
+}
+```  
+* **POST** `work-done-c/`        
+	**Empty request body**     
+	**Response**  
+	*`Response 400`*    
+	```json  
+	{
+	    "name": [
+	        "This field is required."
+	    ],
+	    "price": [
+	        "This field is required."
+	    ],
+	    "user": [
+	        "This field is required."
+	    ],
+	    "order": [
+	        "This field is required."
+	    ],
+	    "service": [
+	        "This field is required."
+	    ]
+	}
+	```
+	Also you can add service_price field in request body     
+	**Input data**     
+	```json  
+	{
+	    "organization":1,
+	    "name":"TestOrder",
+	    "price":30.0,
+	    "user":1,
+	    "order":1,
+	    "service":1
+	}
+	```  
+	**Response**  
+	*`Response 201`*    
+	```json  
+	{
+	    "organization":1,
+	    "name":"TestOrder",
+	    "price":30.0,
+	    "user":1,
+	    "order":1,
+	    "service":1,
+	    "service_price": null,
+	}
+	```  
+* **GET** `work-done-l/1/`    
+	**Response**  
+	*`Response 200`*    
+	```json   
+	[
+	    {
+	        "id": 1,
+	        "name": "TestOrder",
+	        "price": "30.00",
+	        "organization": {
+	            "id": 1,
+	            "name": "Test",
+	            "description": "Test",
+	            "address": "Test",
+	            "creator": {
+	                "id": 1,
+	                "surname": "a",
+	                "name": "a",
+	                "second_name": "a",
+	                "address": "a",
+	                "email": "a@gmail.com",
+	                "phone": null,
+	                "image": "../static/Users/default-user-image.jpeg",
+	                "confirmed_email": true,
+	                "confirmed_phone": false,
+	                "created_at": "2021-10-21T15:38:07.599042Z",
+	                "updated_at": "2021-10-22T10:52:18.483765Z"
+	            },
+	            "numbers": null,
+	            "links": null,
+	            "created_at": "2021-10-21T15:45:34.434734Z",
+	            "updated_at": "2021-10-21T15:45:34.434767Z"
+	        },
+	        "service_price": null,
+	        "user": {
+	            "id": 1,
+	            "surname": "a",
+	            "name": "a",
+	            "second_name": "a",
+	            "address": "a",
+	            "email": "a@gmail.com",
+	            "phone": null,
+	            "image": "../static/Users/default-user-image.jpeg",
+	            "confirmed_email": true,
+	            "confirmed_phone": false,
+	            "created_at": "2021-10-21T15:38:07.599042Z",
+	            "updated_at": "2021-10-22T10:52:18.483765Z"
+	        },
+	        "order": {
+	            "id": 1,
+	            "order_code": "eawtt",
+	            "description": "retw4bt54t43",
+	            "creator": {
+	                "id": 1,
+	                "surname": "a",
+	                "name": "a",
+	                "second_name": "a",
+	                "address": "a",
+	                "email": "a@gmail.com",
+	                "phone": null,
+	                "image": "../static/Users/default-user-image.jpeg",
+	                "confirmed_email": true,
+	                "confirmed_phone": false,
+	                "created_at": "2021-10-21T15:38:07.599042Z",
+	                "updated_at": "2021-10-22T10:52:18.483765Z"
+	            },
+	            "executor": {
+	                "id": 1,
+	                "surname": "a",
+	                "name": "a",
+	                "second_name": "a",
+	                "address": "a",
+	                "email": "a@gmail.com",
+	                "phone": null,
+	                "image": "../static/Users/default-user-image.jpeg",
+	                "confirmed_email": true,
+	                "confirmed_phone": false,
+	                "created_at": "2021-10-21T15:38:07.599042Z",
+	                "updated_at": "2021-10-22T10:52:18.483765Z"
+	            },
+	            "organization": {
+	                "id": 1,
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
+	            },
+	            "client": 1,
+	            "done": false,
+	            "service": {
+	                "id": 1,
+	                "name": "Test",
+	                "address": "Test",
+	                "phone": "+79999999999",
+	                "organization": {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                },
+	                "created_at": "2021-10-21T15:46:42.682220Z",
+	                "updated_at": "2021-10-21T15:46:42.682258Z"
+	            },
+	            "order_status": 1,
+	            "created_at": "2021-10-21T15:54:30.332013Z",
+	            "updated_at": "2021-10-21T15:54:30.332050Z",
+	            "device_type": "rer",
+	            "device_maker": "werwer",
+	            "device_model": "werwerewrwe",
+	            "device_kit": "",
+	            "device_appearance": "",
+	            "device_defect": ""
+	        },
+	        "service": {
+	            "id": 1,
+	            "name": "Test",
+	            "address": "Test",
+	            "phone": "+79999999999",
+	            "organization": {
+	                "id": 1,
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
+	            },
+	            "created_at": "2021-10-21T15:46:42.682220Z",
+	            "updated_at": "2021-10-21T15:46:42.682258Z"
+	        },
+	        "created_at": "2021-10-25T18:02:35.783255Z",
+	        "updated_at": "2021-10-25T18:02:35.783296Z"
+	    }
+	]
+	```   
+* **PUT** `work-done-ud/1/`    
+	**Empty request body**     
+	**Response**    
+	*`Response 400`*   
+	```json    
+	{
+	    "name": [
+	        "This field is required."
+	    ],
+	    "price": [
+	        "This field is required."
+	    ],
+	    "service": [
+	        "This field is required."
+	    ]
+	}
+	```   
+	Also you can add service_price field in request body     
+	**Input data**      
+	```json   
+	{
+	    "organization":1,
+	    "name":"ChangedName",
+	    "price":35.00,
+	    "service":1
+	}
+	```   
+	**Response**   
+	*`Response 200`*  
+	```json  
+	{
+	    "name": "ChangedName",
+	    "price": "35.00",
+	    "service_price": null,
+	    "service": 1
+	}
+	```  
+* **PATCH** `work-done-ud/1/`   
+	**Empty request body**    
+	**Response**   
+	*`Response 200`*  
+	```json   
+	{
+	    "name": "ChangedName",
+	    "price": "35.00",
+	    "service_price": null,
+	    "service": 1
+	}
+	```   
+	**Input data**      
+	```json  
+	{
+		"organization":1,
+	    "name": "Name",
+	    "price": "35.00",
+	    "service_price": null,
+	    "service": 1
+	}
+	```   
+	**Response**  
+	*`Response 200`*   
+	```json   
+	{
+	    "name": "Name",
+	    "price": "35.00",
+	    "service_price": null,
+	    "service": 1
+	}
+	```  
+* **DELETE** `work-done-ud/1/`  
+	**Input data**  
+	```json   
+	{     
+		"organization":1
+	}  
+	```     
+	**Response**    
+	*`Response 204`*   
+	```json   
+	{
+	}
+	```  
+* **GET** `work-done-r/1/1/`   
+	**Response**  
+	*`Response 200`*  
+	```json  
+    {
+        "id": 1,
+        "name": "TestOrder",
+        "price": "30.00",
+        "organization": {
+            "id": 1,
+            "name": "Test",
+            "description": "Test",
+            "address": "Test",
+            "creator": {
+                "id": 1,
+                "surname": "a",
+                "name": "a",
+                "second_name": "a",
+                "address": "a",
+                "email": "a@gmail.com",
+                "phone": null,
+                "image": "../static/Users/default-user-image.jpeg",
+                "confirmed_email": true,
+                "confirmed_phone": false,
+                "created_at": "2021-10-21T15:38:07.599042Z",
+                "updated_at": "2021-10-22T10:52:18.483765Z"
+            },
+            "numbers": null,
+            "links": null,
+            "created_at": "2021-10-21T15:45:34.434734Z",
+            "updated_at": "2021-10-21T15:45:34.434767Z"
+        },
+        "service_price": null,
+        "user": {
+            "id": 1,
+            "surname": "a",
+            "name": "a",
+            "second_name": "a",
+            "address": "a",
+            "email": "a@gmail.com",
+            "phone": null,
+            "image": "../static/Users/default-user-image.jpeg",
+            "confirmed_email": true,
+            "confirmed_phone": false,
+            "created_at": "2021-10-21T15:38:07.599042Z",
+            "updated_at": "2021-10-22T10:52:18.483765Z"
+        },
+        "order": {
+            "id": 1,
+            "order_code": "eawtt",
+            "description": "retw4bt54t43",
+            "creator": {
+                "id": 1,
+                "surname": "a",
+                "name": "a",
+                "second_name": "a",
+                "address": "a",
+                "email": "a@gmail.com",
+                "phone": null,
+                "image": "../static/Users/default-user-image.jpeg",
+                "confirmed_email": true,
+                "confirmed_phone": false,
+                "created_at": "2021-10-21T15:38:07.599042Z",
+                "updated_at": "2021-10-22T10:52:18.483765Z"
+            },
+            "executor": {
+                "id": 1,
+                "surname": "a",
+                "name": "a",
+                "second_name": "a",
+                "address": "a",
+                "email": "a@gmail.com",
+                "phone": null,
+                "image": "../static/Users/default-user-image.jpeg",
+                "confirmed_email": true,
+                "confirmed_phone": false,
+                "created_at": "2021-10-21T15:38:07.599042Z",
+                "updated_at": "2021-10-22T10:52:18.483765Z"
+            },
+            "organization": {
+                "id": 1,
+                "name": "Test",
+                "description": "Test",
+                "address": "Test",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-21T15:45:34.434734Z",
+                "updated_at": "2021-10-21T15:45:34.434767Z"
+            },
+            "client": 1,
+            "done": false,
+            "service": {
+                "id": 1,
+                "name": "Test",
+                "address": "Test",
+                "phone": "+79999999999",
+                "organization": {
+                    "id": 1,
+                    "name": "Test",
+                    "description": "Test",
+                    "address": "Test",
+                    "creator": {
+                        "id": 1,
+                        "surname": "a",
+                        "name": "a",
+                        "second_name": "a",
+                        "address": "a",
+                        "email": "a@gmail.com",
+                        "phone": null,
+                        "image": "../static/Users/default-user-image.jpeg",
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-21T15:38:07.599042Z",
+                        "updated_at": "2021-10-22T10:52:18.483765Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-21T15:45:34.434734Z",
+                    "updated_at": "2021-10-21T15:45:34.434767Z"
+                },
+                "created_at": "2021-10-21T15:46:42.682220Z",
+                "updated_at": "2021-10-21T15:46:42.682258Z"
+            },
+            "order_status": 1,
+            "created_at": "2021-10-21T15:54:30.332013Z",
+            "updated_at": "2021-10-21T15:54:30.332050Z",
+            "device_type": "rer",
+            "device_maker": "werwer",
+            "device_model": "werwerewrwe",
+            "device_kit": "",
+            "device_appearance": "",
+            "device_defect": ""
+        },
+        "service": {
+            "id": 1,
+            "name": "Test",
+            "address": "Test",
+            "phone": "+79999999999",
+            "organization": {
+                "id": 1,
+                "name": "Test",
+                "description": "Test",
+                "address": "Test",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-21T15:45:34.434734Z",
+                "updated_at": "2021-10-21T15:45:34.434767Z"
+            },
+            "created_at": "2021-10-21T15:46:42.682220Z",
+            "updated_at": "2021-10-21T15:46:42.682258Z"
+        },
+        "created_at": "2021-10-25T18:02:35.783255Z",
+        "updated_at": "2021-10-25T18:02:35.783296Z"
+    }
+	```    

@@ -167,7 +167,7 @@ def check_orgSaleProduct(saleproduct_id, org_id):
 
 #Checking an organization's saleOrder
 def check_orgSaleOrder(saleorder_id, org_id):
-	return Organization.objects.get(id = org_id).organization_sale_product.all().filter(id = saleorder_id).exists()
+	return Organization.objects.get(id = org_id).organization_sale_order.all().filter(id = saleorder_id).exists()
 
 
 #Checking an organization's product
@@ -175,9 +175,15 @@ def check_orgProduct(product_id, org_id):
 	return Organization.objects.get(id = org_id).organization_product.all().filter(id = product_id).exists()
 
 
+#Checking an organization's ProductOrder
 def check_orgProductOrder(productorder_id, org_id):
 	return Organization.objects.get(id = org_id).organization_product_order.all().filter(id = productorder_id).exists()
 
+
+#Checkign an organization's WorkDone
+def check_orgWorkDone(workdone_id, org_id):
+	return Organization.objects.get(id = org_id).organization_work_done.all().filter(id = workdone_id).exists()
+	
 
 #Checking an organization's products in ProductOrder
 def check_orgProductAll(product_id_list, org_id):
@@ -206,7 +212,6 @@ def check_orgExecutor(executor_id, org_id):
 #Create OrderHistory
 def create_orderHistory(method, model, order, organization, body = None):
 	action_history = ActionHistory.objects.filter(model = model).get(method = method)
-	print(action_history)
 
 	order_history = OrderHistory.objects.create(action_history = action_history, order = order, organization = organization, data = body)
 
@@ -266,6 +271,7 @@ validate_func_map = {
 	'saleproduct':check_orgSaleProduct,
 	'saleorder':check_orgSaleOrder,
 	'productorder':check_orgProductOrder,
+	'workdone':check_orgWorkDone,
 	'cashbox':check_orgCashbox,
 	'order_status':check_orgOrderStatus,
 	'product': check_orgProduct,
