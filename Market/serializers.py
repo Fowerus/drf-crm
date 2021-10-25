@@ -95,7 +95,8 @@ class CashboxSerializer(serializers.ModelSerializer):
 			if len(data) > 1:
 				instance.save()
 				transaction = TransactionCSerializer(data = {"cashbox":instance.id, "organization": instance.organization.id, "data":data})
-				transaction.is_valid()
+				if transaction.is_valid() != True:
+					raise MyCustomError('There is error on the server', 500)
 				transaction.save()
 
 			return super().update(instance, validated_data)
@@ -157,35 +158,37 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
 		fields = ['id', 'price', 'organization', 'cashbox', 'service', 'is_deferred','product', 'count', 'created_at', 'updated_at']
 
 	class PurchaseRequestCSerializer(serializers.ModelSerializer):
-		is_cash = serializers.BooleanField(default = False)
+		is_cash = serializers.BooleanField()
 
 		@transaction.atomic
 		def create(self, validated_data):
+			try:
+				if validated_data['product'].organization.id == validated_data['organization'].id:
+					raise MyCustomError('You cannot purchase your organization product', 400)
 
-			if validated_data['product'].organization.id == validated_data['organization'].id:
-				raise MyCustomError('You cannot purchase your organization product', 400)
+				purchase_request = PurchaseRequest.objects.create(**validated_data, price = validated_data['count']*validated_data['product'].purchase_price)
 
-			is_cash = validated_data.pop('is_cash')
-			purchase_request = PurchaseRequest.objects.create(**validated_data)
+				if validated_data['is_cash']:
+					purchase_request.cashbox.cash -= purchase_request.price
+				else:
+					purchase_request.cashbox.account_money -= purchase_request.price
 
-			if is_cash:
-				purchase_request.cashbox.cash -= validated_data['count']*purchase_request.price
-			else:
-				purchase_request.cashbox.account_money -= validated_data['count']*purchase_request.price
-
-			if purchase_request.cashbox.calculate_min_money < 0:
-				raise MyCustomError('Insufficient money at the cashbox', 400)
+				if purchase_request.cashbox.calculate_min_money < 0:
+					raise MyCustomError('Insufficient money at the cashbox', 400)
 
 
-			purchase_accept = PurchaseAccpet.objects.create(purchase_request = purchase_request, is_cash = validated_data['is_cash'],
-				organization = validated_data['product'].organization)
+				purchase_accept = PurchaseAccept.objects.create(purchase_request = purchase_request, is_cash = validated_data['is_cash'],
+					organization = validated_data['product'].organization)
+
+			except:
+				raise MyCustomError('There are some problem on the server', 500)
 
 			return purchase_request
 
 		class Meta:
 			model = PurchaseRequest
-			fields = ['price', 'organization', 'cashbox', 'service', 'product', 'count', 'is_deferred', 'is_cash']
-			
+			fields = ['organization', 'cashbox', 'service', 'product', 'count', 'is_deferred', 'is_cash']
+
 
 
 
@@ -199,17 +202,17 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 		@transaction.atomic
 		def update(self, instance, validated_data):
 
-			if not instance.accept:
+			if instance.accept == False:
 
-				instance.purchase_request.product.count -= instance.count
+				instance.purchase_request.product.count -= instance.purchase_request.count
 
 				if instance.purchase_request.product.count < 0:
 					raise MyCustomError('The quantity of product is not enough', 400)
 
-				if is_cash:
-					instance.purchase_request.cashbox.cash -= instance.purchase_request.count*instance.purchase_request.price
+				if instance.purchase_request.is_cash:
+					instance.purchase_request.cashbox.cash -= instance.purchase_request.price
 				else:
-					instance.purchase_request.cashbox.account_money -= instance.purchase_request.count*instance.purchase_request.price
+					instance.purchase_request.cashbox.account_money -= instance.purchase_request.price
 
 				if instance.purchase_request.cashbox.calculate_min_money < 0:
 					instance.purchase_request.delete()
@@ -224,16 +227,17 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 					"count":instance.purchase_request.count,
 					"supplier":instance.purchase_request.product.organization.name,
 					"irreducible_balance":instance.purchase_request.product.irreducible_balance,
-					"organization": instance.purchase_request.organization,
-					"category": instance.purchase_request.product.category,
-					"service":instance.purchase_request.service
+					"organization": instance.purchase_request.organization.id,
+					"category": instance.purchase_request.product.category.id,
+					"service":instance.purchase_request.service.id
 				}
-				product = ProductSerializer(data = product_data)
+				product = ProductSerializer.ProductCSerializer(data = product_data)
 
 				if product.is_valid() != True:
 					raise MyCustomError('There is error on the server', 500)
 
 				instance.accept = True
+				instance.purchase_request.cashbox.save()
 				product.save()
 				instance.save()
 
@@ -245,7 +249,7 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 
 				transaction = TransactionCSerializer(data = transaction_data)
 				if transaction.is_valid() != True:
-					raise MyCustomError('There is some error on the server', 500)
+					raise MyCustomError('There is error on the server', 500)
 					
 				transaction.save()
 
@@ -254,7 +258,7 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = PurchaseAccept
-			fields = ['is_cash', 'accept']
+			fields = ['accept']
 
 
 	class Meta:
@@ -443,7 +447,7 @@ class SaleProductSerializer(serializers.ModelSerializer):
 
 			transaction = TransactionCSerializer(data = transaction_data)
 			if transaction.is_valid() != True:
-				raise MyCustomError('There is some error on the sever', 500)
+				raise MyCustomError('There is error on the sever', 500)
 
 			transaction.save()
 
@@ -497,7 +501,7 @@ class SaleOrderSerializer(serializers.ModelSerializer):
 
 			transaction = TransactionCSerializer(data = transaction_data)
 			if transaction.is_valid() != True:
-				raise MyCustomError('There is some error on the sever', 500)
+				raise MyCustomError('There is error on the sever', 500)
 
 			transaction.save()
 			create_orderHistory(order = validated_data['product_order'].order, model = '2', organization = validated_data['organization'], method = 'create')

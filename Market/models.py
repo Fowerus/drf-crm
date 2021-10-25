@@ -73,15 +73,16 @@ class Cashbox(MainMixin):
 
 
 class PurchaseRequest(MainMixin):
-	price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
-	count = models.IntegerField(default = 0, verbose_name = 'Quantity')
+	price = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
+	count = models.IntegerField(verbose_name = 'Quantity')
 
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_purchase', verbose_name = 'Organization')
-	cashbox = models.ForeignKey(Cashbox, on_delete = models.CASCADE, related_name = 'cashbox_purchase', verbose_name = 'Cashbox')
-	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_purchase', verbose_name = 'Service')
-	product = models.ForeignKey(Product, on_delete = models.PROTECT, related_name = 'product_purchase', verbose_name = 'Product')
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_purchase_request', verbose_name = 'Organization')
+	cashbox = models.ForeignKey(Cashbox, on_delete = models.CASCADE, related_name = 'cashbox_purchase_request', verbose_name = 'Cashbox')
+	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_purchase_request', verbose_name = 'Service')
+	product = models.ForeignKey(Product, on_delete = models.PROTECT, related_name = 'product_purchase_request', verbose_name = 'Product')
 
 	is_deferred = models.BooleanField(default = False, verbose_name = 'Deferred')
+	is_cash = models.BooleanField(verbose_name = 'Is cash')
 
 	def __str__(self):
 		return f'id: {self.id} | organization: {self.organization.id} | cashbox: {self.cashbox.id} price: {self.price}'
@@ -108,7 +109,7 @@ class PurchaseAccept(MainMixin):
 	accept = models.BooleanField(default = False)
 
 	def __str__(self):
-		return f'id: {self.id} | purchase request: {self.purchase_request.id} | organization: {self.organization.id} | accept: {self.accept}'
+		return f'id: {self.id} | purchase_request: {self.purchase_request.id} | organization: {self.organization.id} | accept: {self.accept}'
 
 
 	class Meta:
