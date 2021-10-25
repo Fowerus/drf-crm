@@ -27,18 +27,18 @@ class Product(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	code = models.CharField(max_length = 150, null = True, verbose_name = 'Code')
 	barcode = models.CharField(max_length = 150, null = True, verbose_name = 'Barcode')
-	purchase_price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Purchase price')
-	sale_price = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Sale price')
-	count = models.IntegerField(default = 0, verbose_name = 'Quantity')
+	purchase_price = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Purchase price')
+	sale_price = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Sale price')
+	count = models.IntegerField(verbose_name = 'Quantity')
 	supplier = models.CharField(max_length = 150, verbose_name = 'Supplier')
-	irreducible_balance = models.FloatField(null = True, verbose_name = 'Irreducible balance')
+	irreducible_balance = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Irreducible balance')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_product', verbose_name = 'Organization')
 	category = models.ForeignKey(ProductCategory, on_delete = models.SET_NULL, related_name = 'category_product', null = True, verbose_name = 'Category')
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_product', verbose_name = 'Service')
 
 	def __str__(self):
-		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id} category: {self.category.name}'
+		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id} category: {self.category}'
 
 
 	class Meta:
@@ -51,8 +51,8 @@ class Product(MainMixin):
 
 class Cashbox(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	cash = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Cash')
-	account_money = models.DecimalField(default = 0, max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Account money')
+	cash = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Cash')
+	account_money = models.DecimalField(max_digits = 100, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Account money')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_cashbox', verbose_name = 'Organization')
 	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_cashbox', verbose_name = 'Service')
@@ -230,8 +230,8 @@ class Transaction(MainMixin):
 		sale = ''
 		purchase = ''
 
-		if self.sale_prouct:
-			sale = f'| sale_product: {self.sale_prouct.id}'
+		if self.sale_product:
+			sale = f'| sale_product: {self.sale_product.id}'
 
 		elif self.sale_order:
 			sale =f'| sale_order: {self.sale_order.id}'

@@ -1,4 +1,4 @@
-# **Handbook API documentation** - **`/handbook/`**   
+# **Market API documentation** - **`/market/`**   
 
 
 ## **Token error**
@@ -18,7 +18,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 ```  
 
 
-## **DeviceType**  
+## **ProductCategory**  
 **Headers**  
 ```json  
 {
@@ -26,222 +26,123 @@ If you do not have enough rights or the account is not confirmed or the session 
 	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
 }
 ```  
-* **POST** `device-type-c/`        
-	**Empty request body**     
-	**Response**  
-	*`Response 400`*    
-	```json  
-	{
-		"name": [
-			"This field is required."
-		],
-		"description": [
-			"This field is required"
-		]
-	}
-	```   
-	**Input data**     
-	```json  
-	{
-	    "organization":1,
-	    "name":"Iphone",
-	    "description":"10"
-	}
-	```  
-	**Response**  
-	*`Response 201`*    
-	```json  
-	{
-	    "name": "Iphone",
-	    "description": "10",
-	    "organization": 1
-	}
-	```  
-* **GET** `device-type-l/1/`    
+* **GET** `product-category-l/1/`           
 	**Response**  
 	*`Response 200`*    
 	```json   
 	[
 	    {
 	        "id": 1,
-	        "name": "Iphone",
-	        "organization": {
-	            "id": 1,
-	            "name": "Test",
-	            "description": "Test",
-	            "address": "Test",
-	            "creator": {
-	                "id": 1,
-	                "surname": "a",
-	                "name": "a",
-	                "second_name": "a",
-	                "address": "a",
-	                "email": "a@gmail.com",
-	                "phone": null,
-	                "image": "../static/Users/default-user-image.jpeg",
-	                "confirmed_email": true,
-	                "confirmed_phone": false,
-	                "created_at": "2021-10-21T15:38:07.599042Z",
-	                "updated_at": "2021-10-22T10:52:18.483765Z"
-	            },
-	            "numbers": null,
-	            "links": null,
-	            "created_at": "2021-10-21T15:45:34.434734Z",
-	            "updated_at": "2021-10-21T15:45:34.434767Z"
-	        },
-	        "description": "10",
-	        "created_at": "2021-10-24T12:04:18.900775Z",
-	        "updated_at": "2021-10-24T12:04:18.900826Z"
+	        "name": "Phone",
+	        "created_at": "2021-10-25T08:14:57.130029Z",
+	        "updated_at": "2021-10-25T08:14:57.130065Z"
 	    }
 	]
 	```   
-* **PUT** `device-type-ud/1/`    
-	**Empty request body**     
-	**Response**    
-	*`Response 400`*   
-	```json    
-	{
-		"name": [
-			"This field is required."
-		],
-		"description": [
-			"This field is required."
-		]
-	}
-	```   
-	**Input data**      
-	```json   
-	{
-	    "organization":1,
-	    "name":"Iphone2",
-	    "description":"102"
-	}
-	```   
-	**Response**   
-	*`Response 200`*  
-	```json  
-	{
-	    "name": "Iphone2",
-	    "description": "102"
-	}
-	```  
-* **PATCH** `device-type-ud/1/`   
-	**Empty request body**    
-	**Response**   
-	*`Response 200`*  
-	```json   
-	{
-	    "name": "Iphone2",
-	    "description": "102"
-	}
-	```   
-	**Input data**      
-	```json  
-	{
-		"organization":1,
-	    "name": "Iphone",
-	    "description": "10"
-	} 
-	```   
-	**Response**  
-	*`Response 200`*   
-	```json   
-	{
-	    "name": "Iphone",
-	    "description": "10"
-	}
-	```  
-* **DELETE** `device-type-ud/1/`  
-	**Input data**       
-	```json   
-	{     
-		"organization":1
-	}  
-	```     
-	**Response**    
-	*`Response 204`*   
-	```json   
-	{
-	}
-	```  
-* **GET** `device-type-r/1/1/`   
-	**Response**  
-	*`Response 200`*  
-	```json  
-	{
-	    "id": 1,
-	    "name": "Iphone",
-	    "organization": {
-	        "id": 1,
-	        "name": "Test",
-	        "description": "Test",
-	        "address": "Test",
-	        "creator": {
-	            "id": 1,
-	            "surname": "a",
-	            "name": "a",
-	            "second_name": "a",
-	            "address": "a",
-	            "email": "a@gmail.com",
-	            "phone": null,
-	            "image": "../static/Users/default-user-image.jpeg",
-	            "confirmed_email": true,
-	            "confirmed_phone": false,
-	            "created_at": "2021-10-21T15:38:07.599042Z",
-	            "updated_at": "2021-10-22T10:52:18.483765Z"
-	        },
-	        "numbers": null,
-	        "links": null,
-	        "created_at": "2021-10-21T15:45:34.434734Z",
-	        "updated_at": "2021-10-21T15:45:34.434767Z"
-	    },
-	    "description": "10",
-	    "created_at": "2021-10-24T12:04:18.900775Z",
-	    "updated_at": "2021-10-24T12:14:35.064056Z"
-	}
-	```  
-## **DeviceMaker**  
-**Headers**  
-```json  
-{
-	"Content-Type":"application/json",
-	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
-}
-```  
-* **POST** `device-maker-c/`        
-	**Empty request body**     
-	**Response**  
-	*`Response 400`*    
-	```json  
-	{
-		"name": [
-			"This field is required."
-		]	
-	}
-	```   
-	**Input data**     
-	```json  
-	{
-	    "organization":1,
-	    "name":"Android",
-	}
-	```  
-	**Response**  
-	*`Response 201`*    
-	```json  
-	{
-	    "name": "Android",
 
-	}
-	```  
-* **GET** `device-maker-l/1/`    
+## **Transaction**  
+**Headers**  
+```json  
+{
+	"Content-Type":"application/json",
+	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
+}
+```  
+* **GET** `transaction-l/1/`           
 	**Response**  
 	*`Response 200`*    
 	```json   
 	[
 	    {
 	        "id": 1,
-	        "name": "Android",
+	        "name": "Phone",
+	        "created_at": "2021-10-25T08:14:57.130029Z",
+	        "updated_at": "2021-10-25T08:14:57.130065Z"
+	    }
+	]
+	```   
+
+## **Product**  
+**Headers**  
+```json  
+{
+	"Content-Type":"application/json",
+	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
+}
+```  
+* **POST** `product-c/`        
+	**Empty request body**     
+	**Response**  
+	*`Response 400`*    
+	```json  
+	{
+	    "name": [
+	        "This field is required."
+	    ],
+	    "purchase_price": [
+	        "This field is required."
+	    ],
+	    "sale_price": [
+	        "This field is required."
+	    ],
+	    "count": [
+	        "This field is required."
+	    ],
+	    "supplier": [
+	        "This field is required."
+	    ],
+	    "irreducible_balance": [
+	        "This field is required."
+	    ],
+	    "service": [
+	        "This field is required."
+	    ]
+	}
+	```  
+	**Input data**     
+	```json  
+	{
+	    "name": "Macbook",
+	    "purchase_price": "10.00",
+	    "sale_price": "10.00",
+	    "count": 50,
+	    "supplier": "Stive",
+	    "irreducible_balance": "0.0",
+	    "organization": 1,
+	    "service": 1,
+	    "category": 1
+	}
+	```  
+	**Response**  
+	*`Response 201`*    
+	```json  
+	{
+	    "name": "Macbook",
+	    "purchase_price": "10.00",
+	    "sale_price": "10.00",
+	    "count": 50,
+	    "supplier": "Stive",
+	    "irreducible_balance": "0.0",
+	    "organization": 1,
+	    "service": 1,
+	    "category": 1
+	}
+	```  
+* **GET** `product-l/1/`    
+	**Response**  
+	*`Response 200`*    
+	```json   
+	[
+	    {
+	        "id": 1,
+	        "name": "Macbook",
+	        "code": "603638776150318",
+	        "barcode": "603638776942600",
+	        "purchase_price": "10.00",
+	        "sale_price": "10.00",
+	        "count": 50,
+	        "supplier": "Stive",
+	        "irreducible_balance": "0.00",
 	        "organization": {
 	            "id": 1,
 	            "name": "Test",
@@ -266,60 +167,149 @@ If you do not have enough rights or the account is not confirmed or the session 
 	            "created_at": "2021-10-21T15:45:34.434734Z",
 	            "updated_at": "2021-10-21T15:45:34.434767Z"
 	        },
-	        "created_at": "2021-10-24T12:28:45.351884Z",
-	        "updated_at": "2021-10-24T12:28:45.351920Z"
+	        "service": {
+	            "id": 1,
+	            "name": "Test",
+	            "address": "Test",
+	            "phone": "+79999999999",
+	            "organization": {
+	                "id": 1,
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
+	            },
+	            "created_at": "2021-10-21T15:46:42.682220Z",
+	            "updated_at": "2021-10-21T15:46:42.682258Z"
+	        },
+	        "category": {
+	            "id": 1,
+	            "name": "Phone",
+	            "created_at": "2021-10-25T08:14:57.130029Z",
+	            "updated_at": "2021-10-25T08:14:57.130065Z"
+	        },
+	        "created_at": "2021-10-25T08:33:06.622719Z",
+	        "updated_at": "2021-10-25T08:33:06.622757Z"
 	    }
 	]
 	```   
-* **PUT** `device-maker-ud/1/`    
+* **PUT** `product-ud/1/`    
 	**Empty request body**     
 	**Response**    
 	*`Response 400`*   
 	```json    
 	{
-		"name": [
-			"This field is required."
-		],
+	    "name": [
+	        "This field is required."
+	    ],
+	    "purchase_price": [
+	        "This field is required."
+	    ],
+	    "sale_price": [
+	        "This field is required."
+	    ],
+	    "count": [
+	        "This field is required."
+	    ],
+	    "supplier": [
+	        "This field is required."
+	    ],
+	    "irreducible_balance": [
+	        "This field is required."
+	    ],
+	    "service": [
+	        "This field is required."
+	    ]
 	}
 	```   
 	**Input data**      
 	```json   
 	{
-	    "organization":1,
-	    "name":"Android2",
+	    "name": "Macbook2",
+	    "purchase_price": "10.02",
+	    "sale_price": "10.02",
+	    "count": 52,
+	    "supplier": "Stive2",
+	    "irreducible_balance": "0.2",
+	    "service": 1,
+	    "category": 1
 	}
 	```   
 	**Response**   
 	*`Response 200`*  
 	```json  
 	{
-	    "name": "Android2",
+	    "name": "Macbook2",
+	    "purchase_price": "10.02",
+	    "sale_price": "10.02",
+	    "count": 52,
+	    "supplier": "Stive2",
+	    "irreducible_balance": "0.20",
+	    "service": 1,
+	    "category": 1
 	}
 	```  
-* **PATCH** `device-maker-ud/1/`   
+* **PATCH** `product-ud/1/`   
 	**Empty request body**    
 	**Response**   
 	*`Response 200`*  
 	```json   
 	{
-	    "name": "Android2",
+	    "name": "Macbook2",
+	    "purchase_price": "10.02",
+	    "sale_price": "10.02",
+	    "count": 52,
+	    "supplier": "Stive2",
+	    "irreducible_balance": "0.20",
+	    "service": 1,
+	    "category": 1
 	}
 	```   
 	**Input data**      
 	```json  
 	{
-		"organization":1,
-	    "name": "Android",
-	} 
+	    "name": "Macbook",
+	    "purchase_price": "10.00",
+	    "sale_price": "10.00",
+	    "count": 50,
+	    "supplier": "Stive",
+	    "irreducible_balance": "0.0",
+	    "service": 1,
+	    "category": 1
+	}
 	```   
 	**Response**  
 	*`Response 200`*   
 	```json   
 	{
-	    "name": "Android",
+	    "name": "Macbook",
+	    "purchase_price": "10.00",
+	    "sale_price": "10.00",
+	    "count": 50,
+	    "supplier": "Stive",
+	    "irreducible_balance": "0.0",
+	    "service": 1,
+	    "category": 1
 	}
 	```  
-* **DELETE** `device-maker-ud/1/`  
+* **DELETE** `product-ud/1/`  
 	**Input data**       
 	```json   
 	{     
@@ -332,13 +322,20 @@ If you do not have enough rights or the account is not confirmed or the session 
 	{
 	}
 	```  
-* **GET** `device-maker-r/1/1/`   
+* **GET** `product-r/1/1/`   
 	**Response**  
 	*`Response 200`*  
 	```json  
     {
         "id": 1,
-        "name": "Android",
+        "name": "Macbook",
+        "code": "603638776150318",
+        "barcode": "603638776942600",
+        "purchase_price": "10.00",
+        "sale_price": "10.00",
+        "count": 50,
+        "supplier": "Stive",
+        "irreducible_balance": "0.00",
         "organization": {
             "id": 1,
             "name": "Test",
@@ -363,12 +360,50 @@ If you do not have enough rights or the account is not confirmed or the session 
             "created_at": "2021-10-21T15:45:34.434734Z",
             "updated_at": "2021-10-21T15:45:34.434767Z"
         },
-        "created_at": "2021-10-24T12:28:45.351884Z",
-        "updated_at": "2021-10-24T12:28:45.351920Z"
+        "service": {
+            "id": 1,
+            "name": "Test",
+            "address": "Test",
+            "phone": "+79999999999",
+            "organization": {
+                "id": 1,
+                "name": "Test",
+                "description": "Test",
+                "address": "Test",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-21T15:45:34.434734Z",
+                "updated_at": "2021-10-21T15:45:34.434767Z"
+            },
+            "created_at": "2021-10-21T15:46:42.682220Z",
+            "updated_at": "2021-10-21T15:46:42.682258Z"
+        },
+        "category": {
+            "id": 1,
+            "name": "Phone",
+            "created_at": "2021-10-25T08:14:57.130029Z",
+            "updated_at": "2021-10-25T08:14:57.130065Z"
+        },
+        "created_at": "2021-10-25T08:33:06.622719Z",
+        "updated_at": "2021-10-25T08:33:06.622757Z"
     }
 	```  
 
-## **DeviceMaker**  
+## **Cashbox**  
 **Headers**  
 ```json  
 {
@@ -376,40 +411,57 @@ If you do not have enough rights or the account is not confirmed or the session 
 	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
 }
 ```  
-* **POST** `device-model-c/`        
+* **POST** `cashbox-c/`        
 	**Empty request body**     
 	**Response**  
 	*`Response 400`*    
 	```json  
 	{
-		"name": [
-			"This field is required."
-		]	
+	    "name": [
+	        "This field is required."
+	    ],
+	    "cash": [
+	        "This field is required."
+	    ],
+	    "account_money": [
+	        "This field is required."
+	    ],
+	    "service": [
+	        "This field is required."
+	    ]
 	}
 	```   
 	**Input data**     
 	```json  
 	{
-	    "name": "Printer",
-	    "organization": 1
+	    "organization":1,
+	    "name":"Cashbox",
+	    "cash":"3.0",
+	    "account_money":"50.00",
+	    "service":1
 	}
 	```  
 	**Response**  
 	*`Response 201`*    
 	```json  
 	{
-	    "name": "Printer",
-	    "organization": 1
+	    "name": "Cashbox",
+	    "cash": "3.00",
+	    "account_money": "50.00",
+	    "organization": 1,
+	    "service": 1
 	}
 	```  
-* **GET** `device-model-l/1/`    
+* **GET** `cashbox-l/1/`    
 	**Response**  
 	*`Response 200`*    
 	```json   
 	[
 	    {
 	        "id": 1,
-	        "name": "Printer",
+	        "name": "Cashbox",
+	        "cash": "3.00",
+	        "account_money": "50.00",
 	        "organization": {
 	            "id": 1,
 	            "name": "Test",
@@ -434,37 +486,103 @@ If you do not have enough rights or the account is not confirmed or the session 
 	            "created_at": "2021-10-21T15:45:34.434734Z",
 	            "updated_at": "2021-10-21T15:45:34.434767Z"
 	        },
-	        "created_at": "2021-10-24T12:35:32.761255Z",
-	        "updated_at": "2021-10-24T12:35:32.761315Z"
+	        "service": {
+	            "id": 1,
+	            "name": "Test",
+	            "address": "Test",
+	            "phone": "+79999999999",
+	            "organization": {
+	                "id": 1,
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
+	            },
+	            "created_at": "2021-10-21T15:46:42.682220Z",
+	            "updated_at": "2021-10-21T15:46:42.682258Z"
+	        },
+	        "created_at": "2021-10-25T09:38:44.934208Z",
+	        "updated_at": "2021-10-25T09:38:44.934246Z"
 	    }
 	]
 	```   
-* **PUT** `device-model-ud/1/`    
+* **PUT** `cashbox-ud/1/`    
 	**Empty request body**     
 	**Response**    
 	*`Response 400`*   
 	```json    
 	{
-		"name": [
-			"This field is required."
-		],
+	    "name": [
+	        "This field is required."
+	    ],
+	    "cash": [
+	        "This field is required."
+	    ],
+	    "account_money": [
+	        "This field is required."
+	    ],
+	    "service": [
+	        "This field is required."
+	    ]
 	}
+	If you want to add or to subtract money from cashbox you need to add prefix field in your request body. Prefix cat be '+' or '-'  
 	```   
 	**Input data**      
 	```json   
 	{
 	    "organization":1,
-	    "name":"Printer2",
+	    "name":"Cashbox2",
+	    "cash":"1.00",
+	    "account_money":"30.00",
+	    "service":1,
+	    "prefix":"-"
 	}
 	```   
 	**Response**   
 	*`Response 200`*  
 	```json  
 	{
-	    "name": "Printer2",
+	    "name": "Cashbox2",
+	    "cash": "0.00",
+	    "account_money": "10.00",
+	    "service": 1,
+	    "prefix": "-"
 	}
 	```  
-* **PATCH** `device-model-ud/1/`   
+	**Transaction**   
+	*`Response 200`*  
+	```json  
+	{
+	    "cashbox": 1,
+	    "organization":1,
+	    "sale_product":null,
+	    "sale_order":null,
+	    "purcahse": null,
+	    "data": {
+	    	"cash": "-3.0", 
+	    	"user": {"name": "a2", "email": "a2@gmail.com", "phone": null, "surname": "a2", "user_id": 2, "second_name": "a2"},
+	    	"account_money": "-10.0"
+	    }
+	}
+	```  
+* **PATCH** `cashbox-ud/1/`   
 	**Empty request body**    
 	**Response**   
 	*`Response 200`*  
@@ -500,13 +618,15 @@ If you do not have enough rights or the account is not confirmed or the session 
 	{
 	}
 	```  
-* **GET** `device-model-r/1/1/`   
+* **GET** `cashbox-r/1/1/`   
 	**Response**  
 	*`Response 200`*  
 	```json  
     {
         "id": 1,
-        "name": "Printer",
+        "name": "Cashbox",
+        "cash": "3.00",
+        "account_money": "50.00",
         "organization": {
             "id": 1,
             "name": "Test",
@@ -531,8 +651,40 @@ If you do not have enough rights or the account is not confirmed or the session 
             "created_at": "2021-10-21T15:45:34.434734Z",
             "updated_at": "2021-10-21T15:45:34.434767Z"
         },
-        "created_at": "2021-10-24T12:35:32.761255Z",
-        "updated_at": "2021-10-24T12:35:32.761315Z"
+        "service": {
+            "id": 1,
+            "name": "Test",
+            "address": "Test",
+            "phone": "+79999999999",
+            "organization": {
+                "id": 1,
+                "name": "Test",
+                "description": "Test",
+                "address": "Test",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-21T15:45:34.434734Z",
+                "updated_at": "2021-10-21T15:45:34.434767Z"
+            },
+            "created_at": "2021-10-21T15:46:42.682220Z",
+            "updated_at": "2021-10-21T15:46:42.682258Z"
+        },
+        "created_at": "2021-10-25T09:38:44.934208Z",
+        "updated_at": "2021-10-25T09:38:44.934246Z"
     }
 	```  
 ## **DeviceKit**  
