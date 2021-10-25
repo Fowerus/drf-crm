@@ -56,6 +56,10 @@ If you do not have enough rights or the account is not confirmed or the session 
 	    {
 	        "id": 1,
 	        "name": "Phone",
+	        "cashbox":1,
+	        "sale_order":2,
+	        "sale_product":null,
+	        "purchase":null,
 	        "created_at": "2021-10-25T08:14:57.130029Z",
 	        "updated_at": "2021-10-25T08:14:57.130065Z"
 	    }
@@ -437,7 +441,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	    "organization":1,
 	    "name":"Cashbox",
 	    "cash":"3.0",
-	    "account_money":"50.00",
+	    "account_money":"10.00",
 	    "service":1
 	}
 	```  
@@ -447,7 +451,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	{
 	    "name": "Cashbox",
 	    "cash": "3.00",
-	    "account_money": "50.00",
+	    "account_money": "10.00",
 	    "organization": 1,
 	    "service": 1
 	}
@@ -461,7 +465,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	        "id": 1,
 	        "name": "Cashbox",
 	        "cash": "3.00",
-	        "account_money": "50.00",
+	        "account_money": "10.00",
 	        "organization": {
 	            "id": 1,
 	            "name": "Test",
@@ -549,8 +553,59 @@ If you do not have enough rights or the account is not confirmed or the session 
 	{
 	    "organization":1,
 	    "name":"Cashbox2",
-	    "cash":"1.00",
-	    "account_money":"30.00",
+	    "cash":"4.00",
+	    "account_money":"60.00",
+	    "service":1,
+	    "prefix":"+"
+	}
+	```   
+	**Response**   
+	*`Response 200`*  
+	```json  
+	{
+	    "name": "Cashbox2",
+	    "cash": "7.00",
+	    "account_money": "70.00",
+	    "service": 1,
+	    "prefix": "+"
+	}
+	```  
+	**Transaction**   
+	*`Response 200`*  
+	```json  
+	{
+	    "cashbox": 1,
+	    "organization":1,
+	    "sale_product":null,
+	    "sale_order":null,
+	    "purcahse": null,
+	    "data": {
+	    	"cash": "+4.00", 
+	    	"user": {"name": "a2", "email": "a2@gmail.com", "phone": null, "surname": "a2", "user_id": 2, "second_name": "a2"},
+	    	"account_money": "+60.00"
+	    }
+	}
+	```  
+* **PATCH** `cashbox-ud/1/`   
+	**Empty request body**    
+	**Response**   
+	*`Response 200`*  
+	```json   
+	{
+	    "name": "Cashbox2",
+	    "cash": "7.00",
+	    "account_money": "70.00",
+	    "service": 1
+	}
+	```   
+	If you want to add or to subtract money from cashbox you need to add prefix field in your request body. Prefix cat be '+' or '-'     
+	**Input data**      
+	```json   
+	{
+	    "organization":1,
+	    "name":"Cashbox",
+	    "cash":"4.00",
+	    "account_money":"60.00",
 	    "service":1,
 	    "prefix":"-"
 	}
@@ -559,8 +614,8 @@ If you do not have enough rights or the account is not confirmed or the session 
 	*`Response 200`*  
 	```json  
 	{
-	    "name": "Cashbox2",
-	    "cash": "0.00",
+	    "name": "Cashbox",
+	    "cash": "3.00",
 	    "account_money": "10.00",
 	    "service": 1,
 	    "prefix": "-"
@@ -576,36 +631,13 @@ If you do not have enough rights or the account is not confirmed or the session 
 	    "sale_order":null,
 	    "purcahse": null,
 	    "data": {
-	    	"cash": "-3.0", 
+	    	"cash": "-4.00", 
 	    	"user": {"name": "a2", "email": "a2@gmail.com", "phone": null, "surname": "a2", "user_id": 2, "second_name": "a2"},
-	    	"account_money": "-10.0"
+	    	"account_money": "-60.00"
 	    }
 	}
 	```  
-* **PATCH** `cashbox-ud/1/`   
-	**Empty request body**    
-	**Response**   
-	*`Response 200`*  
-	```json   
-	{
-	    "name": "Printer2",
-	}
-	```   
-	**Input data**      
-	```json  
-	{
-		"organization":1,
-	    "name": "Printer",
-	} 
-	```   
-	**Response**  
-	*`Response 200`*   
-	```json   
-	{
-	    "name": "Printer",
-	}
-	```  
-* **DELETE** `device-model-ud/1/`  
+* **DELETE** `cashbox-ud/1/`  
 	**Input data**       
 	```json   
 	{     
@@ -626,7 +658,7 @@ If you do not have enough rights or the account is not confirmed or the session 
         "id": 1,
         "name": "Cashbox",
         "cash": "3.00",
-        "account_money": "50.00",
+        "account_money": "10.00",
         "organization": {
             "id": 1,
             "name": "Test",
@@ -687,7 +719,7 @@ If you do not have enough rights or the account is not confirmed or the session 
         "updated_at": "2021-10-25T09:38:44.934246Z"
     }
 	```  
-## **DeviceKit**  
+## **PurchaseRequest**  
 **Headers**  
 ```json  
 {
@@ -695,45 +727,64 @@ If you do not have enough rights or the account is not confirmed or the session 
 	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
 }
 ```  
-* **POST** `device-kit-c/`        
+* **POST** `purchase-request-c/`        
 	**Empty request body**     
 	**Response**  
 	*`Response 400`*    
 	```json  
 	{
-		"name": [
-		    "This field is required."
-		],
-		"device_type": [
-		    "This field is required."
-		]	
+	    "price": [
+	        "This field is required."
+	    ],
+	    "cashbox": [
+	        "This field is required."
+	    ],
+	    "service": [
+	        "This field is required."
+	    ],
+	    "product": [
+	        "This field is required."
+	    ],
+	    "count": [
+	        "This field is required."
+	    ],
+	    "is_cash": [
+	        "This field is required."
+	    ]
 	}
 	```   
 	**Input data**     
 	```json  
 	{
-	    "name": "Kit",
-	    "organization": 1,
-	    "device_type": 2
+	    "organization":1,
+	    "service":1,
+	    "product":4,
+	    "count":2,
+	    "cashbox":1,
+	    "is_cash":false
 	}
 	```  
 	**Response**  
 	*`Response 201`*    
 	```json  
 	{
-	    "name": "Kit",
 	    "organization": 1,
-	    "device_type": 2
+	    "cashbox": 1,
+	    "service": 1,
+	    "product": 4,
+	    "count": 2,
+	    "is_deferred": false,
+	    "is_cash": false
 	}
 	```  
-* **GET** `device-kit-l/1/`    
+* **GET** `purchase-request-l/1/`    
 	**Response**  
 	*`Response 200`*    
 	```json   
 	[
 	    {
-	        "id": 1,
-	        "name": "Kit",
+	        "id": 24,
+	        "price": "20.00",
 	        "organization": {
 	            "id": 1,
 	            "name": "Test",
@@ -758,9 +809,11 @@ If you do not have enough rights or the account is not confirmed or the session 
 	            "created_at": "2021-10-21T15:45:34.434734Z",
 	            "updated_at": "2021-10-21T15:45:34.434767Z"
 	        },
-	        "device_type": {
-	            "id": 2,
-	            "name": "ForKit",
+	        "cashbox": {
+	            "id": 1,
+	            "name": "Cashbox",
+	            "cash": "3.00",
+	            "account_money": "50.00",
 	            "organization": {
 	                "id": 1,
 	                "name": "Test",
@@ -785,73 +838,156 @@ If you do not have enough rights or the account is not confirmed or the session 
 	                "created_at": "2021-10-21T15:45:34.434734Z",
 	                "updated_at": "2021-10-21T15:45:34.434767Z"
 	            },
-	            "description": "ForKit",
-	            "created_at": "2021-10-24T12:38:56.867071Z",
-	            "updated_at": "2021-10-24T12:38:56.867107Z"
+	            "service": {
+	                "id": 1,
+	                "name": "Test",
+	                "address": "Test",
+	                "phone": "+79999999999",
+	                "organization": {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                },
+	                "created_at": "2021-10-21T15:46:42.682220Z",
+	                "updated_at": "2021-10-21T15:46:42.682258Z"
+	            },
+	            "created_at": "2021-10-25T09:38:44.934208Z",
+	            "updated_at": "2021-10-25T11:58:05.856366Z"
 	        },
-	        "created_at": "2021-10-24T12:53:48.685192Z",
-	        "updated_at": "2021-10-24T12:53:48.685229Z"
+	        "service": {
+	            "id": 1,
+	            "name": "Test",
+	            "address": "Test",
+	            "phone": "+79999999999",
+	            "organization": {
+	                "id": 1,
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
+	            },
+	            "created_at": "2021-10-21T15:46:42.682220Z",
+	            "updated_at": "2021-10-21T15:46:42.682258Z"
+	        },
+	        "is_deferred": false,
+	        "product": {
+	            "id": 4,
+	            "name": "Org2product",
+	            "code": "4ey5r6uyikujgfh",
+	            "barcode": "ytukhuytu6",
+	            "purchase_price": "10.00",
+	            "sale_price": "10.00",
+	            "count": 10,
+	            "supplier": "Org2",
+	            "irreducible_balance": "0.00",
+	            "organization": {
+	                "id": 2,
+	                "name": "Test2",
+	                "description": "Test2",
+	                "address": "Test2",
+	                "creator": {
+	                    "id": 2,
+	                    "surname": "a2",
+	                    "name": "a2",
+	                    "second_name": "a2",
+	                    "address": "a2",
+	                    "email": "a2@gmail.com",
+	                    "phone": null,
+	                    "image": null,
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-24T11:46:46.122045Z",
+	                    "updated_at": "2021-10-24T11:46:46.122074Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-24T12:51:25.358058Z",
+	                "updated_at": "2021-10-24T12:51:25.358111Z"
+	            },
+	            "service": {
+	                "id": 2,
+	                "name": "TestService",
+	                "address": "sfsfsgs",
+	                "phone": "+79968269263",
+	                "organization": {
+	                    "id": 2,
+	                    "name": "Test2",
+	                    "description": "Test2",
+	                    "address": "Test2",
+	                    "creator": {
+	                        "id": 2,
+	                        "surname": "a2",
+	                        "name": "a2",
+	                        "second_name": "a2",
+	                        "address": "a2",
+	                        "email": "a2@gmail.com",
+	                        "phone": null,
+	                        "image": null,
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-24T11:46:46.122045Z",
+	                        "updated_at": "2021-10-24T11:46:46.122074Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-24T12:51:25.358058Z",
+	                    "updated_at": "2021-10-24T12:51:25.358111Z"
+	                },
+	                "created_at": "2021-10-25T11:55:57.294669Z",
+	                "updated_at": "2021-10-25T11:55:57.294707Z"
+	            },
+	            "category": {
+	                "id": 1,
+	                "name": "Phone",
+	                "created_at": "2021-10-25T08:14:57.130029Z",
+	                "updated_at": "2021-10-25T08:14:57.130065Z"
+	            },
+	            "created_at": "2021-10-25T11:56:54.819323Z",
+	            "updated_at": "2021-10-25T11:56:54.819360Z"
+	        },
+	        "count": 2,
+	        "created_at": "2021-10-25T12:34:46.221325Z",
+	        "updated_at": "2021-10-25T12:34:46.221367Z"
 	    }
 	]
 	```   
-* **PUT** `device-kit-ud/1/`    
-	**Empty request body**     
-	**Response**    
-	*`Response 400`*   
-	```json    
-	{
-	    "name": [
-	        "This field is required."
-	    ],
-	    "devicetype": [
-	        "This field is required."
-	    ]
-	}
-	```   
-	**Input data**      
-	```json   
-	{
-	    "organization":1,
-	    "name":"Kit2",
-	    "devicetype":2
-	}
-	```   
-	**Response**   
-	*`Response 200`*  
-	```json  
-	{
-	    "organization":1,
-	    "name":"Kit2",
-	    "devicetype":2
-	}
-	```  
-* **PATCH** `device-kit-ud/1/`   
-	**Empty request body**    
-	**Response**   
-	*`Response 200`*  
-	```json   
-	{
-	    "name": "Kit2",
-	    "devicetype": 2
-	}
-	```   
-	**Input data**      
-	```json  
-	{
-	    "organization":1,
-	    "name":"Kit",
-	    "devicetype":2
-	}
-	```   
-	**Response**  
-	*`Response 200`*   
-	```json   
-	{
-	    "name":"Kit",
-	    "devicetype":2
-	}
-	```  
-* **DELETE** `device-kit-ud/1/`  
+* **DELETE** `purchase-request-ud/1/`  
 	**Input data**       
 	```json   
 	{     
@@ -864,13 +1000,13 @@ If you do not have enough rights or the account is not confirmed or the session 
 	{
 	}
 	```  
-* **GET** `device-kit-r/1/1/`   
+* **GET** `purchase-request-r/1/1/`   
 	**Response**  
 	*`Response 200`*  
 	```json  
     {
-        "id": 1,
-        "name": "Kit",
+        "id": 24,
+        "price": "20.00",
         "organization": {
             "id": 1,
             "name": "Test",
@@ -895,9 +1031,11 @@ If you do not have enough rights or the account is not confirmed or the session 
             "created_at": "2021-10-21T15:45:34.434734Z",
             "updated_at": "2021-10-21T15:45:34.434767Z"
         },
-        "device_type": {
-            "id": 2,
-            "name": "ForKit",
+        "cashbox": {
+            "id": 1,
+            "name": "Cashbox",
+            "cash": "3.00",
+            "account_money": "50.00",
             "organization": {
                 "id": 1,
                 "name": "Test",
@@ -922,15 +1060,155 @@ If you do not have enough rights or the account is not confirmed or the session 
                 "created_at": "2021-10-21T15:45:34.434734Z",
                 "updated_at": "2021-10-21T15:45:34.434767Z"
             },
-            "description": "ForKit",
-            "created_at": "2021-10-24T12:38:56.867071Z",
-            "updated_at": "2021-10-24T12:38:56.867107Z"
+            "service": {
+                "id": 1,
+                "name": "Test",
+                "address": "Test",
+                "phone": "+79999999999",
+                "organization": {
+                    "id": 1,
+                    "name": "Test",
+                    "description": "Test",
+                    "address": "Test",
+                    "creator": {
+                        "id": 1,
+                        "surname": "a",
+                        "name": "a",
+                        "second_name": "a",
+                        "address": "a",
+                        "email": "a@gmail.com",
+                        "phone": null,
+                        "image": "../static/Users/default-user-image.jpeg",
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-21T15:38:07.599042Z",
+                        "updated_at": "2021-10-22T10:52:18.483765Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-21T15:45:34.434734Z",
+                    "updated_at": "2021-10-21T15:45:34.434767Z"
+                },
+                "created_at": "2021-10-21T15:46:42.682220Z",
+                "updated_at": "2021-10-21T15:46:42.682258Z"
+            },
+            "created_at": "2021-10-25T09:38:44.934208Z",
+            "updated_at": "2021-10-25T11:58:05.856366Z"
         },
-        "created_at": "2021-10-24T12:53:48.685192Z",
-        "updated_at": "2021-10-24T12:53:48.685229Z"
+        "service": {
+            "id": 1,
+            "name": "Test",
+            "address": "Test",
+            "phone": "+79999999999",
+            "organization": {
+                "id": 1,
+                "name": "Test",
+                "description": "Test",
+                "address": "Test",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-21T15:45:34.434734Z",
+                "updated_at": "2021-10-21T15:45:34.434767Z"
+            },
+            "created_at": "2021-10-21T15:46:42.682220Z",
+            "updated_at": "2021-10-21T15:46:42.682258Z"
+        },
+        "is_deferred": false,
+        "product": {
+            "id": 4,
+            "name": "Org2product",
+            "code": "4ey5r6uyikujgfh",
+            "barcode": "ytukhuytu6",
+            "purchase_price": "10.00",
+            "sale_price": "10.00",
+            "count": 10,
+            "supplier": "Org2",
+            "irreducible_balance": "0.00",
+            "organization": {
+                "id": 2,
+                "name": "Test2",
+                "description": "Test2",
+                "address": "Test2",
+                "creator": {
+                    "id": 2,
+                    "surname": "a2",
+                    "name": "a2",
+                    "second_name": "a2",
+                    "address": "a2",
+                    "email": "a2@gmail.com",
+                    "phone": null,
+                    "image": null,
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-24T11:46:46.122045Z",
+                    "updated_at": "2021-10-24T11:46:46.122074Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-24T12:51:25.358058Z",
+                "updated_at": "2021-10-24T12:51:25.358111Z"
+            },
+            "service": {
+                "id": 2,
+                "name": "TestService",
+                "address": "sfsfsgs",
+                "phone": "+79968269263",
+                "organization": {
+                    "id": 2,
+                    "name": "Test2",
+                    "description": "Test2",
+                    "address": "Test2",
+                    "creator": {
+                        "id": 2,
+                        "surname": "a2",
+                        "name": "a2",
+                        "second_name": "a2",
+                        "address": "a2",
+                        "email": "a2@gmail.com",
+                        "phone": null,
+                        "image": null,
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-24T11:46:46.122045Z",
+                        "updated_at": "2021-10-24T11:46:46.122074Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-24T12:51:25.358058Z",
+                    "updated_at": "2021-10-24T12:51:25.358111Z"
+                },
+                "created_at": "2021-10-25T11:55:57.294669Z",
+                "updated_at": "2021-10-25T11:55:57.294707Z"
+            },
+            "category": {
+                "id": 1,
+                "name": "Phone",
+                "created_at": "2021-10-25T08:14:57.130029Z",
+                "updated_at": "2021-10-25T08:14:57.130065Z"
+            },
+            "created_at": "2021-10-25T11:56:54.819323Z",
+            "updated_at": "2021-10-25T11:56:54.819360Z"
+        },
+        "count": 2,
+        "created_at": "2021-10-25T12:34:46.221325Z",
+        "updated_at": "2021-10-25T12:34:46.221367Z"
     }
 	```  
-## **DeviceAppearance**  
+## **PurchaseRequest**  
 **Headers**  
 ```json  
 {
@@ -938,117 +1216,507 @@ If you do not have enough rights or the account is not confirmed or the session 
 	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
 }
 ```  
-* **POST** `device-appearance-c/`        
-	**Empty request body**     
+* **GET** `purchase-accept-l/2/`           
 	**Response**  
 	*`Response 400`*    
 	```json  
-	{
-		"name": [
-		    "This field is required."
-		],
-	}
-	```   
-	**Input data**     
-	```json  
-	{
-	    "name": "Appearance",
-	    "organization": 1,
-	}
-	```  
-	**Response**  
-	*`Response 201`*    
-	```json  
-	{
-	    "name": "Appearance",
-	}
-	```  
-* **GET** `device-appearance-l/1/`    
-	**Response**  
-	*`Response 200`*    
-	```json   
 	[
 	    {
-	        "id": 1,
-	        "name": "Appearance",
-	        "organization": {
-	            "id": 1,
-	            "name": "Test",
-	            "description": "Test",
-	            "address": "Test",
-	            "creator": {
+	        "id": 17,
+	        "purchase_request": {
+	            "id": 25,
+	            "price": "20.00",
+	            "organization": {
 	                "id": 1,
-	                "surname": "a",
-	                "name": "a",
-	                "second_name": "a",
-	                "address": "a",
-	                "email": "a@gmail.com",
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
+	                    "id": 1,
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
+	                    "confirmed_email": true,
+	                    "confirmed_phone": false,
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
+	                },
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
+	            },
+	            "cashbox": {
+	                "id": 1,
+	                "name": "Cashbox",
+	                "cash": "3.00",
+	                "account_money": "50.00",
+	                "organization": {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                },
+	                "service": {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "address": "Test",
+	                    "phone": "+79999999999",
+	                    "organization": {
+	                        "id": 1,
+	                        "name": "Test",
+	                        "description": "Test",
+	                        "address": "Test",
+	                        "creator": {
+	                            "id": 1,
+	                            "surname": "a",
+	                            "name": "a",
+	                            "second_name": "a",
+	                            "address": "a",
+	                            "email": "a@gmail.com",
+	                            "phone": null,
+	                            "image": "../static/Users/default-user-image.jpeg",
+	                            "confirmed_email": true,
+	                            "confirmed_phone": false,
+	                            "created_at": "2021-10-21T15:38:07.599042Z",
+	                            "updated_at": "2021-10-22T10:52:18.483765Z"
+	                        },
+	                        "numbers": null,
+	                        "links": null,
+	                        "created_at": "2021-10-21T15:45:34.434734Z",
+	                        "updated_at": "2021-10-21T15:45:34.434767Z"
+	                    },
+	                    "created_at": "2021-10-21T15:46:42.682220Z",
+	                    "updated_at": "2021-10-21T15:46:42.682258Z"
+	                },
+	                "created_at": "2021-10-25T09:38:44.934208Z",
+	                "updated_at": "2021-10-25T11:58:05.856366Z"
+	            },
+	            "service": {
+	                "id": 1,
+	                "name": "Test",
+	                "address": "Test",
+	                "phone": "+79999999999",
+	                "organization": {
+	                    "id": 1,
+	                    "name": "Test",
+	                    "description": "Test",
+	                    "address": "Test",
+	                    "creator": {
+	                        "id": 1,
+	                        "surname": "a",
+	                        "name": "a",
+	                        "second_name": "a",
+	                        "address": "a",
+	                        "email": "a@gmail.com",
+	                        "phone": null,
+	                        "image": "../static/Users/default-user-image.jpeg",
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-21T15:38:07.599042Z",
+	                        "updated_at": "2021-10-22T10:52:18.483765Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-21T15:45:34.434734Z",
+	                    "updated_at": "2021-10-21T15:45:34.434767Z"
+	                },
+	                "created_at": "2021-10-21T15:46:42.682220Z",
+	                "updated_at": "2021-10-21T15:46:42.682258Z"
+	            },
+	            "is_deferred": false,
+	            "product": {
+	                "id": 4,
+	                "name": "Org2product",
+	                "code": "4ey5r6uyikujgfh",
+	                "barcode": "ytukhuytu6",
+	                "purchase_price": "10.00",
+	                "sale_price": "10.00",
+	                "count": 10,
+	                "supplier": "Org2",
+	                "irreducible_balance": "0.00",
+	                "organization": {
+	                    "id": 2,
+	                    "name": "Test2",
+	                    "description": "Test2",
+	                    "address": "Test2",
+	                    "creator": {
+	                        "id": 2,
+	                        "surname": "a2",
+	                        "name": "a2",
+	                        "second_name": "a2",
+	                        "address": "a2",
+	                        "email": "a2@gmail.com",
+	                        "phone": null,
+	                        "image": null,
+	                        "confirmed_email": true,
+	                        "confirmed_phone": false,
+	                        "created_at": "2021-10-24T11:46:46.122045Z",
+	                        "updated_at": "2021-10-24T11:46:46.122074Z"
+	                    },
+	                    "numbers": null,
+	                    "links": null,
+	                    "created_at": "2021-10-24T12:51:25.358058Z",
+	                    "updated_at": "2021-10-24T12:51:25.358111Z"
+	                },
+	                "service": {
+	                    "id": 2,
+	                    "name": "TestService",
+	                    "address": "sfsfsgs",
+	                    "phone": "+79968269263",
+	                    "organization": {
+	                        "id": 2,
+	                        "name": "Test2",
+	                        "description": "Test2",
+	                        "address": "Test2",
+	                        "creator": {
+	                            "id": 2,
+	                            "surname": "a2",
+	                            "name": "a2",
+	                            "second_name": "a2",
+	                            "address": "a2",
+	                            "email": "a2@gmail.com",
+	                            "phone": null,
+	                            "image": null,
+	                            "confirmed_email": true,
+	                            "confirmed_phone": false,
+	                            "created_at": "2021-10-24T11:46:46.122045Z",
+	                            "updated_at": "2021-10-24T11:46:46.122074Z"
+	                        },
+	                        "numbers": null,
+	                        "links": null,
+	                        "created_at": "2021-10-24T12:51:25.358058Z",
+	                        "updated_at": "2021-10-24T12:51:25.358111Z"
+	                    },
+	                    "created_at": "2021-10-25T11:55:57.294669Z",
+	                    "updated_at": "2021-10-25T11:55:57.294707Z"
+	                },
+	                "category": {
+	                    "id": 1,
+	                    "name": "Phone",
+	                    "created_at": "2021-10-25T08:14:57.130029Z",
+	                    "updated_at": "2021-10-25T08:14:57.130065Z"
+	                },
+	                "created_at": "2021-10-25T11:56:54.819323Z",
+	                "updated_at": "2021-10-25T11:56:54.819360Z"
+	            },
+	            "count": 2,
+	            "created_at": "2021-10-25T12:55:52.531332Z",
+	            "updated_at": "2021-10-25T12:55:52.531370Z"
+	        },
+	        "organization": {
+	            "id": 2,
+	            "name": "Test2",
+	            "description": "Test2",
+	            "address": "Test2",
+	            "creator": {
+	                "id": 2,
+	                "surname": "a2",
+	                "name": "a2",
+	                "second_name": "a2",
+	                "address": "a2",
+	                "email": "a2@gmail.com",
 	                "phone": null,
-	                "image": "../static/Users/default-user-image.jpeg",
+	                "image": null,
 	                "confirmed_email": true,
 	                "confirmed_phone": false,
-	                "created_at": "2021-10-21T15:38:07.599042Z",
-	                "updated_at": "2021-10-22T10:52:18.483765Z"
+	                "created_at": "2021-10-24T11:46:46.122045Z",
+	                "updated_at": "2021-10-24T11:46:46.122074Z"
 	            },
 	            "numbers": null,
 	            "links": null,
-	            "created_at": "2021-10-21T15:45:34.434734Z",
-	            "updated_at": "2021-10-21T15:45:34.434767Z"
+	            "created_at": "2021-10-24T12:51:25.358058Z",
+	            "updated_at": "2021-10-24T12:51:25.358111Z"
 	        },
-	        "created_at": "2021-10-24T13:38:34.216266Z",
-	        "updated_at": "2021-10-24T13:38:34.216302Z"
+	        "is_cash": false,
+	        "accept": false,
+	        "updated_at": "2021-10-25T12:56:16.668720Z",
+	        "created_at": "2021-10-25T12:56:16.668683Z"
 	    }
 	]
+	```     
+* **GET** `purchase-accept-r/17/2/`           
+	**Response**  
+	*`Response 400`*    
+	```json  
+    {
+        "id": 17,
+        "purchase_request": {
+            "id": 25,
+            "price": "20.00",
+            "organization": {
+                "id": 1,
+                "name": "Test",
+                "description": "Test",
+                "address": "Test",
+                "creator": {
+                    "id": 1,
+                    "surname": "a",
+                    "name": "a",
+                    "second_name": "a",
+                    "address": "a",
+                    "email": "a@gmail.com",
+                    "phone": null,
+                    "image": "../static/Users/default-user-image.jpeg",
+                    "confirmed_email": true,
+                    "confirmed_phone": false,
+                    "created_at": "2021-10-21T15:38:07.599042Z",
+                    "updated_at": "2021-10-22T10:52:18.483765Z"
+                },
+                "numbers": null,
+                "links": null,
+                "created_at": "2021-10-21T15:45:34.434734Z",
+                "updated_at": "2021-10-21T15:45:34.434767Z"
+            },
+            "cashbox": {
+                "id": 1,
+                "name": "Cashbox",
+                "cash": "3.00",
+                "account_money": "50.00",
+                "organization": {
+                    "id": 1,
+                    "name": "Test",
+                    "description": "Test",
+                    "address": "Test",
+                    "creator": {
+                        "id": 1,
+                        "surname": "a",
+                        "name": "a",
+                        "second_name": "a",
+                        "address": "a",
+                        "email": "a@gmail.com",
+                        "phone": null,
+                        "image": "../static/Users/default-user-image.jpeg",
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-21T15:38:07.599042Z",
+                        "updated_at": "2021-10-22T10:52:18.483765Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-21T15:45:34.434734Z",
+                    "updated_at": "2021-10-21T15:45:34.434767Z"
+                },
+                "service": {
+                    "id": 1,
+                    "name": "Test",
+                    "address": "Test",
+                    "phone": "+79999999999",
+                    "organization": {
+                        "id": 1,
+                        "name": "Test",
+                        "description": "Test",
+                        "address": "Test",
+                        "creator": {
+                            "id": 1,
+                            "surname": "a",
+                            "name": "a",
+                            "second_name": "a",
+                            "address": "a",
+                            "email": "a@gmail.com",
+                            "phone": null,
+                            "image": "../static/Users/default-user-image.jpeg",
+                            "confirmed_email": true,
+                            "confirmed_phone": false,
+                            "created_at": "2021-10-21T15:38:07.599042Z",
+                            "updated_at": "2021-10-22T10:52:18.483765Z"
+                        },
+                        "numbers": null,
+                        "links": null,
+                        "created_at": "2021-10-21T15:45:34.434734Z",
+                        "updated_at": "2021-10-21T15:45:34.434767Z"
+                    },
+                    "created_at": "2021-10-21T15:46:42.682220Z",
+                    "updated_at": "2021-10-21T15:46:42.682258Z"
+                },
+                "created_at": "2021-10-25T09:38:44.934208Z",
+                "updated_at": "2021-10-25T11:58:05.856366Z"
+            },
+            "service": {
+                "id": 1,
+                "name": "Test",
+                "address": "Test",
+                "phone": "+79999999999",
+                "organization": {
+                    "id": 1,
+                    "name": "Test",
+                    "description": "Test",
+                    "address": "Test",
+                    "creator": {
+                        "id": 1,
+                        "surname": "a",
+                        "name": "a",
+                        "second_name": "a",
+                        "address": "a",
+                        "email": "a@gmail.com",
+                        "phone": null,
+                        "image": "../static/Users/default-user-image.jpeg",
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-21T15:38:07.599042Z",
+                        "updated_at": "2021-10-22T10:52:18.483765Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-21T15:45:34.434734Z",
+                    "updated_at": "2021-10-21T15:45:34.434767Z"
+                },
+                "created_at": "2021-10-21T15:46:42.682220Z",
+                "updated_at": "2021-10-21T15:46:42.682258Z"
+            },
+            "is_deferred": false,
+            "product": {
+                "id": 4,
+                "name": "Org2product",
+                "code": "4ey5r6uyikujgfh",
+                "barcode": "ytukhuytu6",
+                "purchase_price": "10.00",
+                "sale_price": "10.00",
+                "count": 10,
+                "supplier": "Org2",
+                "irreducible_balance": "0.00",
+                "organization": {
+                    "id": 2,
+                    "name": "Test2",
+                    "description": "Test2",
+                    "address": "Test2",
+                    "creator": {
+                        "id": 2,
+                        "surname": "a2",
+                        "name": "a2",
+                        "second_name": "a2",
+                        "address": "a2",
+                        "email": "a2@gmail.com",
+                        "phone": null,
+                        "image": null,
+                        "confirmed_email": true,
+                        "confirmed_phone": false,
+                        "created_at": "2021-10-24T11:46:46.122045Z",
+                        "updated_at": "2021-10-24T11:46:46.122074Z"
+                    },
+                    "numbers": null,
+                    "links": null,
+                    "created_at": "2021-10-24T12:51:25.358058Z",
+                    "updated_at": "2021-10-24T12:51:25.358111Z"
+                },
+                "service": {
+                    "id": 2,
+                    "name": "TestService",
+                    "address": "sfsfsgs",
+                    "phone": "+79968269263",
+                    "organization": {
+                        "id": 2,
+                        "name": "Test2",
+                        "description": "Test2",
+                        "address": "Test2",
+                        "creator": {
+                            "id": 2,
+                            "surname": "a2",
+                            "name": "a2",
+                            "second_name": "a2",
+                            "address": "a2",
+                            "email": "a2@gmail.com",
+                            "phone": null,
+                            "image": null,
+                            "confirmed_email": true,
+                            "confirmed_phone": false,
+                            "created_at": "2021-10-24T11:46:46.122045Z",
+                            "updated_at": "2021-10-24T11:46:46.122074Z"
+                        },
+                        "numbers": null,
+                        "links": null,
+                        "created_at": "2021-10-24T12:51:25.358058Z",
+                        "updated_at": "2021-10-24T12:51:25.358111Z"
+                    },
+                    "created_at": "2021-10-25T11:55:57.294669Z",
+                    "updated_at": "2021-10-25T11:55:57.294707Z"
+                },
+                "category": {
+                    "id": 1,
+                    "name": "Phone",
+                    "created_at": "2021-10-25T08:14:57.130029Z",
+                    "updated_at": "2021-10-25T08:14:57.130065Z"
+                },
+                "created_at": "2021-10-25T11:56:54.819323Z",
+                "updated_at": "2021-10-25T11:56:54.819360Z"
+            },
+            "count": 2,
+            "created_at": "2021-10-25T12:55:52.531332Z",
+            "updated_at": "2021-10-25T12:55:52.531370Z"
+        },
+        "organization": {
+            "id": 2,
+            "name": "Test2",
+            "description": "Test2",
+            "address": "Test2",
+            "creator": {
+                "id": 2,
+                "surname": "a2",
+                "name": "a2",
+                "second_name": "a2",
+                "address": "a2",
+                "email": "a2@gmail.com",
+                "phone": null,
+                "image": null,
+                "confirmed_email": true,
+                "confirmed_phone": false,
+                "created_at": "2021-10-24T11:46:46.122045Z",
+                "updated_at": "2021-10-24T11:46:46.122074Z"
+            },
+            "numbers": null,
+            "links": null,
+            "created_at": "2021-10-24T12:51:25.358058Z",
+            "updated_at": "2021-10-24T12:51:25.358111Z"
+        },
+        "is_cash": false,
+        "accept": false,
+        "updated_at": "2021-10-25T12:56:16.668720Z",
+        "created_at": "2021-10-25T12:56:16.668683Z"
+    }
 	```   
-* **PUT** `device-appearance-ud/1/`    
+* **PUT** `purchase-request-ud/17/`    
 	**Empty request body**     
 	**Response**    
+	If the necessary conditions related to the money at the buyer's cashbox or the quantity of products are correct   
 	*`Response 400`*   
 	```json    
 	{
-	    "name": [
-	        "This field is required."
-	    ],
+	    "accept": true
 	}
 	```   
-	**Input data**      
-	```json   
+* **PATCH** `purchase-request-ud/17/`    
+	**Empty request body**     
+	**Response**    
+	If the necessary conditions related to the money at the buyer's cashbox or the quantity of products are correct   
+	*`Response 400`*   
+	```json    
 	{
-	    "organization":1,
-	    "name":"Appearance2",
+	    "accept": true
 	}
 	```   
-	**Response**   
-	*`Response 200`*  
-	```json  
-	{
-	    "name":"Appearance2",
-	}
-	```  
-* **PATCH** `device-appearance-ud/1/`   
-	**Empty request body**    
-	**Response**   
-	*`Response 200`*  
-	```json   
-	{
-		"name":"Appearance2",
-	}
-	```   
-	**Input data**      
-	```json  
-	{
- 		"name":"Appearance",
- 		"organization":1
-	}
-	```   
-	**Response**  
-	*`Response 200`*   
-	```json   
-	{
-	    "name":"Appearance2"
-	}
-	```  
-* **DELETE** `device-appearance-ud/1/`  
+* **DELETE** `purchase-request-ud/17/`   
 	**Input data**  
 	```json   
 	{     

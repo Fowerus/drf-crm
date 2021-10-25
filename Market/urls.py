@@ -22,9 +22,9 @@ urlpatterns = [
     path('purchase-request-c/', views.PurchaseRequestCreateAPIView.as_view(), name = 'purchase_request_c'),
     path('purchase-request-d/<int:id>/', views.PurchaseRequestDestroyAPIView.as_view(), name = 'purchase_request_d'),
 
-    path('purchase-accept-l/<int:organization>/', views.PurchaseAcceptListAPIView, name = 'purchase_l'),
-    path('purchase-accept-r/<int:id>/<int:organization>/', views.PurchaseAcceptRetrieveAPIView, name = 'purchase_r'),
-    path('purchase-accept-u/<int:id>/<int:organization>/', views.PurchaseAcceptUpdateAPIView, name = 'purchase_u'),
+    path('purchase-accept-l/<int:organization>/', views.PurchaseAcceptListAPIView.as_view(), name = 'purchase_accept_l'),
+    path('purchase-accept-r/<int:id>/<int:organization>/', views.PurchaseAcceptRetrieveAPIView.as_view(), name = 'purchase_accept_r'),
+    path('purchase-accept-u/<int:id>/', views.PurchaseAcceptUpdateAPIView.as_view(), name = 'purchase_accept_u'),
 
     path('sale-product-l/<int:organization>/', views.SaleProductListAPIView.as_view(), name = 'sale_product_l'),
     path('sale-product-r/<int:id>/<int:organization>/', views.SaleProductRetrieveAPIView.as_view(), name = 'sale_product_r'),

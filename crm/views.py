@@ -174,6 +174,14 @@ def check_orgProductAll(product_id_list, org_id):
 	return True
 
 
+def check_orgPurchaseRequest(purchaserequest_id, org_id):
+	return Organization.objects.get(id = org_id).organization_purchase_request.all().filter(id = purchaserequest_id).exists()
+
+
+def check_orgPurchaseAccept(purchaseaccept_id, org_id):
+	return Organization.objects.get(id = org_id).organization_purchase_accept.all().filter(id = purchaseaccept_id).exists()
+
+
 
 def check_orgExecutor(executor_id, org_id):
 	return bool(check_confirmed(executor_id) and check_orgMember(executor_id, org_id))
@@ -229,17 +237,19 @@ def get_viewName(view):
 validate_func_map = {
 	'client': check_orgClient,
 	'executor': check_orgExecutor,
-	'product': check_orgProduct,
 	'products': check_orgProductAll,
 	'order': check_orgOrder,
 	'role':check_orgRole,
 	'service':check_orgService,
 	'organization_member':check_orgMember,
+	'purchaserequest':check_orgPurchaseRequest,
+	'purchaseaccept':check_orgPurchaseAccept,
 	'serviceprice':check_orgServicePrice,
 	'purchase':check_orgPurchase,
 	'sale':check_orgSale,
 	'cashbox':check_orgCashbox,
 	'order_status':check_orgOrderStatus,
+	'product': check_orgProduct,
 	'devicetype':check_orgDeviceType,
 	'devicemaker':check_orgDeviceMaker,
 	'devicemodel':check_orgDeviceModel,

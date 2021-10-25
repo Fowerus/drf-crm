@@ -56,7 +56,6 @@ class CustomPermissionVerificationRole(BasePermission):
 				'delete':f'{view_name}_delete'
 			}
 			permissions = [perms_map[str(requests.method).lower()], perms_map['guru'], perms_map['creator']]
-
 			return is_valid_member(user_data['user_id'], organization,  permissions)
 		except:
 			return False
@@ -94,7 +93,12 @@ class CustomPermissionCheckRelated(BasePermission):
 				result.add(check_confirmed(requests.data['user']))
 
 			elif view_name == 'order':
-				validate_func_map = validate_func_map[:len(validate_func_map)-6]
+				validate_func_map.pop('devicedefect', 'devicetype')
+				validate_func_map.pop('devicemaker', 'devicemodel')
+				validate_func_map.pop('devicekit', 'deviceappearance')
+
+			elif view_name == 'purchaserequest':
+				validate_func_map.pop('product')
 				
 			for valid_key in requests.data.keys():
 				if valid_key in validate_func_map:

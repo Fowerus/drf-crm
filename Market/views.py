@@ -116,7 +116,7 @@ class PurchaseRequestRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class PurchaseRequestDestroyAPIView(generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation],
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
 	queryset = PurchaseRequest.objects.all()
 	serializer_class = PurchaseRequestSerializer
@@ -125,16 +125,16 @@ class PurchaseRequestDestroyAPIView(generics.DestroyAPIView):
 
 
 class PurchaseAcceptListAPIView(generics.ListAPIView):
-	permission_classes = [CustomPermissionVerificationRole],
+	permission_classes = [CustomPermissionVerificationRole]
 	queryset = PurchaseAccept.objects.all()
-	serializer_class = PurchaseAcceptSerializer()
+	serializer_class = PurchaseAcceptSerializer
 
 	def get_queryset(self):
 		return self.queryset.filter(organization = self.kwargs.get('organization'))
 
 
 class PurchaseAcceptRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole],
+	permission_classes = [CustomPermissionVerificationRole]
 	lookup_field = 'id'
 	queryset = PurchaseAccept.objects.all()
 	serializer_class = PurchaseAcceptSerializer()
@@ -143,8 +143,9 @@ class PurchaseAcceptRetrieveAPIView(generics.RetrieveAPIView):
 class PurchaseAcceptUpdateAPIView(generics.UpdateAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	lookup_field = 'id'
-	queryset = PurchaseRequest.objects.all()
+	queryset = PurchaseAccept.objects.all()
 	serializer_class = PurchaseAcceptSerializer.PurchaseAcceptUSerializer
+
 
 
 
