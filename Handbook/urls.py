@@ -37,4 +37,6 @@ urlpatterns = [
     path('service-price-r/<int:id>/<int:organization>/', views.ServicePriceRetrieveAPIView.as_view(), name = 'service_price_r'),
     path('service-price-c/', views.ServicePriceCreateAPIView.as_view(), name = 'service_price_c'),
     path('service-price-ud/<int:id>/', views.ServicePriceUpdateDestroyAPIView.as_view(), name = 'service_price_ud'),
+
+    path('order-history-c/', views.OrderHistoryCreateAPIView.as_view(), name = 'order_history_c')
 ]

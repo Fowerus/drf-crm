@@ -219,3 +219,10 @@ class ServicePriceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyA
 	lookup_field = 'id'
 	queryset = ServicePrice.objects.all()
 	serializer_class = ServicePriceSerializer.ServicePriceUSerializer
+
+
+
+class OrderHistoryCreateAPIView(generics.CreateAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+	queryset = OrderHistory.objects.all()
+	serializer_class = OrderHistorySerializer.OrderHistoryCSerializer

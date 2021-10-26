@@ -222,9 +222,10 @@ class ActionHistorySerializer(serializers.ModelSerializer):
 class OrderHistorySerializer(serializers.ModelSerializer):
 	order = OrderSerializer()
 	organization = OrganizationSerializer()
-	action_history = ActionHistorySerializer()
+	action_history = ActionHistorySerializer(many = True)
 
-	class OrderHistoryCSerializerer(serializers.ModelSerializer):
+	class OrderHistoryCSerializer(serializers.ModelSerializer):
+		comment = serializers.CharField(max_length = 20000, required = True)
 		
 		@transaction.atomic
 		def create(self, validated_data):
@@ -236,12 +237,12 @@ class OrderHistorySerializer(serializers.ModelSerializer):
 				'order':validated_data['order']
 			}
 			order_history = OrderHistory.objects.create(**order_history_data)
-
+			
 			return order_history
 
 		class Meta:
 			model = OrderHistory
-			fields = ['order', 'comment', 'action_history', 'body', 'organization']
+			fields = ['order', 'comment', 'organization']
 
 
 	class Meta:

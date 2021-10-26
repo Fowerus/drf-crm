@@ -24,7 +24,7 @@
 	{  
 		"surname":"user1",   
 		"name":"user1",    
-		"patronymic":"user1",  
+		"second_name":"user1",  
 		"address":"user1address",
 		"email":"user1@gmail.com",
 		"phone":"+79967348137",
@@ -38,7 +38,7 @@
 	{
 		"surname": "user1",
 		"name": "user1",
-		"patronymic": "user1",
+		"second_name": "user1",
 		"address": "user1address",
 		"email": "user1@gmail.com",
 		"phone": "+79967348137"
@@ -167,7 +167,7 @@
 		"id": 5,
 		"surname": "user1",
 		"name": "user1",
-		"patronymic": "user1",
+		"second_name": "user1",
 		"address": "user1address",
 		"email": "user1@gmail.com",
 		"phone": "+79967348137",
@@ -191,7 +191,7 @@
 		"name": [
 			"This field is required."
 		],
-		"patronymic": [
+		"second_name": [
 			"This field is required."
 		],
 		"address": [
@@ -220,7 +220,7 @@
 	{
 		"surname": "user3",
 		"name": "user3",
-		"patronymic": "user3",
+		"second_name": "user3",
 		"address": "user3address",
 		"email": "user3@gmail.com",
 		"phone": "+79137779135",
@@ -233,7 +233,7 @@
 	{
 		"surname": "user3",
 		"name": "user3",
-		"patronymic": "user3",
+		"second_name": "user3",
 		"address": "user3address",
 		"email": "user3@gmail.com",
 		"phone": "+79137779135",
@@ -249,7 +249,7 @@
 	{
 	    "surname": "user3",
 	    "name": "user3",
-	    "patronymic": "user3",
+	    "second_name": "user3",
 	    "address": "user3address",
 	    "email": "user3@gmail.com",
 	    "phone": "+79137779135",
@@ -277,7 +277,7 @@
 	{
 		"surname": "user1",
 		"name": "user1",
-		"patronymic": "user1",
+		"second_name": "user1",
 		"address": "user1address",
 		"email": "user1@gmail.com",
 		"phone": "+79967348137",
@@ -291,7 +291,7 @@
 	{
 		"surname": "user1",
 		"name": "user1",
-		"patronymic": "user1",
+		"second_name": "user1",
 		"address": "user1address",
 		"email": "user1@gmail.com",
 		"phone": "+79967348137",
@@ -356,7 +356,7 @@
 			"id": 5,
 			"surname": "user3",
 			"name": "user3",
-			"patronymic": "user3",
+			"second_name": "user3",
 			"address": "user3address",
 			"email": "user3@gmail.com",
 			"phone": "+79137779135",
@@ -370,7 +370,7 @@
 			"id": 5,
 			"surname": "user3",
 			"name": "user3",
-			"patronymic": "user3",
+			"second_name": "user3",
 			"address": "user3address",
 			"email": "user3@gmail.com",
 			"phone": "+79137779135",
@@ -389,7 +389,7 @@
 				"id": 1,
 				"surname": "a",
 				"name": "a",
-				"patronymic": "a",
+				"second_name": "a",
 				"address": "a",
 				"email": "a@gmail.com",
 				"phone": null,
@@ -424,7 +424,7 @@
 					"id": 1,
 					"surname": "a",
 					"name": "a",
-					"patronymic": "a",
+					"second_name": "a",
 					"address": "a",
 					"email": "a@gmail.com",
 					"phone": null,
