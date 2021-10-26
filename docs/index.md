@@ -9,6 +9,7 @@
 * [Client API documentation](./clients.md)
 * [Verify-Info API documentation](./verify_info.md)
 * [Handbook API documentation](./handbook.md)
+* [Market API documentation](./market.md)
 
 ## **Token error**
 If you inserted an incorrect token or an expired token in the header, it will give    
