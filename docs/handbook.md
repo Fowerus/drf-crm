@@ -1295,3 +1295,42 @@ If you do not have enough rights or the account is not confirmed or the session 
     }
 
 	```    
+## **OrderHistory**  
+**Headers**  
+```json  
+{
+	"Content-Type":"application/json",
+	"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM2MTk5MjY4LCJqdGkiOiI1NmUwNjk2Yjc1MGE0MTI2YTNkZmM1ODUyMmMyMDJhOSIsInVzZXJfaWQiOjIsIm5hbWUiOiJhMiIsInN1cm5hbWUiOiJhMiIsInNlY29uZF9uYW1lIjoiYTIiLCJlbWFpbCI6ImEyQGdtYWlsLmNvbSIsInBob25lIjpudWxsfQ.pe7Khwh-kMwXx9uOZ5esoAJf4Bi-vUhsr-GE800UApc"
+}
+```  
+* **POST** `order-history-c/`        
+	**Empty request body**     
+	**Response**  
+	*`Response 400`*    
+	```json  
+	{
+	    "order": [
+	        "This field is required."
+	    ],
+	    "comment": [
+	        "This field is required."
+	    ]
+	}
+	```   
+	**Input data**     
+	```json  
+	{
+	    "organization":1,
+	    "order":1,
+	    "comment":"Order top"
+	}
+	```  
+	**Response**  
+	*`Response 201`*    
+	```json  
+	{
+	    "order": 1,
+	    "comment": "Order top",
+	    "organization": 1
+	}
+	```  

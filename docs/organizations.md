@@ -78,7 +78,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 				"id": 5,
 				"surname": "user3",
 				"name": "user3",
-				"patronymic": "user3",
+				"second_name": "user3",
 				"address": "user3address",
 				"email": "user3@gmail.com",
 				"phone": "+79137779135",
@@ -117,7 +117,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 			"id": 5,
 			"surname": "user3",
 			"name": "user3",
-			"patronymic": "user3",
+			"second_name": "user3",
 			"address": "user3address",
 			"email": "user3@gmail.com",
 			"phone": "+79137779135",
@@ -249,7 +249,8 @@ If you do not have enough rights or the account is not confirmed or the session 
 	}
 	```   
 	The same answer will be in case of conflicts of permissions from the fields *organization*, *user*, *role*  
-	*user* must be verified, role must belong to the organization and you must have the appropriate rights  
+	*user* must be verified, role must belong to the organization and you must have the appropriate rights.
+	The surname, name, second_name, address, phone, image fields will be added from user field.  
 	**Input data**  
 	```json  
 	{
@@ -276,218 +277,187 @@ If you do not have enough rights or the account is not confirmed or the session 
 	    {
 	        "id": 2,
 	        "user": {
-	            "id": 2,
-	            "surname": "b",
-	            "name": "b",
-	            "patronymic": "b",
-	            "address": "b",
-	            "email": "b@gmail.com",
+	            "id": 1,
+	            "surname": "a",
+	            "name": "a",
+	            "second_name": "a",
+	            "address": "a",
+	            "email": "a@gmail.com",
 	            "phone": null,
-	            "image": "host/organizations/member-l/1/static/Users/default-user-image.jpeg",
+	            "image": "../static/Users/default-user-image.jpeg",
 	            "confirmed_email": true,
 	            "confirmed_phone": false,
-	            "created_at": "2021-09-08T12:04:11.916592Z",
-	            "updated_at": "2021-09-09T02:31:17.945129Z"
+	            "created_at": "2021-10-21T15:38:07.599042Z",
+	            "updated_at": "2021-10-22T10:52:18.483765Z"
 	        },
 	        "role": {
-	            "id": 1,
-	            "name": "Role 1",
+	            "id": 3,
+	            "name": "Guru",
 	            "permissions": [
 	                {
-	                    "id": 2,
-	                    "name": "Can change role",
-	                    "codename": "role_change"
+	                    "id": 22,
+	                    "name": "Organization_member guru",
+	                    "codename": "organization_member_guru"
 	                },
 	                {
+	                    "id": 21,
+	                    "name": "OrderHistory guru",
+	                    "codename": "orderhistory_guru"
+	                },
+	                {
+	                    "id": 20,
+	                    "name": "ClientCard guru",
+	                    "codename": "clientcard_guru"
+	                },
+	                {
+	                    "id": 19,
+	                    "name": "WorkDone guru",
+	                    "codename": "workdone_guru"
+	                },
+	                {
+	                    "id": 18,
+	                    "name": "SaleOrder guru",
+	                    "codename": "saleorder_guru"
+	                },
+	                {
+	                    "id": 17,
+	                    "name": "ProductOrder guru",
+	                    "codename": "productorder_guru"
+	                },
+	                {
+	                    "id": 16,
+	                    "name": "SaleProduct guru",
+	                    "codename": "saleproduct_guru"
+	                },
+	                {
+	                    "id": 15,
+	                    "name": "PurchaseRequest guru",
+	                    "codename": "purchaserequest_guru"
+	                },
+	                {
+	                    "id": 14,
+	                    "name": "Cashbox guru",
+	                    "codename": "cashbox_guru"
+	                },
+	                {
+	                    "id": 13,
+	                    "name": "Product guru",
+	                    "codename": "product_guru"
+	                }
+	            ],
+	            "organization": {
+	                "id": 1,
+	                "name": "Test",
+	                "description": "Test",
+	                "address": "Test",
+	                "creator": {
 	                    "id": 1,
-	                    "name": "Can add role",
-	                    "codename": "role_create"
-	                }
-	            ],
-	            "organization": {
-	                "id": 1,
-	                "name": "Organization2",
-	                "description": "Organization2",
-	                "address": "Organization2",
-	                "creator": {
-	                    "id": 5,
-	                    "surname": "user3",
-	                    "name": "user3",
-	                    "patronymic": "user3",
-	                    "address": "user3address",
-	                    "email": "user3@gmail.com",
-	                    "phone": "+79137779135",
-	                    "image": "host/organizations/member-l/1/static/Users/default-user-image.jpeg",
+	                    "surname": "a",
+	                    "name": "a",
+	                    "second_name": "a",
+	                    "address": "a",
+	                    "email": "a@gmail.com",
+	                    "phone": null,
+	                    "image": "../static/Users/default-user-image.jpeg",
 	                    "confirmed_email": true,
 	                    "confirmed_phone": false,
-	                    "created_at": "2021-09-08T12:22:26.072030Z",
-	                    "updated_at": "2021-09-08T15:11:20.864802Z"
+	                    "created_at": "2021-10-21T15:38:07.599042Z",
+	                    "updated_at": "2021-10-22T10:52:18.483765Z"
 	                },
-	                "created_at": "2021-09-08T15:13:41.218868Z",
-	                "numbers": {
-	                    "main": "+79999999999"
-	                },
-	                "links": {
-	                    "vk": "vk.com"
-	                },
-	                "updated_at": "2021-09-08T15:29:06.832419Z"
+	                "numbers": null,
+	                "links": null,
+	                "created_at": "2021-10-21T15:45:34.434734Z",
+	                "updated_at": "2021-10-21T15:45:34.434767Z"
 	            },
-	            "created_at": "2021-09-08T15:48:56.955471Z",
-	            "updated_at": "2021-09-08T15:48:56.955508Z"
+	            "created_at": "2021-10-24T12:23:33.625553Z",
+	            "updated_at": "2021-10-26T09:10:31.154227Z"
 	        },
+	        "name": "a",
+	        "surname": "a",
+	        "second_name": "a",
+	        "address": "a",
+	        "phone": null,
+	        "email": "a@gmail.com",
+	        "image": "../static/Users/default-user-image.jpeg",
+	        "pass_series": null,
+	        "pass_number": null,
 	        "organization": {
 	            "id": 1,
-	            "name": "Organization2",
-	            "description": "Organization2",
-	            "address": "Organization2",
+	            "name": "Test",
+	            "description": "Test",
+	            "address": "Test",
 	            "creator": {
-	                "id": 5,
-	                "surname": "user3",
-	                "name": "user3",
-	                "patronymic": "user3",
-	                "address": "user3address",
-	                "email": "user3@gmail.com",
-	                "phone": "+79137779135",
-	                "image": "host/organizations/member-l/1/static/Users/default-user-image.jpeg",
-	                "confirmed_email": true,
-	                "confirmed_phone": false,
-	                "created_at": "2021-09-08T12:22:26.072030Z",
-	                "updated_at": "2021-09-08T15:11:20.864802Z"
-	            },
-	            "created_at": "2021-09-08T15:13:41.218868Z",
-	            "numbers": {
-	                "main": "+79999999999"
-	            },
-	            "links": {
-	                "vk": "vk.com"
-	            },
-	            "updated_at": "2021-09-08T15:29:06.832419Z"
-	        },
-	        "created_at": "2021-09-09T02:31:20.672805Z",
-	        "updated_at": "2021-09-09T02:31:20.672841Z"
-	    },
-	    {
-	        "id": 1,
-	        "user": {
-	            "id": 5,
-	            "surname": "user3",
-	            "name": "user3",
-	            "patronymic": "user3",
-	            "address": "user3address",
-	            "email": "user3@gmail.com",
-	            "phone": "+79137779135",
-	            "image": "host/organizations/member-l/1/static/Users/default-user-image.jpeg",
-	            "confirmed_email": true,
-	            "confirmed_phone": false,
-	            "created_at": "2021-09-08T12:22:26.072030Z",
-	            "updated_at": "2021-09-08T15:11:20.864802Z"
-	        },
-	        "role": {
-	            "id": 2,
-	            "name": "Role for user3",
-	            "permissions": [
-	                {
-	                    "id": 8,
-	                    "name": "Can delete member",
-	                    "codename": "organization_member_delete"
-	                },
-	                {
-	                    "id": 7,
-	                    "name": "Can change member",
-	                    "codename": "organization_member_change"
-	                },
-	                {
-	                    "id": 6,
-	                    "name": "Can add member",
-	                    "codename": "organization_member_create"
-	                }
-	            ],
-	            "organization": {
 	                "id": 1,
-	                "name": "Organization2",
-	                "description": "Organization2",
-	                "address": "Organization2",
-	                "creator": {
-	                    "id": 5,
-	                    "surname": "user3",
-	                    "name": "user3",
-	                    "patronymic": "user3",
-	                    "address": "user3address",
-	                    "email": "user3@gmail.com",
-	                    "phone": "+79137779135",
-	                    "image": "host/organizations/member-l/1/static/Users/default-user-image.jpeg",
-	                    "confirmed_email": true,
-	                    "confirmed_phone": false,
-	                    "created_at": "2021-09-08T12:22:26.072030Z",
-	                    "updated_at": "2021-09-08T15:11:20.864802Z"
-	                },
-	                "created_at": "2021-09-08T15:13:41.218868Z",
-	                "numbers": {
-	                    "main": "+79999999999"
-	                },
-	                "links": {
-	                    "vk": "vk.com"
-	                },
-	                "updated_at": "2021-09-08T15:29:06.832419Z"
-	            },
-	            "created_at": "2021-09-09T02:30:45.296150Z",
-	            "updated_at": "2021-09-09T02:30:45.296194Z"
-	        },
-	        "organization": {
-	            "id": 1,
-	            "name": "Organization2",
-	            "description": "Organization2",
-	            "address": "Organization2",
-	            "creator": {
-	                "id": 5,
-	                "surname": "user3",
-	                "name": "user3",
-	                "patronymic": "user3",
-	                "address": "user3address",
-	                "email": "user3@gmail.com",
-	                "phone": "+79137779135",
-	                "image": "host/organizations/member-l/1/static/Users/default-user-image.jpeg",
+	                "surname": "a",
+	                "name": "a",
+	                "second_name": "a",
+	                "address": "a",
+	                "email": "a@gmail.com",
+	                "phone": null,
+	                "image": "../static/Users/default-user-image.jpeg",
 	                "confirmed_email": true,
 	                "confirmed_phone": false,
-	                "created_at": "2021-09-08T12:22:26.072030Z",
-	                "updated_at": "2021-09-08T15:11:20.864802Z"
+	                "created_at": "2021-10-21T15:38:07.599042Z",
+	                "updated_at": "2021-10-22T10:52:18.483765Z"
 	            },
-	            "created_at": "2021-09-08T15:13:41.218868Z",
-	            "numbers": {
-	                "main": "+79999999999"
-	            },
-	            "links": {
-	                "vk": "vk.com"
-	            },
-	            "updated_at": "2021-09-08T15:29:06.832419Z"
+	            "numbers": null,
+	            "links": null,
+	            "created_at": "2021-10-21T15:45:34.434734Z",
+	            "updated_at": "2021-10-21T15:45:34.434767Z"
 	        },
-	        "created_at": "2021-09-09T02:30:54.647877Z",
-	        "updated_at": "2021-09-09T02:30:54.647913Z"
-	    }
+	        "created_at": "2021-10-26T09:12:55.210751Z",
+	        "updated_at": "2021-10-26T09:12:55.210792Z"
+    	}
 	]
 	```   
 * **PUT** `member-ud/2/`   
 	**Empty request body**   
 	**Response**   
-	*`Response 403`*   
+	*`Response 400`*   
 	```json   
 	{
-	    "detail": "You do not have permission to perform this action."
+	    "role": 3,
+	    "name": "a",
+	    "surname": "a",
+	    "second_name": "a",
+	    "address": "a",
+	    "phone": null,
+	    "email": "a@gmail.com",
+	    "image": "../static/Users/default-user-image.jpeg",
+	    "pass_series": null,
+	    "pass_number": null
 	}
 	```   
-	The request must contain *organizations* and *role*   
 	**Input data**   
 	```json   
 	{
-		"organization":1,
-		"role":2
+	    "organization":1,
+	    "role": 3,
+	    "name": "a3",
+	    "surname": "a3",
+	    "second_name": "a3",
+	    "address": "a3",
+	    "phone": "+79962837492",
+	    "email": "a3@gmail.com",
+	    "image": "../static/Users/default-user-image.jpeg",
+	    "pass_series": 3452,
+	    "pass_number": 232124
 	}
 	```   
 	**Response**   
 	*`Response 200`*   
 	```json   
 	{
-	    "role": 2
+	    "role": 3,
+	    "name": "a3",
+	    "surname": "a3",
+	    "second_name": "a3",
+	    "address": "a3",
+	    "phone": "+79962837492",
+	    "email": "a3@gmail.com",
+	    "image": "../static/Users/default-user-image.jpeg",
+	    "pass_series": "3452",
+	    "pass_number": "232124"
 	}
 	```   
 * **PATCH** `member-ud/2/`   
@@ -496,29 +466,48 @@ If you do not have enough rights or the account is not confirmed or the session 
 	*`Response 403`*   
 	```json   
 	{
-	    "detail": "You do not have permission to perform this action."
+	    "role": 3,
+	    "name": "a3",
+	    "surname": "a3",
+	    "second_name": "a3",
+	    "address": "a3",
+	    "phone": "+79962837492",
+	    "email": "a3@gmail.com",
+	    "image": "../static/Users/default-user-image.jpeg",
+	    "pass_series": "3452",
+	    "pass_number": "232124"
 	}
-	```   
-	If you specify only *organizations* and your rights allow you to change the employee, then it will issue    
-	**Response**   
-	*`Response 200`*    
-	```json  
-	{
-	    "role": 2
-	}
-	```  
+	```     
 	**Input data**  
 	```json   
 	{
-		"organization":1,
-		"role":1
+	    "organization":1,
+	    "role": 3,
+	    "name": "a",
+	    "surname": "a",
+	    "second_name": "a",
+	    "address": "a",
+	    "phone": "+79512837492",
+	    "email": "a4@gmail.com",
+	    "image": "../static/Users/default-user-image.jpeg",
+	    "pass_series": 3453,
+	    "pass_number": 232125
 	}
 	```  
 	**Response**   
 	*`Response 200`*   
 	```json  
 	{
-	    "role": 1
+	    "role": 3,
+	    "name": "a",
+	    "surname": "a",
+	    "second_name": "a",
+	    "address": "a",
+	    "phone": "+79512837492",
+	    "email": "a4@gmail.com",
+	    "image": "../static/Users/default-user-image.jpeg",
+	    "pass_series": "3453",
+	    "pass_number": "232125"
 	}
 	```  
 * **DELETE** `member-ud/2/`  
@@ -547,7 +536,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	        "id": 2,
 	        "surname": "b",
 	        "name": "b",
-	        "patronymic": "b",
+	        "second_name": "b",
 	        "address": "b",
 	        "email": "b@gmail.com",
 	        "phone": null,
@@ -586,7 +575,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	                "id": 5,
 	                "surname": "user3",
 	                "name": "user3",
-	                "patronymic": "user3",
+	                "second_name": "user3",
 	                "address": "user3address",
 	                "email": "user3@gmail.com",
 	                "phone": "+79137779135",
@@ -617,7 +606,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	            "id": 5,
 	            "surname": "user3",
 	            "name": "user3",
-	            "patronymic": "user3",
+	            "second_name": "user3",
 	            "address": "user3address",
 	            "email": "user3@gmail.com",
 	            "phone": "+79137779135",
@@ -743,7 +732,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	                "id": 1,
 	                "surname": "a",
 	                "name": "a",
-	                "patronymic": "a",
+	                "second_name": "a",
 	                "address": "a",
 	                "email": "a@gmail.com",
 	                "phone": null,
@@ -794,7 +783,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	                "id": 1,
 	                "surname": "a",
 	                "name": "a",
-	                "patronymic": "a",
+	                "second_name": "a",
 	                "address": "a",
 	                "email": "a@gmail.com",
 	                "phone": null,
@@ -840,7 +829,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	                "id": 1,
 	                "surname": "a",
 	                "name": "a",
-	                "patronymic": "a",
+	                "second_name": "a",
 	                "address": "a",
 	                "email": "a@gmail.com",
 	                "phone": null,
@@ -1018,7 +1007,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	            "id": 1,
 	            "surname": "a",
 	            "name": "a",
-	            "patronymic": "a",
+	            "second_name": "a",
 	            "address": "a",
 	            "email": "a@gmail.com",
 	            "phone": null,
@@ -1292,7 +1281,7 @@ If you do not have enough rights or the account is not confirmed or the session 
 	            "id": 1,
 	            "surname": "a",
 	            "name": "a",
-	            "patronymic": "a",
+	            "second_name": "a",
 	            "address": "a",
 	            "email": "a@gmail.com",
 	            "phone": null,
