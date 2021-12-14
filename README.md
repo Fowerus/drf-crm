@@ -1,25 +1,34 @@
-# **DRF API CRM system**  
+### Список команд для Django
+1.0.12 =)
 
-## **Inroduction**
+> ./manage.py makemigrations <br>
+> ./manage.py migrate
 
-It is the CRM system which provides of the interaction of Organizations, Workers, Clietns, Orders which built with Django-Rest-Framework.  
-More about system funcionality you can read in [docs/index.md](./docs/index.md)  
+### для разработки
 
-## **Installation**
+- git clone https://gitlab.com/go-best/django-rest-api.git
+- переходим в корень с файлом Pipfile <br>
+- вводим следующее <br>
 
-* Install pipenv - `python3 -m pip install pipenv`
-* Establish and activate the virtual environment(recommend use python3)  
-  In python3 you can do that with `pipenv shell`
-* Install all necessary libraries `pipenv install`  
-* Install all migrations `pipenv run python3 manage.py makemigrations && pipenv run python3 manage.py migrate`
-* Do not forget to create a superuser account `pipenv run python3 manage.py createsuperuser`  
+  > pipenv shell <br>
+  > pipenv install <br>
+  > ./restapi/manage.py runserver <br>
 
-## **Testing**
+---
 
-Right now still unrealized API tests and all tests of Client application. Tests of serializers and models is all that you can testing.
+#### Запуск через bash (для файла настройки сборщика)
 
-For start testing run command `pipenv run python3 manage.py test`  
+> q cd /home/gobest/django-rest-api/restapi <br>
+> sudo supervisorctl stop gunicorn <br>
+> pipenv run gunicorn restapi.wsgi:application --bind 0.0.0.0:8000 <br>
+> sudo supervisorctl start gunicorn <br>
 
-## **Running**  
+#### Алгоритмы сборки
 
-For running you just need run `pipenv run python3 manage.py runserver`
+- Остановить сервер
+  > sudo supervisorctl stop gunicorn
+  > cd /home/gobest/django-rest-api
+- обновить изменения с репы
+  > git pull https://$LOGIN_GIT:$PASSWORD_GIT@gitlab.com/go-best/django-rest-api
+- Запустить сервер
+  > sudo supervisorctl stop gunicorn
