@@ -52,10 +52,7 @@ INSTALLED_APPS = [
     'django_resized',
     'Market',
     'Handbook',
-
-
-
-    'rest_framework_simplejwt.token_blacklist',
+    'Marketplace',
 ]
 
 REST_FRAMEWORK = {
@@ -132,24 +129,22 @@ WSGI_APPLICATION = 'restapi.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE':
-        'django.db.backends.postgresql_psycopg2',
-        'NAME':
-        'gobest',
-        'USER':
-        'gobest_admin',
-        'PASSWORD':
-        'dC3xL0uU7sqL6i',
-        'HOST':
-        '62.109.11.4',  # Set to empty string for localhost.
-        'PORT':
-        '5432',  # Set to empty string for default.
-        'URI':
-        'postgres://gobest_admin:dC3xL0uU7sqL6i@62.109.11.4:5432/gobest_admin'
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'fower',
+        'USER': 'fower',
+        'PASSWORD': 'fower',
+        'HOST': '',
+        'PORT': '5432',
+        'URI': ''
+    },
+    'marketplace':{
+        'ENGINE': 'djongo',
+        'NAME': 'marketplace',
     }
 }
 
 
+DATABASE_ROUTERS = ['restapi.customDbRouter.AuthRouter']
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_HOST_USER = 'verify@api-test.go-best.ru'

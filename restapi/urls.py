@@ -25,5 +25,6 @@ urlpatterns = [
     path('sessions/', include('Sessions.urls')),
     path('clients/', include('Clients.urls')),
     path('orders/', include('Orders.urls')),
-    path('verify-info/', include('VerifyInfo.urls'))
+    path('verify-info/', include('VerifyInfo.urls')),
+    path('marketplace/', include('Marketplace.urls'))
 ]
