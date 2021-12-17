@@ -156,4 +156,30 @@ class ServiceSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = Service
 			fields = ['name', 'address', 'phone']
+
+
+
+class MProviderSerializer(serializers.ModelSerializer):
+	organization = OrganizationSerializer()
+
+
+	class MProviderCSerializer(serializers.ModelSerializer):
+		token = serializers.CharField(max_length = 300, read_only = True)
+
+		def create(self, validated_data):
+			mprovider = MProvider.objects.create(**validated_data)
+
+			validated_data['token'] = mprovider.generate_token
+
+			return validated_data
+
+
+		class Meta:
+			model = MProvider
+			fields = ['token', 'site', 'organization']
+
+
+	class Meta:
+		model = MProvider
+		fields = ['id', 'token', 'site', 'organization', 'created_at', 'updated_at']
 			

@@ -26,4 +26,10 @@ urlpatterns = [
     path('service-r/<int:id>/<int:organization>/', views.ServiceRetrieveAPIView.as_view(), name = 'organization_service_r'),
     path('service-c/', views.ServiceCreateAPIView.as_view(), name = 'organization_service_c'),
     path('service-ud/<int:id>/', views.ServiceUpdateDestroyAPIView.as_view(), name = 'organization_service_ud'),
+
+
+    path('mprovider-l/int:organization/', views.MProviderListAPIView.as_view(), name = 'mprovider_l'),
+    path('mprovider-r/<int:id>/int:organization/', views.MProviderRetrieveAPIView.as_view(), name = 'mprovider_r'),
+    path('mprovider-c/', views.MProviderCreateAPIView.as_view(), name = 'mprovider_c'),
+    path('mprovider-d/int:id/', views.MProviderDestroyAPIView.as_view(), name = 'mprovider_d'),
 ]

@@ -1,4 +1,3 @@
-import uuid
 import jwt
 
 from django.contrib.auth import get_user_model
@@ -15,6 +14,7 @@ from Users.serializers import UserSerializer
 
 from Organizations.models import *
 from restapi.customPerm import *
+
 
 
 class OrganizationListCreateAPIView(generics.ListCreateAPIView):
@@ -45,7 +45,7 @@ class OrganizationRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPI
 
 
 class PermListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionCheckSession]
+    permission_classes = [CustomPermissionVerificationRole]
     queryset = CustomPermission.objects.all()
     serializer_class = PermissionSerializer
 
@@ -143,3 +143,32 @@ class ServiceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIVie
     lookup_field = 'id'
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer.ServiceUSerializer
+
+
+
+
+class MProviderListAPIView(generics.ListAPIView):
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+    queryset = MProvider.objects.all()
+    serializer_class = MProviderSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(organization=self.kwargs.get('organization'))
+
+
+class MProviderCreateAPIView(generics.CreateAPIView):
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+    serializer_class = MProviderSerializer.MProviderCSerializer
+
+
+class MProviderRetrieveAPIView(generics.RetrieveAPIView):
+    permission_classes = [CustomPermissionVerificationRole]
+    queryset = MProvider.objects.all()
+    lookup_field = 'id'
+    serializer_class = MProviderSerializer
+
+
+class MProviderDestroyAPIView(generics.DestroyAPIView):
+    permission_classes = [CustomPermissionVerificationRole]
+    queryset = MProvider.objects.all()
+    lookup_field = 'id'

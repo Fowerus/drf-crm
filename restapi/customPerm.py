@@ -117,8 +117,6 @@ class CustomPermissionGetUser(BasePermission):
                 user_data = get_userData(requests)
 
                 view.kwargs['id'] = user_data['user_id']
-
-                print(view.kwargs['id'])
                         
                 return True
             else:
