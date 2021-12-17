@@ -1,3 +1,4 @@
+import jwt
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
@@ -113,3 +114,24 @@ class Organization_member(MainMixin):
 		verbose_name = 'Organization member'
 		ordering = ['-updated_at']
 		
+
+
+
+class MProvider(MainMixin):
+	site = models.CharField(max_length = 300, verbose_name = 'Site')
+
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_mprovider', verbose_name = 'Organization')
+
+	def __str__(self):
+		return f'id; {self.id} | site: {self.site}'
+
+
+	@property
+	def generate_token(self):
+		token_encode = jwt.encode({
+			'id': self.id,
+			'site': self.site,
+			'organization': self.organization.id
+		}, settings.SECRET_KEY, algorithm='HS256')
+
+		return token_encode
