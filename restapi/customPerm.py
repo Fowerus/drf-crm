@@ -72,7 +72,6 @@ class CustomPermissionVerificationAffiliation(BasePermission):
 
 
 
-
 class CustomPermissionCheckRelated(BasePermission):
 
     def has_permission(self, requests, view):
