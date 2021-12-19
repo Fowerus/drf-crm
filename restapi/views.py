@@ -1,4 +1,8 @@
 import jwt
+
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
 from django.conf import settings
 from django.shortcuts import render
 
@@ -13,6 +17,13 @@ from restapi.atomic_exception import MyCustomError
 
 def index_home(request):
     return render(request, 'base.html', {})
+
+
+#Blocking injections
+def script_injection(value):
+    if value.find('<script>') != -1:
+        raise ValidationError(_('Script injection in %(value)s'),
+                              params={'value': value})
 
 
 #Get information about user from access token

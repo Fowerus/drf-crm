@@ -39,17 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
     'corsheaders',
+    'phonenumber_field',
+    'django_resized',
+
     'Organizations',
     'Users',
-
     'Clients',
     'Orders',
     'Sessions',
     'VerifyInfo',
-    'rest_framework',
-    'phonenumber_field',
-    'django_resized',
     'Market',
     'Handbook',
     'Marketplace',

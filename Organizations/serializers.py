@@ -17,6 +17,17 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
 			organization = Organization.objects.create(**validated_data)
+			Organization_member.objects.create(
+				user = organization.creator,
+				organization = organization,
+				surname = organization.creator.surname,
+				first_name = organization.creator.first_name,
+				second_name = organization.creator.second_name,
+				email = organization.creator.email,
+				address = organization.creator.address,
+				phone = organization.creator.phone,
+				avatar = organization.creator.avatar
+			)
 
 			return organization
 

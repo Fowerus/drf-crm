@@ -6,7 +6,6 @@ class AuthRouter(object):
 
 
     def db_for_write(self, model, **hints):
-
         return ['marketplace' if model._meta.app_label == 'Marketplace' else 'default'][0]
 
 
@@ -22,5 +21,4 @@ class AuthRouter(object):
 
         else:
             return db == 'default'
-
         return None
