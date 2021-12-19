@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from .models import *
@@ -16,7 +17,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
 	class OrganizationCSerializer(serializers.ModelSerializer):
 
 		def create(self, validated_data):
+			creator = get_user_model().objects.get(id = get_userData(self.context['request'])['user_id'])
+			validated_data['creator'] = creator
+
 			organization = Organization.objects.create(**validated_data)
+
 			Organization_member.objects.create(
 				user = organization.creator,
 				organization = organization,
@@ -34,7 +39,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Organization
-			fields = ['name','description', 'address', 'links', 'numbers', 'creator']
+			fields = ['name','description', 'address', 'links', 'numbers']
 
 
 	class OrganizationUSerializer(serializers.ModelSerializer):

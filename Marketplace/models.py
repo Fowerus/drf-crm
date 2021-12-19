@@ -9,8 +9,6 @@ from Users.forms import MUserForm
 
 from Organizations.models import Organization
 
-from restapi.views import script_injection
-
 
 
 class MarketMainMixin(models.Model):
@@ -29,8 +27,8 @@ class MProduct(MarketMainMixin):
 	count = models.IntegerField(verbose_name = 'Count')
 	price = models.DecimalField(max_digits = 10, decimal_places = 2, verbose_name = 'Price')
 	price_opt = models.DecimalField(max_digits = 10, decimal_places = 2, verbose_name = 'Wholesale price')
-	url_product = models.URLField(validators=[URLValidator, script_injection], verbose_name = 'Product url')
-	url_photo = models.URLField(validators=[URLValidator, script_injection], verbose_name = 'Photo url')
+	url_product = models.CharField(max_length = 300, verbose_name = 'Product url')
+	url_photo = models.CharField(max_length = 300, verbose_name = 'Photo url')
 	address = models.CharField(max_length = 300, verbose_name = 'Address')
 	provider_site = models.CharField(max_length = 300, verbose_name = 'MProvider')
 	
@@ -99,8 +97,6 @@ class MCourier(MarketMainMixin):
 	
 	courier = models.JSONField(verbose_name = 'Courier')
 	organization = models.JSONField(verbose_name = 'Organization')
-
-	objects = models.DjongoManager()
 
 	def __str__(self):
 		return f'_id: {self._id}'

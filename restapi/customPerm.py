@@ -11,18 +11,16 @@ class CustomPermissionVerificationOrganization(BasePermission):
     def has_permission(self, requests, view):
 
         try:
-
+            user_data = get_userData(requests)
+            
             if requests.method == 'GET':
-                user_data = get_userData(requests)
                 return True
 
             id_obj = requests._request.resolver_match.kwargs.get('id')
 
 
             if requests.method == 'POST':
-                if check_confirmed(user_data['user_id']):
-                    return True
-                return False
+                return check_confirmed(user_data['user_id'])
 
             perms_map = {
                 'patch':'organization_change',
@@ -55,6 +53,7 @@ class CustomPermissionVerificationRole(BasePermission):
             'delete':f'{view_name}_delete'
         }
         permissions = [perms_map[str(requests.method).lower()], perms_map['guru'], perms_map['creator']]
+
         return is_valid_member(user_data['user_id'], organization,  permissions)
 
 
@@ -64,9 +63,8 @@ class CustomPermissionVerificationAffiliation(BasePermission):
     def has_permission(self, requests, view):
 
         organization = get_orgId(requests)
-        id_obj = requests._request.resolver_match.kwargs.get('id')
+        id_obj = view.kwargs.get('_id') if '_id' in view.kwargs else view.kwargs.get('id')
         view_name = get_viewName(view)
-        user_data = get_userData(requests)
 
         return validate_func_map[view_name](id_obj, organization)
 

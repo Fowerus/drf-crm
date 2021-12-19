@@ -37,6 +37,7 @@ django-cors-headers = "*"
 django = "*"
 djongo = "*"
 pymongo = "==3.12.1"
+bson = "*"
 
 [dev-packages]
 yapf = "*"

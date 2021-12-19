@@ -1,4 +1,5 @@
 import jwt
+from bson.objectid import ObjectId
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -10,6 +11,7 @@ from Users.models import User
 from Organizations.models import Organization
 from Sessions.models import Session_user, Session_client 
 from Handbook.models import OrderHistory, ActionHistory
+from Marketplace.models import MCourier
 
 from restapi.atomic_exception import MyCustomError
 
@@ -19,11 +21,11 @@ def index_home(request):
     return render(request, 'base.html', {})
 
 
-#Blocking injections
-def script_injection(value):
-    if value.find('<script>') != -1:
-        raise ValidationError(_('Script injection in %(value)s'),
-                              params={'value': value})
+# #Blocking injections
+# def script_injection(value):
+#     if value.find('<script>') != -1:
+#         raise ValidationError(_('Script injection in %(value)s'),
+#                               params={'value': value})
 
 
 #Get information about user from access token
@@ -32,7 +34,6 @@ def get_userData(requests):
     access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
 
     Session_user.objects.filter(user = access_token_decode['user_id']).get(device = requests.headers['user-agent'])
-
     return access_token_decode
 
 
@@ -54,6 +55,8 @@ def get_orgId(requests):
         else:
             if type(requests.data['organization']) == list:
                 organization = requests.data['organization'][0]
+            elif type(requests.data['organization']) == dict:
+                organization = requests.data['organization'].get('id')
             else:
                 organization = requests.data['organization']
 
@@ -83,7 +86,6 @@ def is_valid_member(user_id, org_id, permissions:list):
             current_org = Organization.objects.get(id = org_id)
             if user_id == current_org.creator.id:
                 return True
-
             member_role = current_org.organization_members.all().get(user = user_id).role
             return check_ReqPerm(member_role, permissions)
         return False
@@ -118,6 +120,15 @@ def check_orgOrder(order_id, org_id):
 #Checking an organization's order status
 def check_orgOrderStatus(order_status_id, org_id):
     return Organization.objects.get(id = org_id).organization_order_status.all().filter(id = order_status_id).exists()
+
+
+#Create OrderHistory
+def create_orderHistory(method, model, order, organization, body = None):
+    action_history = ActionHistory.objects.filter(model = model).get(method = method)
+
+    order_history = OrderHistory.objects.create(action_history = action_history, order = order, organization = organization, data = body)
+
+    return order_history
 
 
 # <Client>---------------------------------------------------------------
@@ -220,13 +231,13 @@ def check_orgPurchaseAccept(purchaseaccept_id, org_id):
     return Organization.objects.get(id = org_id).organization_purchase_accept.all().filter(id = purchaseaccept_id).exists()
 
 
-#Create OrderHistory
-def create_orderHistory(method, model, order, organization, body = None):
-    action_history = ActionHistory.objects.filter(model = model).get(method = method)
+# <Marketplace>----------------------------------------------------------
 
-    order_history = OrderHistory.objects.create(action_history = action_history, order = order, organization = organization, data = body)
+#Checking an organization's MCourier
+def check_orgMCourier(mcourier_id, org_id):
+    return MCourier.objects.filter(_id = ObjectId(mcourier_id)).filter(organization = {'id':org_id}).exists()
 
-    return order_history
+
 
 
 #Get view name without prifex(like ListAPIView)
@@ -292,4 +303,5 @@ validate_func_map = {
     'devicekit':check_orgDeviceKit,
     'deviceappearance':check_orgDeviceAppearance,
     'devicedefect':check_orgDeviceDefect,
+    'mcourier':check_orgMCourier
 }   
