@@ -1,4 +1,5 @@
 import jwt
+from bson.objectid import ObjectId
 
 from django.contrib.auth import get_user_model
 
@@ -14,20 +15,27 @@ from restapi.customPerm import *
 
 
 class MCourierListAPIView(generics.ListAPIView):
-	permissions = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole]
 	queryset = MCourier.objects.all()
-	serializer = MCourierSerializer
+	serializer_class = MCourierSerializer
 
 	def get_queryset(self):
-		return self.queryset.filter(organization__contains({'id': self.kwargs.get('organization')}))
+		return self.queryset.filter(organization = {'id':self.kwargs.get('organization')})
 
 
 class MCourierCreateAPIView(generics.CreateAPIView):
-	permissions = [CustomPermissionVerificationRole]
-	serializer = MCourierSerializer.MCourierCSerializer
+	permission_classes = [CustomPermissionVerificationRole]
+	serializer_class = MCourierSerializer.MCourierCSerializer
 
 
 class MCourierDestroyAPIView(generics.DestroyAPIView):
-	permissions = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
 	queryset = MCourier.objects.all()
 	lookup_field = '_id'
+
+	def delete(self, requests, _id, **kwargs):
+		try:
+			self.queryset.get(_id = ObjectId(_id)).delete()
+			return Response(status = status.HTTP_204_NO_CONTENT)
+		except:
+			return Response(status = status.HTTP_404_NOT_FOUND)

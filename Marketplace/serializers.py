@@ -9,11 +9,13 @@ from restapi.views import get_userData
 class MCourierSerializer(serializers.ModelSerializer):
 
 	class MCourierCSerializer(serializers.ModelSerializer):
+		organization = serializers.JSONField()
+		courier = serializers.JSONField()
 
 		class Meta:
 			model = MCourier
-			fields = ['user', 'organization']
+			fields = ['courier', 'organization']
 
 	class Meta:
 		model = MCourier
-		fields = ['_id', 'user', 'organization']
+		fields = ['_id', 'courier', 'organization']
