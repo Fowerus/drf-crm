@@ -11,7 +11,7 @@ from Users.models import User
 from Organizations.models import Organization
 from Sessions.models import Session_user, Session_client 
 from Handbook.models import OrderHistory, ActionHistory
-from Marketplace.models import MCourier
+from Marketplace.models import MCourier, MProduct
 
 from restapi.atomic_exception import MyCustomError
 
@@ -238,6 +238,11 @@ def check_orgMCourier(mcourier_id, org_id):
     return MCourier.objects.filter(_id = ObjectId(mcourier_id)).filter(organization = {'id':org_id}).exists()
 
 
+#Checking an organization's MProduct
+def check_orgMProduct(mproduct_id, org_id):
+    return MProduct.objects.filter(_id = ObjectId(mproduct_id)).filter(organization = {'id':org_id}).exists()
+
+
 
 
 #Get view name without prifex(like ListAPIView)
@@ -303,5 +308,6 @@ validate_func_map = {
     'devicekit':check_orgDeviceKit,
     'deviceappearance':check_orgDeviceAppearance,
     'devicedefect':check_orgDeviceDefect,
-    'mcourier':check_orgMCourier
+    'mcourier':check_orgMCourier,
+    'mproduct':check_orgMProduct
 }   

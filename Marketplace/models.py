@@ -98,6 +98,8 @@ class MCourier(MarketMainMixin):
 	courier = models.JSONField(verbose_name = 'Courier')
 	organization = models.JSONField(verbose_name = 'Organization')
 
+	objects = models.DjongoManager()
+
 	def __str__(self):
 		return f'_id: {self._id}'
 
