@@ -1,3 +1,5 @@
+from bson.objectid import ObjectId
+
 from rest_framework.permissions import BasePermission
 from rest_framework import status
 from rest_framework.response import Response
@@ -156,7 +158,8 @@ class CustomPermissionSession(BasePermission):
 
         except:
             return False
-            
+         
+
 
 class CustomPermissionCheckSession(BasePermission):
 
@@ -169,6 +172,17 @@ class CustomPermissionCheckSession(BasePermission):
 
             return True
 
+        except:
+            return False
+
+
+
+class CustomPermissionMarketplaceHelper(BasePermission):
+
+    def has_permission(self, requests, view):
+        try:
+            view.kwargs['_id'] = ObjectId(view.kwargs.get('_id'))
+            return True
         except:
             return False
             

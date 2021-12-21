@@ -49,6 +49,14 @@ class OrganizationSerializer(serializers.ModelSerializer):
 			fields = ['name','description', 'address', 'links', 'numbers']
 
 
+	class OrganizationMarketplaceSerializer(serializers.ModelSerializer):
+		id = serializers.IntegerField()
+
+
+		class Meta:
+			model = Organization
+			fields = ['id', 'name','address', 'numbers', 'links', 'creator']
+
 
 
 class PermissionSerializer(serializers.ModelSerializer):
@@ -139,10 +147,28 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 
 	class Organization_memberUSerializer(serializers.ModelSerializer):
 
-
 		class Meta:
 			model = Organization_member
 			fields = ['role', 'first_name', 'surname', 'second_name', 'address', 'phone', 'email', 'avatar', 'pass_series', 'pass_number']
+
+
+	class Organization_memberMarketplaceSerializer(serializers.ModelSerializer):
+		id = serializers.IntegerField()
+		# surname = models.CharField(allow_null = True)
+		# first_name = models.CharField(allow_null = True)
+		# second_name = models.CharField(allow_null = True)
+		# address = models.CharField(allow_null = True)
+		# phone = models.CharField(allow_null = True)
+		# email = models.CharField(allow_null = True)
+		# avatar = models.CharField(allow_null = True)
+		# pass_series = models.CharField(allow_null = True)
+		# pass_number = models.CharField(allow_null = True)
+
+
+
+		class Meta:
+			model = Organization_member
+			fields = ['id', 'first_name', 'surname', 'second_name', 'address', 'phone', 'email', 'avatar', 'pass_series', 'pass_number']
 
 
 
