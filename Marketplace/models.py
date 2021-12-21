@@ -1,5 +1,7 @@
+from bson.objectid import ObjectId
+
 from django.contrib.auth import get_user_model
-from django.core.validators import URLValidator
+from django.core.validators import URLValidator, MinValueValidator
 from django import forms
 
 from djongo import models
@@ -21,16 +23,19 @@ class MarketMainMixin(models.Model):
 
 
 
+
 class MProduct(MarketMainMixin):
 	_id = models.ObjectIdField()
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	count = models.IntegerField(verbose_name = 'Count')
-	price = models.DecimalField(max_digits = 10, decimal_places = 2, verbose_name = 'Price')
-	price_opt = models.DecimalField(max_digits = 10, decimal_places = 2, verbose_name = 'Wholesale price')
+	price = models.DecimalField(max_digits = 10, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
+	price_opt = models.DecimalField(max_digits = 10, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Wholesale price')
 	url_product = models.CharField(max_length = 300, verbose_name = 'Product url')
 	url_photo = models.CharField(max_length = 300, verbose_name = 'Photo url')
 	address = models.CharField(max_length = 300, verbose_name = 'Address')
 	provider_site = models.CharField(max_length = 300, verbose_name = 'MProvider')
+
+	done = models.BooleanField(null = True)
 	
 	organization = models.JSONField(verbose_name = 'Organization')
 
@@ -52,8 +57,17 @@ class MProductForm(forms.ModelForm):
 
 	class Meta:
 		model = MProduct
-		fields = ['name', 'count', 'price',
+		fields = ['name', 'count', 'price', 'price_opt',
 		'url_product', 'url_photo', 'address', 'provider_site', 'organization']
+
+class MProductOrderForm(forms.ModelForm):
+	organization = forms.JSONField()
+	done = forms.BooleanField(initial = False)
+
+	class Meta:
+		model = MProduct
+		fields = ['name', 'count', 'price', 'price_opt',
+		'url_product', 'url_photo', 'address', 'provider_site', 'done', 'organization']
 
 
 
@@ -61,9 +75,9 @@ class MProductForm(forms.ModelForm):
 class MBusket(MarketMainMixin):
 	_id = models.ObjectIdField()
 	count = models.IntegerField(verbose_name = 'Count')
-	price = models.DecimalField(max_digits = 10, decimal_places = 2, verbose_name = 'Price')
+	price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0, null = True, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
 
-	products = models.ArrayReferenceField(to = MProduct, verbose_name = 'Products')
+	products = models.ArrayField(model_container = MProduct, model_form_class = MProductForm, verbose_name = 'Products')
 	author = models.JSONField(verbose_name = 'Author')
 
 	organization = models.JSONField(verbose_name = 'Organization')
@@ -72,6 +86,19 @@ class MBusket(MarketMainMixin):
 
 	def __str__(self):
 		return f'_id: {self._id} | products: {len(self.products)} items'
+
+	@property
+	def calculate_price(self):
+		try:
+			for product in self.products:
+				self.price += product.get('count') * product.get('price')
+		except:
+			self.price = None
+
+	@property
+	def calculate_count(self):
+		self.count = len(self.products)
+	
 
 
 	class Meta:
@@ -112,24 +139,27 @@ class MCourier(MarketMainMixin):
 
 
 class MCourierForm(forms.ModelForm):
+	_id = ObjectId()
 	courier = forms.JSONField()
 	organization = forms.JSONField()
 
 	class Meta:
 		model = MCourier
-		fields = ['courier', 'organization']
+		fields = ['_id', 'courier', 'organization']
 
 
 
 
 class MOrder(MarketMainMixin):
 	_id = models.ObjectIdField()
+	count = models.IntegerField(verbose_name = 'Count')
 	price = models.DecimalField(max_digits = 10, decimal_places = 2, verbose_name = 'Price')
+
 	address = models.CharField(max_length = 150, verbose_name = 'Address')
 	description = models.CharField(max_length = 5000, verbose_name = 'Description')
 	comment = models.CharField(max_length = 1000, verbose_name = 'Comment')
 
-	products = models.ArrayReferenceField(to = MProduct, verbose_name = 'Products')
+	products = models.ArrayField(model_container = MProduct, model_form_class = MProductOrderForm, verbose_name = 'Products')
 	courier = models.EmbeddedField(model_container = MCourier, verbose_name = 'Courier')
 
 	author = models.JSONField(verbose_name = 'Author')

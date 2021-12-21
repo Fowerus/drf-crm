@@ -29,42 +29,48 @@ class MProductCreateAPIView(generics.CreateAPIView):
 
 
 class MProductRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
 	queryset = MProduct.objects.all()
 	serializer_class = MProductSerializer
 
-	def retrieve(self, requests, _id, **kwargs):
-		try:
-			return Response(self.serializer_class(self.queryset.get(_id = ObjectId(_id))).data, status = status.HTTP_200_OK)
-		except:
-			return Response({}, status = status.HTTP_200_OK)
-
 
 class MProductUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
 	queryset = MProduct.objects.all()
 	serializer_class = MProductSerializer.MProductUSerializer
 
-	def update(self, requests, _id, **kwargs):
-		try:
-			instance = self.queryset.get(_id = ObjectId(_id))
-			serializer = self.serializer_class(data = requests.data)
-			if serializer.is_valid():
-				serializer.update(instance, serializer.validated_data)
-				return Response(serializer.data, status = status.HTTP_200_OK)
-			return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-		except:
-			return Response(status = status.HTTP_404_NOT_FOUND)
 
 
-	def delete(self, requests, _id, **kwargs):
-		try:
-			self.queryset.get(_id = ObjectId(_id)).delete()
-			return Response(status = status.HTTP_204_NO_CONTENT)
-		except:
-			return Response(status = status.HTTP_404_NOT_FOUND)
+
+class MBusketListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	queryset = MBusket.objects.all()
+	serializer_class = MBusketSerializer
+
+	def get_queryset(self):
+		return self.queryset.filter(organization = {'id':self.kwargs.get('organization')})
+
+
+class MBusketCreateAPIView(generics.CreateAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	serializer_class = MBusketSerializer.MBusketCSerializer
+
+
+class MBusketRetrieveAPIView(generics.RetrieveAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper]
+	lookup_field = '_id'
+	queryset = MBusket.objects.all()
+	serializer_class = MBusketSerializer
+
+
+class MBusketUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+	lookup_field = '_id'
+	queryset = MBusket.objects.all()
+	serializer_class = MBusketSerializer.MBusketUSerializer
+
 
 
 
@@ -77,29 +83,29 @@ class MCourierListAPIView(generics.ListAPIView):
 		return self.queryset.filter(organization = {'id':self.kwargs.get('organization')})
 
 
+class MCourierMOrderListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+
+
+
 class MCourierCreateAPIView(generics.CreateAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	serializer_class = MCourierSerializer.MCourierCSerializer
 
 
-class MCourierDestroyAPIView(generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+class MCourierUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
 	queryset = MCourier.objects.all()
+	serializer_class = MCourierSerializer.MCourierUSerializer
 
-	def delete(self, requests, _id, **kwargs):
-		try:
-			self.queryset.get(_id = ObjectId(_id)).delete()
-			return Response(status = status.HTTP_204_NO_CONTENT)
-		except:
-			return Response(status = status.HTTP_404_NOT_FOUND)
 
 
 
 class MOrderListAPIView(generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
-	queryset = MProduct.objects.all()
-	serializer_class = MProductSerializer
+	queryset = MOrder.objects.all()
+	serializer_class = MOrderSerializer
 
 	def get_queryset(self):
 		return self.queryset.filter(organization = {'id':self.kwargs.get('organization')})
@@ -111,37 +117,14 @@ class MOrderCreateAPIView(generics.CreateAPIView):
 
 
 class MOrderRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
 	queryset = MOrder.objects.all()
 	serializer_class = MOrderSerializer
 
-	def retrieve(self, requests, _id, **kwargs):
-		try:
-			return Response(self.serializer_class(self.queryset.get(_id = ObjectId(_id))).data, status = status.HTTP_200_OK)
-		except:
-			return Response({}, status = status.HTTP_200_OK)
-
 
 class MOrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
 	queryset = MOrder.objects.all()
 	serializer_class = MOrderSerializer.MOrderUSerializer
-
-	def update(self, requests, _id, **kwargs):
-		try:
-			instance = self.queryset.get(_id = ObjectId(_id))
-			serializer = self.serializer_class(data = requests.data)
-			if serializer.is_valid():
-				serializer.update()
-				return Response(serializer.data, status = status.HTTP_200_OK)
-		except:
-			return Response(status = status.HTTP_404_NOT_FOUND)
-
-	def delete(self, requests, _id, **kwargs):
-		try:
-			self.queryset.get(_id = ObjectId(_id)).delete()
-			return Response(status = status.HTTP_204_NO_CONTENT)
-		except:
-			return Response(status = status.HTTP_404_NOT_FOUND)
