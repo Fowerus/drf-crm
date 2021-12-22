@@ -51,6 +51,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 	class OrganizationMarketplaceSerializer(serializers.ModelSerializer):
 		id = serializers.IntegerField()
+		name = serializers.CharField(allow_null = True)
+		address = serializers.CharField(allow_null = True)
+		numbers = serializers.JSONField()
+		links = serializers.JSONField()
+		creator = UserSerializer.UserMarketplaceSerializer()
 
 
 		class Meta:
@@ -154,15 +159,15 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 
 	class Organization_memberMarketplaceSerializer(serializers.ModelSerializer):
 		id = serializers.IntegerField()
-		# surname = models.CharField(allow_null = True)
-		# first_name = models.CharField(allow_null = True)
-		# second_name = models.CharField(allow_null = True)
-		# address = models.CharField(allow_null = True)
-		# phone = models.CharField(allow_null = True)
-		# email = models.CharField(allow_null = True)
-		# avatar = models.CharField(allow_null = True)
-		# pass_series = models.CharField(allow_null = True)
-		# pass_number = models.CharField(allow_null = True)
+		surname = serializers.CharField(allow_null = True)
+		first_name = serializers.CharField(allow_null = True)
+		second_name = serializers.CharField(allow_null = True)
+		address = serializers.CharField(allow_null = True)
+		phone = serializers.CharField(allow_null = True)
+		email = serializers.CharField(allow_null = True)
+		avatar = serializers.CharField(allow_null = True)
+		pass_series = serializers.CharField(allow_null = True)
+		pass_number = serializers.CharField(allow_null = True)
 
 
 

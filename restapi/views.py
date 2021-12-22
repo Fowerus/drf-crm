@@ -8,7 +8,7 @@ from django.conf import settings
 from django.shortcuts import render
 
 from Users.models import User
-from Organizations.models import Organization
+from Organizations.models import Organization, Organization_member
 from Sessions.models import Session_user, Session_client 
 from Handbook.models import OrderHistory, ActionHistory
 from Marketplace.models import MCourier, MProduct
@@ -63,6 +63,48 @@ def get_orgId(requests):
         return organization
     except:
         raise MyCustomError('The organization field is required', 400)
+
+
+
+#Get author data
+def get_authorData(author_user_id, org_id):
+    try:
+        return Organization_member.objects.filter(organization = org_id).filter(user = author_user_id).values()[0]
+    except:
+        raise MyCustomError('Organization_member does not exist', 400)
+
+
+#Get organization data
+def get_organizationData(organization_id):
+    try:
+        return Organization.objects.filter(id = organization_id).values()[0]
+    except:
+        raise MyCustomError('Organization does not exist', 400)
+
+
+#Get products busket data
+def get_productsData(products):
+    new_product = []
+    try:
+        for product in products:
+            mproduct = MProduct.objects.get(_id = ObjectId(product.get('_id')))
+            if product.get('count') > mproduct.count:
+                raise MyCustomError('Th product quantity is not enough', 400)
+            new_product.append({
+                "_id":mproduct._id,
+                "count":product.get('count'),
+                "name":mproduct.name,
+                "price":mproduct.price,
+                "url_product":mproduct.url_product,
+                "url_photo":mproduct.url_photo,
+                "address":mproduct.address,
+                "provider_site":mproduct.provider_site,
+                "organization":mproduct.organization
+            })
+        return new_product
+    except:
+        raise MyCustomError('Product does not exist', 400)
+
 
 
 #Checking the required permissions
@@ -241,6 +283,7 @@ def check_orgMCourier(mcourier_id, org_id):
 #Checking an organization's MProduct
 def check_orgMProduct(mproduct_id, org_id):
     return MProduct.objects.filter(_id = ObjectId(mproduct_id)).filter(organization = {'id':org_id}).exists()
+
 
 
 

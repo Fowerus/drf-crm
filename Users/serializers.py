@@ -227,6 +227,12 @@ class UserSerializer(serializers.ModelSerializer):
 		fields = ['id', 'surname', 'first_name', 'second_name',
 		'address', 'email', 'phone', 'avatar', 'confirmed_email', 'confirmed_phone', 'created_at', 'updated_at']
 
+
+	class UserMarketplaceSerializer(serializers.ModelSerializer):
+		class Meta:
+			model = User
+			fields = ['id', 'surname', 'first_name', 'second_name', 'email', 'phone']
+
 	class UserUSerializer(serializers.ModelSerializer):
 		password = serializers.CharField(write_only = True)
 		surname = serializers.CharField()

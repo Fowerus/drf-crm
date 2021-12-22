@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from .models import *
 from Organizations.serializers import Organization_memberSerializer, OrganizationSerializer
-from restapi.views import get_userData
+from restapi.views import get_userData, get_organizationData, get_authorData, get_productsData
 
 
 
@@ -51,11 +51,16 @@ class MBusketSerializer(serializers.ModelSerializer):
 	author = Organization_memberSerializer.Organization_memberMarketplaceSerializer()
 
 	class MBusketCSerializer(serializers.ModelSerializer):
-		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
-		products = MProductSerializer.MProductMBusketSerializer(many = True)
-		author = Organization_memberSerializer.Organization_memberMarketplaceSerializer()
+		organization = serializers.JSONField()
+		products = serializers.ListField(child = serializers.JSONField())
+		author = serializers.JSONField(read_only = True)
 
 		def create(self, validated_data):
+			author_user_id = get_userData(self.context['request'])['user_id']
+			organization_id = validated_data.get('organization').get('id')
+			validated_data['organization'] = get_organizationData(organization_id)
+			validated_data['author'] = get_authorData(author_user_id, organization_id)
+			validated_data['products'] = get_productsData(validated_data.get('products'))
 			mbusket = MBusket.objects.create(**validated_data)
 			mbusket.calculate_price
 			mbusket.calculate_count
@@ -68,7 +73,11 @@ class MBusketSerializer(serializers.ModelSerializer):
 			fields = fields = ['products', 'author', 'organization']
 
 	class MBusketUSerializer(serializers.ModelSerializer):
-		products = MProductSerializer.MProductMBusketSerializer(many = True)
+		products = serializers.ListField(child = serializers.JSONField())
+
+		def update(self, instance, validated_data):
+			validated_data['products'] = MProductSerializer.MProductMBusketSerializer(get_productsBusketData(validated_data.get('products')), many = True)
+			return super(instance, validated_data)
 
 		class Meta:
 			model = MBusket
