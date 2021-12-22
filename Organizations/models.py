@@ -25,7 +25,6 @@ class Organization(MainMixin):
 
 	class Meta:
 		db_table = 'Organization'.lower()
-		unique_together = ("name","address")
 		verbose_name_plural = "Organizations"
 		verbose_name = "Organization"
 		ordering = ['-updated_at']

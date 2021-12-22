@@ -60,16 +60,6 @@ class MProductForm(forms.ModelForm):
 		fields = ['name', 'count', 'price', 'price_opt',
 		'url_product', 'url_photo', 'address', 'provider_site', 'organization']
 
-class MProductOrderForm(forms.ModelForm):
-	organization = forms.JSONField()
-	done = forms.BooleanField(initial = False)
-
-	class Meta:
-		model = MProduct
-		fields = ['name', 'count', 'price', 'price_opt',
-		'url_product', 'url_photo', 'address', 'provider_site', 'done', 'organization']
-
-
 
 
 class MBusket(MarketMainMixin):
@@ -77,7 +67,7 @@ class MBusket(MarketMainMixin):
 	count = models.IntegerField(verbose_name = 'Count')
 	price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0, null = True, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
 
-	products = models.ArrayField(model_container = MProduct, model_form_class = MProductForm, verbose_name = 'Products')
+	products = models.JSONField(verbose_name = 'Products')
 	author = models.JSONField(verbose_name = 'Author')
 
 	organization = models.JSONField(verbose_name = 'Organization')
@@ -159,8 +149,8 @@ class MOrder(MarketMainMixin):
 	description = models.CharField(max_length = 5000, verbose_name = 'Description')
 	comment = models.CharField(max_length = 1000, verbose_name = 'Comment')
 
-	products = models.ArrayField(model_container = MProduct, model_form_class = MProductOrderForm, verbose_name = 'Products')
-	courier = models.EmbeddedField(model_container = MCourier, verbose_name = 'Courier')
+	products = models.JSONField(verbose_name = 'Products')
+	courier = models.JSONField(verbose_name = 'Courier')
 
 	author = models.JSONField(verbose_name = 'Author')
 	organization = models.JSONField(verbose_name = 'Organization')
