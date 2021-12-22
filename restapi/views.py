@@ -11,7 +11,7 @@ from Users.models import User
 from Organizations.models import Organization, Organization_member
 from Sessions.models import Session_user, Session_client 
 from Handbook.models import OrderHistory, ActionHistory
-from Marketplace.models import MCourier, MProduct
+from Marketplace.models import MCourier, MProduct, MBusket
 
 from restapi.atomic_exception import MyCustomError
 
@@ -89,7 +89,7 @@ def get_productsData(products):
         for product in products:
             mproduct = MProduct.objects.get(_id = ObjectId(product.get('_id')))
             if product.get('count') > mproduct.count:
-                raise MyCustomError('Th product quantity is not enough', 400)
+                raise MyCustomError('The product quantity is not enough', 400)
             new_product.append({
                 "_id":mproduct._id,
                 "count":product.get('count'),
@@ -285,6 +285,11 @@ def check_orgMProduct(mproduct_id, org_id):
     return MProduct.objects.filter(_id = ObjectId(mproduct_id)).filter(organization = {'id':org_id}).exists()
 
 
+#Checking an organization's MBusket
+def check_orgMBusket(mbusket_id, org_id):
+    return MBusket.objects.filter(_id = ObjectId(mbusket_id)).filter(organization = {'id':org_id}).exists()
+
+
 
 
 
@@ -352,5 +357,6 @@ validate_func_map = {
     'deviceappearance':check_orgDeviceAppearance,
     'devicedefect':check_orgDeviceDefect,
     'mcourier':check_orgMCourier,
-    'mproduct':check_orgMProduct
+    'mproduct':check_orgMProduct,
+    'mbusket':check_orgMBusket,
 }   

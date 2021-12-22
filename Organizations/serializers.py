@@ -53,14 +53,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
 		id = serializers.IntegerField()
 		name = serializers.CharField(allow_null = True)
 		address = serializers.CharField(allow_null = True)
-		numbers = serializers.JSONField()
-		links = serializers.JSONField()
-		creator = UserSerializer.UserMarketplaceSerializer()
 
 
 		class Meta:
 			model = Organization
-			fields = ['id', 'name','address', 'numbers', 'links', 'creator']
+			fields = ['id', 'name','address', 'numbers', 'links']
 
 
 
