@@ -65,7 +65,7 @@ class MProductForm(forms.ModelForm):
 class MBusket(MarketMainMixin):
 	_id = models.ObjectIdField()
 	count = models.IntegerField(verbose_name = 'Count')
-	price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0, null = True, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
+	price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
 
 	products = models.JSONField(verbose_name = 'Products')
 	author = models.JSONField(verbose_name = 'Author')
@@ -81,9 +81,9 @@ class MBusket(MarketMainMixin):
 	def calculate_price(self):
 		try:
 			for product in self.products:
-				self.price += product.get('count') * product.get('price')
+				self.price += product.get('count') * product.get('price').to_decimal()
 		except:
-			self.price = None
+			pass
 
 	@property
 	def calculate_count(self):

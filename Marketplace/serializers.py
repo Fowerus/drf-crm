@@ -32,11 +32,14 @@ class MProductSerializer(serializers.ModelSerializer):
 			fields = ['_id', 'name', 'count', 'price', 'price_opt', 'url_product', 'url_photo', 'address', 'provider_site', 'done', 'organization']
 
 	class MProductMBusketSerializer(serializers.ModelSerializer):
+		_id = serializers.CharField()
+		price = serializers.DecimalField(max_digits = 10, decimal_places = 2, initial = 0)
 		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 
 		class Meta:
 			model = MProduct
-			fields = ['name', 'count', 'price', 'url_product', 'url_photo', 'address', 'provider_site', 'organization']
+			# fields = ['name', 'count', 'price', 'url_product', 'url_photo', 'address', 'provider_site', 'organization']
+			fields = ['_id', 'name', 'count', 'price', 'organization']
 
 	class Meta:
 		model = MProduct
@@ -52,20 +55,18 @@ class MBusketSerializer(serializers.ModelSerializer):
 
 	class MBusketCSerializer(serializers.ModelSerializer):
 		organization = serializers.JSONField()
-		products = serializers.ListField(child = serializers.JSONField())
+		products = MProductSerializer.MProductMBusketSerializer(many = True)
 		author = serializers.JSONField(read_only = True)
 
 		def create(self, validated_data):
 			author_user_id = get_userData(self.context['request'])['user_id']
 			organization_id = validated_data.get('organization').get('id')
-			validated_data['organization'] = get_organizationData(organization_id)
-			validated_data['author'] = get_authorData(author_user_id, organization_id)
-			validated_data['products'] = get_productsData(validated_data.get('products'))
+			validated_data['organization'] = OrganizationSerializer.OrganizationMarketplaceSerializer(get_organizationData(organization_id)).data
+			validated_data['author'] = Organization_memberSerializer.Organization_memberMarketplaceSerializer(get_authorData(author_user_id, organization_id)).data
 			mbusket = MBusket.objects.create(**validated_data)
 			mbusket.calculate_price
 			mbusket.calculate_count
 			mbusket.save()
-
 			return mbusket
 
 		class Meta:
@@ -73,11 +74,7 @@ class MBusketSerializer(serializers.ModelSerializer):
 			fields = fields = ['products', 'author', 'organization']
 
 	class MBusketUSerializer(serializers.ModelSerializer):
-		products = serializers.ListField(child = serializers.JSONField())
-
-		def update(self, instance, validated_data):
-			validated_data['products'] = MProductSerializer.MProductMBusketSerializer(get_productsBusketData(validated_data.get('products')), many = True)
-			return super(instance, validated_data)
+		products = MProductSerializer.MProductMBusketSerializer(many = True)
 
 		class Meta:
 			model = MBusket
@@ -85,7 +82,7 @@ class MBusketSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = MBusket
-		fields = ['_id', 'products', 'author', 'organization']
+		fields = ['_id', 'products', 'price', 'count', 'author', 'organization', 'created_at', 'updated_at']
 
 
 
