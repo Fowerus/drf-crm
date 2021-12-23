@@ -79,11 +79,11 @@ class MBusket(MarketMainMixin):
 
 	@property
 	def calculate_price(self):
-		try:
-			for product in self.products:
-				self.price += product.get('count') * product.get('price').to_decimal()
-		except:
-			pass
+		self.price = 0
+		for product in self.products:
+			print(type(product.get('price')))
+			self.price += product.get('count') * eval(product.get('price'))
+
 
 	@property
 	def calculate_count(self):

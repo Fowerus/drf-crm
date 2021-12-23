@@ -30,21 +30,27 @@ def index_home(request):
 
 #Get information about user from access token
 def get_userData(requests):
-    access_token = requests.headers['Authorization'].split(' ')[1].strip()
-    access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
+    try:
+        access_token = requests.headers['Authorization'].split(' ')[1].strip()
+        access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
 
-    Session_user.objects.filter(user = access_token_decode['user_id']).get(device = requests.headers['user-agent'])
-    return access_token_decode
+        Session_user.objects.filter(user = access_token_decode['user_id']).get(device = requests.headers['user-agent'])
+        return access_token_decode
+    except:
+        raise MyCustomError('The `Authorization` header is required', 400)
 
 
 #Get information about client from token
 def get_clientData(requests):
-    access_token = requests.headers['Token'].split(' ')[1].strip()
-    access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
+    try:
+        access_token = requests.headers['Token'].split(' ')[1].strip()
+        access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
 
-    Session_client.objects.filter(client = access_token_decode['client_id']).get(device = requests.headers['user-agent'])
+        Session_client.objects.filter(client = access_token_decode['client_id']).get(device = requests.headers['user-agent'])
 
-    return access_token_decode
+        return access_token_decode
+    except:
+        raise MyCustomError('The `Token` header is required', 400)
 
 
 #Get organization id
@@ -76,21 +82,23 @@ def get_authorData(author_user_id, org_id):
 
 #Get organization data
 def get_organizationData(organization_id):
-    try:
+    organization = Organization.objects.filter(id = organization_id)
+
+    if organization.exists():
         return Organization.objects.filter(id = organization_id).values()[0]
-    except:
-        raise MyCustomError('Organization does not exist', 400)
+
+    raise MyCustomError('Organization does not exist', 400)
 
 
 #Get products busket data
-def get_productsData(products):
+def get_productsData(products, **kwargs):
     new_product = []
     try:
         for product in products:
             mproduct = MProduct.objects.get(_id = ObjectId(product.get('_id')))
             if product.get('count') > mproduct.count:
                 raise MyCustomError('The product quantity is not enough', 400)
-            new_product.append({
+            item = {
                 "_id":mproduct._id,
                 "count":product.get('count'),
                 "name":mproduct.name,
@@ -100,19 +108,33 @@ def get_productsData(products):
                 "address":mproduct.address,
                 "provider_site":mproduct.provider_site,
                 "organization":mproduct.organization
-            })
+            }
+            if kwargs.get('is_order'):
+                item['done'] = False
+
+            new_product.append(item)
         return new_product
     except:
-        raise MyCustomError('Product does not exist', 400)
+        raise MyCustomError('Product does not exist or product information error', 400)
 
+
+#Get organization member data
+def get_organization_memberData(member_id, org_id):
+    try:
+        member = Organization.objects.get(id = org_id).organization_members.all().filter(id = member_id.get('id'))
+    except:
+        raise MyCustomError('Member id field not supplied or Organization does not exist', 400)
+    if member.exists():
+        return member.values()[0]
+    else:
+        raise MyCustomError('Organization_member does not exist', 400)
 
 
 #Checking the required permissions
 def check_ReqPerm(role, permissions:list):
     for i in role.permissions.all():
         for j in permissions:
-            if j == i.codename:
-                return True
+            return j == i.codename
 
     return False
 

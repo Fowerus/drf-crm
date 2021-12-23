@@ -11,7 +11,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Organization
-		fields = ['id','name','description', 'address', 'creator', 'numbers','links', 'created_at', 'updated_at']
+		fields = ['id','name','description', 'address', 'creator', 'numbers','links', 'logo', 'created_at', 'updated_at']
 
 
 	class OrganizationCSerializer(serializers.ModelSerializer):
@@ -39,14 +39,14 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Organization
-			fields = ['name','description', 'address', 'links', 'numbers']
+			fields = ['name','description', 'address', 'links', 'numbers', 'logo']
 
 
 	class OrganizationUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = Organization
-			fields = ['name','description', 'address', 'links', 'numbers']
+			fields = ['name','description', 'address', 'links', 'numbers', 'logo']
 
 
 	class OrganizationMarketplaceSerializer(serializers.ModelSerializer):
