@@ -20,7 +20,7 @@ class Client(AbstractBaseUser):
 	second_name = models.CharField(max_length = 150, verbose_name = 'Second name', blank = True)
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
 	phone = PhoneNumberField(unique = True,  verbose_name = 'Phone')
-	avatar = models.CharField(max_length = 300, null = True, blank = True, verbose_name = 'Avatar')
+	avatar = models.TextField(null = True, blank = True, verbose_name = 'Avatar')
 
 	links = models.JSONField(null = True, blank = True)
 	data = models.JSONField(null = True, blank = True)
@@ -58,7 +58,7 @@ class ClientCard(MainMixin):
 	address = models.CharField(max_length = 200, verbose_name = 'Address', blank = True)
 	phone = PhoneNumberField(verbose_name = 'Phone')
 	links = models.JSONField(null = True)
-	avatar = models.CharField(max_length = 300, null = True, verbose_name = 'Avatar')
+	avatar = models.TextField(null = True, blank = True, verbose_name = 'Avatar')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_client_card', verbose_name = 'Organization')
 

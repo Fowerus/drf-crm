@@ -44,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	phone = PhoneNumberField(unique = True, blank = True, null = True, verbose_name = 'Phone')
 	address = models.CharField(max_length = 200, verbose_name = 'Address', null = True)
 
-	avatar = models.CharField(max_length = 300, null = True, blank = True, verbose_name = 'Avatar')
+	avatar = models.TextField(null = True, blank = True, verbose_name = 'Avatar')
 
 	created_at = models.DateTimeField(auto_now_add = True, verbose_name = 'Created_at')
 	updated_at = models.DateTimeField(auto_now = True, verbose_name = 'Updated_at')

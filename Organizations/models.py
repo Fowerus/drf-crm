@@ -98,7 +98,7 @@ class Organization_member(MainMixin):
 	phone = PhoneNumberField(unique = True, blank = True, null = True, verbose_name = 'Phone')
 	address = models.CharField(max_length = 200, null = True, blank = True, verbose_name = 'Address')
 
-	avatar = models.CharField(max_length = 300, null = True, blank = True, verbose_name = 'Avatar')
+	avatar = models.TextField(null = True, blank = True, verbose_name = 'Avatar')
 
 	pass_series = models.CharField(max_length = 4, null = True, blank = True, verbose_name = 'Passport series')
 	pass_number = models.CharField(max_length = 6, null = True, blank = True, verbose_name = 'Passport number')
