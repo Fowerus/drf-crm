@@ -15,6 +15,8 @@ class Organization(MainMixin):
 	description = models.CharField(max_length = 500, verbose_name = 'Description')
 	address = models.CharField(max_length = 200, verbose_name = 'Address')
 
+	logo = models.TextField(null = True, blank = True, verbose_name = 'Logo')
+
 	creator = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, null = True, related_name = 'my_organizations', verbose_name = 'Creator')
 	numbers = models.JSONField(null = True, blank = True)
 	links = models.JSONField(null = True, blank = True)

@@ -32,7 +32,7 @@ def crm_exception_handler(exc, context):
             msg = "Unique constraint violated: {exc}".format(exc=exc)
             response = Response({"detail": msg}, status=400)
 
-    if type(exc).__name__ == MyCustomError.__name__:
+    elif type(exc).__name__ == MyCustomError.__name__:
         logger = logging.getLogger(__name__)
         set_rollback()
         logger.exception(exc)
