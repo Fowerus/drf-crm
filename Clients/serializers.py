@@ -33,6 +33,10 @@ class ClientSerializer(serializers.ModelSerializer):
 				validated_data.pop('phone')
 
 			return super().update(instance, validated_data)
+			
+		class Meta:
+			model = Client
+			fields = ['surname', 'first_name', 'second_name', 'phone', 'address', 'logo']
 
 
 	class Meta:

@@ -241,7 +241,8 @@ class UserSerializer(serializers.ModelSerializer):
 		address = serializers.CharField()
 		email = serializers.CharField()
 		phone = serializers.CharField()
-		avatar = serializers.CharField()
+		avatar = serializers.CharField(allow_null = True)
+
 
 		def update(self, instance, validated_data):
 			try:
