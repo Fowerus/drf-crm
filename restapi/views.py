@@ -233,6 +233,12 @@ def check_orgService(service_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_services.all().filter(id = service_id).exists()
 
 
+
+#Checking an organization's mprovider
+def check_orgMProvider(mprovider_id, org_id):
+    return Organization.objects.get(id = org_id).organization_mprovider.all().filter(id = mprovider_id).exists()
+
+
 # <Order>----------------------------------------------------------------
 
 #Checking an organizaions's order
@@ -454,6 +460,7 @@ validate_func_map = {
     'devicekit':check_orgDeviceKit,
     'deviceappearance':check_orgDeviceAppearance,
     'devicedefect':check_orgDeviceDefect,
+    'mprovider':check_orgMProvider,
     'mcourier':check_orgMCourier,
     'mproduct':check_orgMProduct,
     'mbusket':check_orgMBusket,
