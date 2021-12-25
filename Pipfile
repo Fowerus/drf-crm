@@ -38,6 +38,7 @@ django = "*"
 djongo = "*"
 pymongo = "==3.12.1"
 bson = "*"
+xmltodict = "*"
 
 [dev-packages]
 yapf = "*"

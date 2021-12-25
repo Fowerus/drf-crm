@@ -12,6 +12,7 @@ get_productsData, get_organization_memberData, get_courierData, accept_orderPoin
 
 class MProductSerializer(serializers.ModelSerializer):
 
+
 	class MProductCSerializer(serializers.ModelSerializer):
 		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 
@@ -19,11 +20,21 @@ class MProductSerializer(serializers.ModelSerializer):
 			model = MProduct
 			fields = ['name', 'count', 'price', 'price_opt', 'url_product', 'url_photo', 'address', 'provider_site', 'organization']
 
+
+	class MProductCFileSerializer(serializers.ModelSerializer):
+		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
+
+		class Meta:
+			model = MProduct
+			fields = ['name', 'count', 'price', 'price_opt', 'url_product', 'url_photo', 'address', 'provider_site', 'organization']
+
+
 	class MProductUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = MProduct
 			fields = ['name', 'count', 'price', 'price_opt', 'url_product', 'url_photo', 'address', 'provider_site']
+
 
 	class MProductMOrderSerializer(serializers.ModelSerializer):
 		_id = serializers.CharField()
@@ -35,6 +46,7 @@ class MProductSerializer(serializers.ModelSerializer):
 			model = MProduct
 			# fields = ['_id', 'name', 'count', 'price', 'price_opt', 'url_product', 'url_photo', 'address', 'provider_site', 'done', 'organization']
 			fields = ['_id', 'name', 'count', 'price', 'organization', 'done']
+
 
 	class MProductMBusketSerializer(serializers.ModelSerializer):
 		_id = serializers.CharField()
@@ -57,6 +69,7 @@ class MBusketSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 	products = MProductSerializer.MProductMBusketSerializer(many = True)
 	author = Organization_memberSerializer.Organization_memberMarketplaceSerializer()
+
 
 	class MBusketCSerializer(serializers.ModelSerializer):
 		organization = serializers.JSONField()
@@ -92,6 +105,7 @@ class MBusketSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = MBusket
 			fields = ['products', 'author', 'organization', 'price', 'count', 'providers']
+
 
 	class MBusketUSerializer(serializers.ModelSerializer):
 		products = serializers.JSONField()
@@ -130,6 +144,7 @@ class MCourierSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 	courier = Organization_memberSerializer.Organization_memberMarketplaceSerializer()
 
+
 	class MCourierCSerializer(serializers.ModelSerializer):
 		organization = serializers.JSONField(read_only = True)
 		courier = serializers.JSONField()
@@ -144,6 +159,7 @@ class MCourierSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = MCourier
 			fields = ['courier', 'organization']
+
 
 	class MCourierUSerializer(serializers.ModelSerializer):
 		courier = serializers.JSONField()
@@ -171,6 +187,7 @@ class MOrderSerializer(serializers.ModelSerializer):
 	author = Organization_memberSerializer.Organization_memberMarketplaceSerializer()
 	products = MProductSerializer.MProductMOrderSerializer(many = True)
 
+
 	class MOrderCSerializer(serializers.ModelSerializer):
 		organization = serializers.JSONField()
 		products = serializers.JSONField()
@@ -197,6 +214,7 @@ class MOrderSerializer(serializers.ModelSerializer):
 			model = MOrder
 			fields = ['price', 'count', 'address', 'description', 'comment', 'products', 'courier', 'author', 'organization', 'providers']
 
+
 	class MOrderUSerializer(serializers.ModelSerializer):
 		courier = serializers.JSONField()
 
@@ -212,6 +230,7 @@ class MOrderSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = MOrder
 			fields = ['address', 'description', 'comment', 'courier', 'done']
+
 
 	class MOrderUForCourierSerializer(serializers.ModelSerializer):
 		products = serializers.JSONField()

@@ -233,6 +233,7 @@ class UserSerializer(serializers.ModelSerializer):
 			model = User
 			fields = ['id', 'surname', 'first_name', 'second_name', 'email', 'phone']
 
+
 	class UserUSerializer(serializers.ModelSerializer):
 		password = serializers.CharField(write_only = True)
 		surname = serializers.CharField()

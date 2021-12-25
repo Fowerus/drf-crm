@@ -7,6 +7,7 @@ urlpatterns = [
 	path('mproduct-l/<int:organization>/', views.MProductListAPIView.as_view(), name = 'mproduct_l'),
 	path('mproduct-r/<str:_id>/<int:organization>/', views.MProductRetrieveAPIView.as_view(), name = 'mproduct_r'),
 	path('mproduct-c/', views.MProductCreateAPIView.as_view(), name = 'mproduct_c'),
+	path('mproduct-file-c/', views.MProductFileCreateAPIView.as_view(), name = 'mproduct_file_c'),
 	path('mproduct-ud/<str:_id>/', views.MProductUpdateDestroyAPIView.as_view(), name = 'mproduct_ud'),
 
 
@@ -26,5 +27,5 @@ urlpatterns = [
 	path('morder-r/<str:_id>/<int:organization>/', views.MOrderRetrieveAPIView.as_view(), name = 'morder_r'),
 	path('morder-c/', views.MOrderCreateAPIView.as_view(), name = 'morder_c'),
 	path('morder-ud/<str:_id>/', views.MOrderUpdateDestroyAPIView.as_view(), name = 'morder_ud'),
-	path('morder-courier-u/<str:_id>/', views.MOrderForCourierUpdateAPIView.as_view(), name = 'morder_courier_ud'),
+	path('morder-courier-u/<str:_id>/', views.MOrderForCourierUpdateAPIView.as_view(), name = 'morder_courier_u'),
 ]

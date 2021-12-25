@@ -66,6 +66,7 @@ class DeviceMakerSerializer(serializers.ModelSerializer):
 
 
 
+
 class DeviceModelSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
 
@@ -92,6 +93,7 @@ class DeviceModelSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = DeviceModel
 			fields = ['name']
+
 
 
 
@@ -125,6 +127,7 @@ class DeviceKitSerializer(serializers.ModelSerializer):
 
 
 
+
 class DeviceAppearanceSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
 
@@ -151,6 +154,7 @@ class DeviceAppearanceSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = DeviceAppearance
 			fields = ['name']
+
 
 
 
@@ -183,6 +187,7 @@ class DeviceDefectSerializer(serializers.ModelSerializer):
 
 
 
+
 class ServicePriceSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
 
@@ -212,6 +217,7 @@ class ServicePriceSerializer(serializers.ModelSerializer):
 
 
 
+
 class ActionHistorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ActionHistory
@@ -223,6 +229,7 @@ class OrderHistorySerializer(serializers.ModelSerializer):
 	order = OrderSerializer()
 	organization = OrganizationSerializer()
 	action_history = ActionHistorySerializer(many = True)
+
 
 	class OrderHistoryCSerializer(serializers.ModelSerializer):
 		comment = serializers.CharField(max_length = 20000, required = True)
