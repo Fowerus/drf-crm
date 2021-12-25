@@ -123,6 +123,8 @@ class MProvider(MainMixin):
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_mprovider', verbose_name = 'Organization')
 
+	data = models.JSONField(null = True, blank = True)
+
 	def __str__(self):
 		return f'id; {self.id} | site: {self.site}'
 

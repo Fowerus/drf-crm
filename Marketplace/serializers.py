@@ -22,11 +22,11 @@ class MProductSerializer(serializers.ModelSerializer):
 
 
 	class MProductCFileSerializer(serializers.ModelSerializer):
-		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
+		file = serializers.FileField()
 
 		class Meta:
 			model = MProduct
-			fields = ['name', 'count', 'price', 'price_opt', 'url_product', 'url_photo', 'address', 'provider_site', 'organization']
+			fields = ['file']
 
 
 	class MProductUSerializer(serializers.ModelSerializer):
