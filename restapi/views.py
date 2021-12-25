@@ -17,6 +17,18 @@ from restapi.atomic_exception import MyCustomError
 
 
 
+mprovider_initial_var = {
+    "name":"name",
+    "price":"price",
+    "count":"available_all",
+    "provider_site":"url",
+    "url_product":"url",
+    "url_photo":"picture",
+    "address":"address"
+    }
+
+
+
 def index_home(request):
     return render(request, 'base.html', {})
 
