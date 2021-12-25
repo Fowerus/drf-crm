@@ -11,7 +11,7 @@ from Users.models import User
 from Organizations.models import Organization, Organization_member
 from Sessions.models import Session_user, Session_client 
 from Handbook.models import OrderHistory, ActionHistory
-from Marketplace.models import MCourier, MProduct, MBusket
+from Marketplace.models import MCourier, MProduct, MBusket, MOrder
 
 from restapi.atomic_exception import MyCustomError
 
@@ -73,53 +73,105 @@ def get_orgId(requests):
 
 
 #Get author data
-def get_authorData(author_user_id, org_id):
-    try:
-        return Organization_member.objects.filter(organization = org_id).filter(user = author_user_id).values()[0]
-    except:
-        raise MyCustomError('Organization_member does not exist', 400)
+def get_authorData(author_user_id, org_id, **kwargs):
+    organization_member = Organization_member.objects.filter(organization = org_id).filter(user = author_user_id)
+
+    if organization_member.exists():
+        return organization_member.values()[0]
+
+    raise MyCustomError('Organization_member does not exist', 400)
 
 
 #Get organization data
-def get_organizationData(organization_id):
+def get_organizationData(org_id):
     organization = Organization.objects.filter(id = organization_id)
 
     if organization.exists():
-        return Organization.objects.filter(id = organization_id).values()[0]
+        return organization.values()[0]
 
     raise MyCustomError('Organization does not exist', 400)
 
-
-#Get products busket data
+ 
+#Get products data
 def get_productsData(products, **kwargs):
     new_product = []
-    try:
-        for product in products:
+    providers = []
+    for product in products:
+        try:
             mproduct = MProduct.objects.get(_id = ObjectId(product.get('_id')))
-            if product.get('count') > mproduct.count:
-                raise MyCustomError('The product quantity is not enough', 400)
-            item = {
-                "_id":mproduct._id,
-                "count":product.get('count'),
-                "name":mproduct.name,
-                "price":mproduct.price,
-                "url_product":mproduct.url_product,
-                "url_photo":mproduct.url_photo,
-                "address":mproduct.address,
-                "provider_site":mproduct.provider_site,
-                "organization":mproduct.organization
-            }
-            if kwargs.get('is_order'):
-                item['done'] = False
+        except:
+            raise MyCustomError(f"The product with _id `{product.get('_id')}` does not exist", 400)
 
-            new_product.append(item)
-        return new_product
+        if product.get('count') > mproduct.count:
+            raise MyCustomError(f"The product quantity for _id `{product.get('_id')}` is not enough", 400)
+        item = {
+            "_id":mproduct._id,
+            "count":product.get('count'),
+            "name":mproduct.name,
+            "price":mproduct.price,
+            "url_product":mproduct.url_product,
+            "url_photo":mproduct.url_photo,
+            "address":mproduct.address,
+            "provider_site":mproduct.provider_site,
+            "organization":mproduct.organization
+        }
+        if kwargs.get('is_order'):
+            item['done'] = False
+
+        providers.append(mproduct.organization.get('id'))
+
+        new_product.append(item)
+    return new_product, list(set(providers))
+
+
+#Get courier data
+def get_courierData(mcourier_id, providers, org_id, **kwargs):
+    mcourier = MCourier.objects.filter(_id = ObjectId(mcourier_id))
+    if mcourier.exists() and (mcourier.organization.get('id') in providers or mcourier.organization.get('id') == org_id):
+        return mcourier.values()[0]
+
+    raise MyCustomError('Courier does not exist', 400)
+
+
+#Accept order point
+def accept_orderPoint(done_list, products):
+    try:
+        for item in done_list:
+
+            for product in products:
+                if ObjectId(item) == product.get('_id'):
+                    mproduct = MProduct.objects.get(_id=ObjectId(product.get('_id')))
+
+                    if mproduct.count < product.get('count'):
+                        product['count'] -= mproduct.count
+                        mproduct.count = 0
+
+                    else:
+                        mproduct.count - product.get('count')
+                        product['done'] = True
+
+        return products
+
     except:
-        raise MyCustomError('Product does not exist or product information error', 400)
+        raise MyCustomError('Product id in done_list does not exist', 400)
+
+
+#Calculate order price and item count
+def calculate_orderPriceAndCount(products):
+    try:
+        price = 0
+        count = 0
+        for product in products:
+            price += product.get('count') * product.get('price')
+            count += 1
+
+        return price, count
+    except:
+        raise MyCustomError('Price and count calculation error', 500)
 
 
 #Get organization member data
-def get_organization_memberData(member_id, org_id):
+def get_organization_memberData(member_id, org_id, **kwargs):
     try:
         member = Organization.objects.get(id = org_id).organization_members.all().filter(id = member_id.get('id'))
     except:
@@ -160,29 +212,29 @@ def is_valid_member(user_id, org_id, permissions:list):
 # <Organization>---------------------------------------------------------
 
 #User verification for work in the organization
-def check_orgMember(member_id, org_id):
+def check_orgMember(member_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_members.all().filter(id = member_id).exists()
 
 
 #Checking the role of an organization
-def check_orgRole(role_id, org_id):
+def check_orgRole(role_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_roles.all().filter(id = role_id).exists()
 
 
 #Checking the service of organizaion
-def check_orgService(service_id, org_id):
+def check_orgService(service_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_services.all().filter(id = service_id).exists()
 
 
 # <Order>----------------------------------------------------------------
 
 #Checking an organizaions's order
-def check_orgOrder(order_id, org_id):
+def check_orgOrder(order_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_orders.all().filter(id = order_id).exists()
 
 
 #Checking an organization's order status
-def check_orgOrderStatus(order_status_id, org_id):
+def check_orgOrderStatus(order_status_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_order_status.all().filter(id = order_status_id).exists()
 
 
@@ -198,126 +250,143 @@ def create_orderHistory(method, model, order, organization, body = None):
 # <Client>---------------------------------------------------------------
 
 #Checking an organizaions's client
-def check_orgClient(client_id, org_id):
+def check_orgClient(client_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_clients.all().filter(id = client_id).exists()
 
 
 #Checking an organizaions's ClientCard
-def check_orgClientCard(client_id, org_id):
+def check_orgClientCard(client_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_client_card.all().filter(id = client_id).exists()
 
 
 # <Handbook>-------------------------------------------------------------
 
 #Checking an organizaions's device type
-def check_orgDeviceType(devicetype_id, org_id):
+def check_orgDeviceType(devicetype_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_device_type.all().filter(id = devicetype_id).exists()
 
 
 #Checking an organizaions's device maker
-def check_orgDeviceMaker(devicemaker_id, org_id):
+def check_orgDeviceMaker(devicemaker_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_device_maker.all().filter(id = devicemaker_id).exists()
 
 
 #Checking an organizaions's device model
-def check_orgDeviceModel(devicemodel_id, org_id):
+def check_orgDeviceModel(devicemodel_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_device_model.all().filter(id = devicemodel_id).exists()
 
 
 #Checking an organizaions's device kit
-def check_orgDeviceKit(devicekit_id, org_id):
+def check_orgDeviceKit(devicekit_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_device_kit.all().filter(id = devicekit_id).exists()
 
 
 #Checking an organizaions's device appearance
-def check_orgDeviceAppearance(deviceappearance_id, org_id):
+def check_orgDeviceAppearance(deviceappearance_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_device_appearance.all().filter(id = deviceappearance_id).exists()
 
 
 #Checking an organizaions's device defect
-def check_orgDeviceDefect(devicedefect_id, org_id):
+def check_orgDeviceDefect(devicedefect_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_device_defect.all().filter(id = devicedefect_id).exists()
 
 
 #Checking an organizaions's service price
-def check_orgServicePrice(serviceprice_id, org_id):
+def check_orgServicePrice(serviceprice_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_service_price.all().filter(id = serviceprice_id).exists()
 
 
 #Checking an Executor
-def check_orgExecutor(executor_id, org_id):
+def check_orgExecutor(executor_id, org_id, **kwargs):
     return bool(check_confirmed(executor_id) and check_orgMember(executor_id, org_id))
 
 
 # <Market>---------------------------------------------------------------
 
 #Checking an organizaions's cashbox
-def check_orgCashbox(cashbox_id, org_id):
+def check_orgCashbox(cashbox_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_cashbox.all().filter(id = cashbox_id).exists() 
 
 #Checking an organizaions's purchase
-def check_orgPurchase(purchase_id, org_id):
+def check_orgPurchase(purchase_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_purchase.all().filter(id = purchase_id).exists() 
 
 
 #Checking an organization's saleProduct
-def check_orgSaleProduct(saleproduct_id, org_id):
+def check_orgSaleProduct(saleproduct_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_sale_product.all().filter(id = saleproduct_id).exists() 
 
 
 #Checking an organization's saleOrder
-def check_orgSaleOrder(saleorder_id, org_id):
+def check_orgSaleOrder(saleorder_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_sale_order.all().filter(id = saleorder_id).exists()
 
 
 #Checking an organization's product
-def check_orgProduct(product_id, org_id):
+def check_orgProduct(product_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_product.all().filter(id = product_id).exists()
 
 
 #Checking an organization's ProductOrder
-def check_orgProductOrder(productorder_id, org_id):
+def check_orgProductOrder(productorder_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_product_order.all().filter(id = productorder_id).exists()
 
 
 #Checkign an organization's WorkDone
-def check_orgWorkDone(workdone_id, org_id):
+def check_orgWorkDone(workdone_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_work_done.all().filter(id = workdone_id).exists()
 
 
 #Checking an organization's PurchaseRequest
-def check_orgPurchaseRequest(purchaserequest_id, org_id):
+def check_orgPurchaseRequest(purchaserequest_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_purchase_request.all().filter(id = purchaserequest_id).exists()
 
 
 #Checking an organization's PurchaseAccept
-def check_orgPurchaseAccept(purchaseaccept_id, org_id):
+def check_orgPurchaseAccept(purchaseaccept_id, org_id, **kwargs):
     return Organization.objects.get(id = org_id).organization_purchase_accept.all().filter(id = purchaseaccept_id).exists()
 
 
 # <Marketplace>----------------------------------------------------------
 
 #Checking an organization's MCourier
-def check_orgMCourier(mcourier_id, org_id):
+def check_orgMCourier(mcourier_id, org_id, **kwargs):
     return MCourier.objects.filter(_id = ObjectId(mcourier_id)).filter(organization = {'id':org_id}).exists()
 
 
 #Checking an organization's MProduct
-def check_orgMProduct(mproduct_id, org_id):
+def check_orgMProduct(mproduct_id, org_id, **kwargs):
     return MProduct.objects.filter(_id = ObjectId(mproduct_id)).filter(organization = {'id':org_id}).exists()
 
 
 #Checking an organization's MBusket
-def check_orgMBusket(mbusket_id, org_id):
+def check_orgMBusket(mbusket_id, org_id, **kwargs):
     return MBusket.objects.filter(_id = ObjectId(mbusket_id)).filter(organization = {'id':org_id}).exists()
 
+
+#Checking an organization's MOrder
+def check_orgMOrder(morder_id, org_id, **kwargs):
+    return MOrder.objects.filter(_id = ObjectId(morder_id)).filter(organization = {'id':org_id}).exists()
+
+
+#Checking an organization's MOrder for courier
+def check_orgMOrderForCourier(morder_id, org_id, **kwargs):
+    try:
+        user_id = get_userData(kwargs.get('requests'))['user_id']
+        member = Organization.objects.get(id = org_id).organization_members.all().get(user__id = user_id)
+        return MOrder.objects.filter(_id = ObjectId(morder_id)).filter(courier = {'id':member.id}).exists()
+    except:
+        return False
 
 
 
 
 #Get view name without prifex(like ListAPIView)
 def get_viewName(view):
-    view_name = view.__class__.__name__
+    if 'perm_view_name' in dir(view):
+        return view.perm_view_name.lower()
+    else:
+        view_name = view.__class__.__name__
 
     if 'Serializer' in view_name:
         return view_name.lower()[:view_name.index('Serializer')-1].capitalize()
@@ -381,4 +450,6 @@ validate_func_map = {
     'mcourier':check_orgMCourier,
     'mproduct':check_orgMProduct,
     'mbusket':check_orgMBusket,
+    'morder':check_orgMOrder,
+    'morderforcourier':check_orgMOrderForCourier,
 }   

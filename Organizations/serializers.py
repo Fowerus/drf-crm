@@ -167,7 +167,6 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 		pass_number = serializers.CharField(allow_null = True)
 
 
-
 		class Meta:
 			model = Organization_member
 			fields = ['id', 'first_name', 'surname', 'second_name', 'address', 'phone', 'email', 'avatar', 'pass_series', 'pass_number']

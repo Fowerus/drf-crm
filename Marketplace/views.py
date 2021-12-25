@@ -108,6 +108,8 @@ class MOrderListAPIView(generics.ListAPIView):
 	serializer_class = MOrderSerializer
 
 	def get_queryset(self):
+		if 'provider' in self.request._request.path:
+			return self.queryset.filter(products = {'organization':{'id': self.kwargs.get('organization') } })
 		return self.queryset.filter(organization = {'id':self.kwargs.get('organization')})
 
 
@@ -121,6 +123,13 @@ class MOrderRetrieveAPIView(generics.RetrieveAPIView):
 	lookup_field = '_id'
 	queryset = MOrder.objects.all()
 	serializer_class = MOrderSerializer
+
+
+class MOrderForCourierUpdateAPIView(generics.UpdateAPIView):
+	permission_classes = [CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+	lookup_field = '_id'
+	queryset = MOrder.objects.all()
+	serializer_class = MOrderSerializer.MOrderUForCourierSerializer
 
 
 class MOrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):

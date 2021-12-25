@@ -70,6 +70,8 @@ class MBusket(MarketMainMixin):
 	products = models.JSONField(verbose_name = 'Products')
 	author = models.JSONField(verbose_name = 'Author')
 
+	providers = models.JSONField(verbose_name = 'Providers')
+
 	organization = models.JSONField(verbose_name = 'Organization')
 
 	objects = models.DjongoManager()
@@ -81,7 +83,6 @@ class MBusket(MarketMainMixin):
 	def calculate_price(self):
 		self.price = 0
 		for product in self.products:
-			print(type(product.get('price')))
 			self.price += product.get('count') * eval(product.get('price'))
 
 
@@ -101,10 +102,11 @@ class MBusket(MarketMainMixin):
 class MBusketForm(forms.ModelForm):
 	author = forms.JSONField()
 	organization = forms.JSONField()
+	providers = forms.JSONField()
 
 	class Meta:
 		model = MBusket
-		fields = ['count', 'price', 'products', 'author', 'organization']
+		fields = ['count', 'price', 'products', 'author', 'organization', 'providers']
 
 
 
@@ -152,6 +154,8 @@ class MOrder(MarketMainMixin):
 	products = models.JSONField(verbose_name = 'Products')
 	courier = models.JSONField(verbose_name = 'Courier')
 
+	providers = models.JSONField(verbose_name = 'Providers')
+
 	author = models.JSONField(verbose_name = 'Author')
 	organization = models.JSONField(verbose_name = 'Organization')
 
@@ -174,4 +178,4 @@ class MOrderForm(forms.ModelForm):
 
 	class Meta:
 		model = MOrder
-		fields = ['_id','price', 'address', 'description', 'comment', 'author', 'products', 'courier', 'organization']
+		fields = ['_id','price', 'address', 'description', 'comment', 'author', 'products', 'courier', 'organization', 'providers']
