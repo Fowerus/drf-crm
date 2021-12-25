@@ -22,6 +22,7 @@ urlpatterns = [
 
 
 	path('morder-l/<int:organization>/', views.MOrderListAPIView.as_view(), name = 'morder_l'),
+	path('morder-provider-l/<int:organization>/', views.MOrderListAPIView.as_view(), name = 'morder_provider_l'),
 	path('morder-r/<str:_id>/<int:organization>/', views.MOrderRetrieveAPIView.as_view(), name = 'morder_r'),
 	path('morder-c/', views.MOrderCreateAPIView.as_view(), name = 'morder_c'),
 	path('morder-ud/<str:_id>/', views.MOrderUpdateDestroyAPIView.as_view(), name = 'morder_ud'),

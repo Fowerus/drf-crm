@@ -237,7 +237,7 @@ class UserSerializer(serializers.ModelSerializer):
 		password = serializers.CharField(write_only = True)
 		surname = serializers.CharField()
 		first_name = serializers.CharField()
-		second_name = serializers.CharField()
+		second_name = serializers.CharField(required = False)
 		address = serializers.CharField()
 		email = serializers.CharField()
 		phone = serializers.CharField()
@@ -251,14 +251,15 @@ class UserSerializer(serializers.ModelSerializer):
 					validated_data.pop('password')
 			except:
 				pass
-				if 'phone' in validated_data:
-					instance.phone = validated_data['phone']
-					instance.confirmed_phone = False
-					validated_data.pop('phone')
-				if 'email' in validated_data:
-					instance.email = validated_data['email']
-					instance.confirmed_email = False
-					validated_data.pop('email')
+				
+			if 'phone' in validated_data:
+				instance.phone = validated_data['phone']
+				instance.confirmed_phone = False
+				validated_data.pop('phone')
+			if 'email' in validated_data:
+				instance.email = validated_data['email']
+				instance.confirmed_email = False
+				validated_data.pop('email')
 
 			return super().update(instance, validated_data)
 
