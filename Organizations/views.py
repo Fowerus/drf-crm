@@ -162,13 +162,13 @@ class MProviderCreateAPIView(generics.CreateAPIView):
 
 
 class MProviderRetrieveAPIView(generics.RetrieveAPIView):
-    permission_classes = [CustomPermissionVerificationRole]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
     queryset = MProvider.objects.all()
     lookup_field = 'id'
     serializer_class = MProviderSerializer
 
 
 class MProviderDestroyAPIView(generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
     queryset = MProvider.objects.all()
     lookup_field = 'id'
