@@ -27,18 +27,18 @@ class MProductSerializer(serializers.ModelSerializer):
 
 	class MProductMOrderSerializer(serializers.ModelSerializer):
 		_id = serializers.CharField()
-		price = serializers.DecimalField(max_digits = 10, decimal_places = 2, initial = 0)
+		price = serializers.FloatField(initial = 0)
 		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 		done = serializers.BooleanField(default = False)
 
 		class Meta:
 			model = MProduct
 			# fields = ['_id', 'name', 'count', 'price', 'price_opt', 'url_product', 'url_photo', 'address', 'provider_site', 'done', 'organization']
-			fields = ['_id', 'name', 'count', 'price', 'organization']
+			fields = ['_id', 'name', 'count', 'price', 'organization', 'done']
 
 	class MProductMBusketSerializer(serializers.ModelSerializer):
 		_id = serializers.CharField()
-		price = serializers.DecimalField(max_digits = 10, decimal_places = 2, initial = 0)
+		price = serializers.FloatField(initial = 0)
 		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 
 		class Meta:
@@ -62,7 +62,7 @@ class MBusketSerializer(serializers.ModelSerializer):
 		organization = serializers.JSONField()
 		products = serializers.JSONField()
 		author = serializers.JSONField(read_only = True)
-		price = serializers.DecimalField(max_digits = 10, decimal_places = 2, read_only = True)
+		price = serializers.FloatField(read_only = True)
 		count = serializers.IntegerField(read_only = True)
 		providers = serializers.JSONField(read_only = True)
 
@@ -77,7 +77,7 @@ class MBusketSerializer(serializers.ModelSerializer):
 			validated_data['organization'] = OrganizationSerializer.OrganizationMarketplaceSerializer(get_organizationData(organization_id)).data
 			validated_data['author'] = Organization_memberSerializer.Organization_memberMarketplaceSerializer(get_authorData(author_user_id, organization_id)).data
 			products_list, validated_data['providers'] = get_productsData(validated_data.get('products'))
-			validated_data['products'] = MProductSerializer.MProductMBusketSerializer(products_list,many = True).data
+			validated_data['products'] = MProductSerializer.MProductMBusketSerializer(products_list, many = True).data
 
 			try:
 				mbusket = MBusket(**validated_data)
@@ -94,28 +94,29 @@ class MBusketSerializer(serializers.ModelSerializer):
 			fields = ['products', 'author', 'organization', 'price', 'count', 'providers']
 
 	class MBusketUSerializer(serializers.ModelSerializer):
-		organization = serializers.JSONField(read_only = True)
 		products = serializers.JSONField()
 		author = serializers.JSONField(read_only = True)
-		price = serializers.DecimalField(max_digits = 10, decimal_places = 2, read_only = True)
+		price = serializers.FloatField(read_only = True)
 		count = serializers.IntegerField(read_only = True)
 
 		def update(self, instance, validated_data):
-			
-			products_list, instance.providers = get_productsData(validated_data.get('products'))
-			instance.products = MProductSerializer.MProductMBusketSerializer(products_list,many = True).data
-			instance.calculate_price
-			instance.calculate_count
-			instance.save()
 
-			validated_data.pop('products')
+			if 'products' in validated_data:
+				products_list, instance.providers = get_productsData(validated_data.get('products'))
+				instance.products = MProductSerializer.MProductMBusketSerializer(products_list, many = True).data
+				instance.calculate_price
+				instance.calculate_count
+				instance.save()
+
+				validated_data.pop('products')
+
 			return super().update(instance, validated_data)
 
 
 
 		class Meta:
 			model = MBusket
-			fields = ['products', 'author', 'organization', 'price', 'count']
+			fields = ['products', 'author', 'price', 'count']
 
 	class Meta:
 		model = MBusket
@@ -125,6 +126,7 @@ class MBusketSerializer(serializers.ModelSerializer):
 
 
 class MCourierSerializer(serializers.ModelSerializer):
+	_id = serializers.CharField()
 	organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 	courier = Organization_memberSerializer.Organization_memberMarketplaceSerializer()
 
@@ -148,12 +150,14 @@ class MCourierSerializer(serializers.ModelSerializer):
 
 		def update(self, instance, validated_data):
 			organization_id = get_orgId(self.context.get("request"))
-			validated_data['courier'] = Organization_memberSerializer.Organization_memberMarketplaceSerializer(get_organization_memberData(validated_data.get('courier'), organization_id)).data
+			if 'courier' in validated_data:
+				validated_data['courier'] = Organization_memberSerializer.Organization_memberMarketplaceSerializer(get_organization_memberData(validated_data.get('courier'), organization_id)).data
 			return super().update(instance, validated_data)
 
 		class Meta:
 			model = MCourier
 			fields = ['courier']
+
 
 	class Meta:
 		model = MCourier
@@ -172,7 +176,7 @@ class MOrderSerializer(serializers.ModelSerializer):
 		products = serializers.JSONField()
 		author = serializers.JSONField(read_only = True)
 		courier = serializers.JSONField()
-		price = serializers.DecimalField(max_digits = 10, decimal_places = 2, read_only = True)
+		price = serializers.FloatField(read_only = True)
 		count = serializers.IntegerField(read_only = True)
 		providers = serializers.JSONField(read_only = True)
 
@@ -183,8 +187,8 @@ class MOrderSerializer(serializers.ModelSerializer):
 			validated_data['organization'] = OrganizationSerializer.OrganizationMarketplaceSerializer(get_organizationData(organization_id)).data
 			validated_data['author'] = Organization_memberSerializer.Organization_memberMarketplaceSerializer(get_authorData(author_user_id, organization_id)).data
 			products_list, validated_data['providers'] = get_productsData(validated_data.get('products'), is_order = True)
-			validated_data['products'] = MProductSerializer.MProductMBusketSerializer(products_list,many = True).data
-			validated_data['courier'] = MCourierSerializer(get_courierData(validated_data.get('courier')), validated_data.get('providers'), organization_id).data
+			validated_data['products'] = MProductSerializer.MProductMOrderSerializer(products_list, many = True).data
+			validated_data['courier'] = MCourierSerializer(get_courierData(validated_data.get('courier'), validated_data.get('providers'), organization_id)).data
 			validated_data['price'], validated_data['count'] = calculate_orderPriceAndCount(validated_data.get('products'))
 
 			return super().create(validated_data)
@@ -194,32 +198,39 @@ class MOrderSerializer(serializers.ModelSerializer):
 			fields = ['price', 'count', 'address', 'description', 'comment', 'products', 'courier', 'author', 'organization', 'providers']
 
 	class MOrderUSerializer(serializers.ModelSerializer):
-		courier = serializers.JSONField(allow_null = True)
+		courier = serializers.JSONField()
 
 		def update(self, instance, validated_data):
-			organization_id = get_orgId(self.context.get("request"))
-			validated_data['courier'] = MCourierSerializer(get_courierData(validated_data.get('courier')), instance.providers, organization_id).data
+			if 'courier' in validated_data:
+				organization_id = get_orgId(self.context.get('request'))
+				validated_data['courier'] = MCourierSerializer(get_courierData(validated_data.get('courier'), instance.providers, organization_id)).data
+			if instance.count == instance.count_success:
+				instance.done = True
 
 			return super().update(instance, validated_data)
 
 		class Meta:
 			model = MOrder
-			fields = ['address', 'description', 'comment', 'courier']
-
+			fields = ['address', 'description', 'comment', 'courier', 'done']
 
 	class MOrderUForCourierSerializer(serializers.ModelSerializer):
-		done_list = serializers.JSONField()
+		products = serializers.JSONField()
 
 		def update(self, instance, validated_data):
-			instance.products = accept_orderPoint(validated_data.get('done_list'), instance.products)
-			instance.save()
+			if 'products' in validated_data:
+				instance.products, instance.count_success = accept_orderPoint(validated_data.get('products'), instance.products, instance.count_success)
+				if instance.count == instance.count_success:
+					instance.done = True
+				instance.save()
+
 			return instance
+
 
 		class Meta:
 			model = MOrder
-			fields = ['done_list']
+			fields = ['products']
 
 
 	class Meta:
 		model = MOrder
-		fields = ['_id', 'price', 'count' ,'address', 'description', 'comment', 'products', 'courier', 'author', 'organization']
+		fields = ['_id', 'price', 'count', 'count_success', 'address', 'description', 'comment', 'products', 'courier', 'author', 'done', 'organization']

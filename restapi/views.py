@@ -84,7 +84,7 @@ def get_authorData(author_user_id, org_id, **kwargs):
 
 #Get organization data
 def get_organizationData(org_id):
-    organization = Organization.objects.filter(id = organization_id)
+    organization = Organization.objects.filter(id = org_id)
 
     if organization.exists():
         return organization.values()[0]
@@ -102,55 +102,62 @@ def get_productsData(products, **kwargs):
         except:
             raise MyCustomError(f"The product with _id `{product.get('_id')}` does not exist", 400)
 
-        if product.get('count') > mproduct.count:
-            raise MyCustomError(f"The product quantity for _id `{product.get('_id')}` is not enough", 400)
-        item = {
-            "_id":mproduct._id,
-            "count":product.get('count'),
-            "name":mproduct.name,
-            "price":mproduct.price,
-            "url_product":mproduct.url_product,
-            "url_photo":mproduct.url_photo,
-            "address":mproduct.address,
-            "provider_site":mproduct.provider_site,
-            "organization":mproduct.organization
-        }
-        if kwargs.get('is_order'):
-            item['done'] = False
+        try:
+            if product.get('count') > mproduct.count:
+                raise MyCustomError(f"The quantity of product with _id `{product.get('_id')}` is not enough", 400)
+            item = {
+                "_id":mproduct._id,
+                "count":product.get('count'),
+                "name":mproduct.name,
+                "price":mproduct.price,
+                "url_product":mproduct.url_product,
+                "url_photo":mproduct.url_photo,
+                "address":mproduct.address,
+                "provider_site":mproduct.provider_site,
+                "organization":mproduct.organization
+            }
+            if kwargs.get('is_order'):
+                item['done'] = False
+                mproduct.count -= item.get('count')
+                mproduct.save()
 
-        providers.append(mproduct.organization.get('id'))
+            providers.append(mproduct.organization.get('id'))
 
-        new_product.append(item)
+            new_product.append(item)
+
+        except:
+            raise MyCustomError("Creation product list error (Did you add the count field into each dict in array?)", 400)
+
     return new_product, list(set(providers))
 
 
 #Get courier data
-def get_courierData(mcourier_id, providers, org_id, **kwargs):
-    mcourier = MCourier.objects.filter(_id = ObjectId(mcourier_id))
-    if mcourier.exists() and (mcourier.organization.get('id') in providers or mcourier.organization.get('id') == org_id):
-        return mcourier.values()[0]
+def get_courierData(mcourier_data, providers, org_id, **kwargs):
+    mcourier = MCourier.objects.filter(_id = ObjectId(mcourier_data.get('_id')))
+    if mcourier.exists() and (mcourier.first().organization.get('id') in providers or mcourier.first().organization.get('id') == org_id):
+        return {
+            "_id":mcourier.first()._id,
+            "organization":mcourier.first().organization,
+            "courier":mcourier.first().courier
+        }
 
     raise MyCustomError('Courier does not exist', 400)
 
 
 #Accept order point
-def accept_orderPoint(done_list, products):
+def accept_orderPoint(done_list, products, count_success):
     try:
         for item in done_list:
 
             for product in products:
-                if ObjectId(item) == product.get('_id'):
+                if item == product.get('_id'):
                     mproduct = MProduct.objects.get(_id=ObjectId(product.get('_id')))
 
-                    if mproduct.count < product.get('count'):
-                        product['count'] -= mproduct.count
-                        mproduct.count = 0
-
-                    else:
-                        mproduct.count - product.get('count')
+                    if not product['done']:
                         product['done'] = True
+                        count_success += 1
 
-        return products
+        return products, count_success
 
     except:
         raise MyCustomError('Product id in done_list does not exist', 400)
@@ -373,8 +380,8 @@ def check_orgMOrder(morder_id, org_id, **kwargs):
 def check_orgMOrderForCourier(morder_id, org_id, **kwargs):
     try:
         user_id = get_userData(kwargs.get('requests'))['user_id']
-        member = Organization.objects.get(id = org_id).organization_members.all().get(user__id = user_id)
-        return MOrder.objects.filter(_id = ObjectId(morder_id)).filter(courier = {'id':member.id}).exists()
+        member_id = MOrder.objects.get(_id = ObjectId(morder_id)).courier.get('courier').get('id')
+        return Organization_member.objects.filter(id = member_id).filter(user__id = user_id).exists()
     except:
         return False
 

@@ -28,16 +28,13 @@ class MProduct(MarketMainMixin):
 	_id = models.ObjectIdField()
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	count = models.IntegerField(verbose_name = 'Count')
-	price = models.DecimalField(max_digits = 10, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
-	price_opt = models.DecimalField(max_digits = 10, decimal_places = 2, validators=[MinValueValidator(0.0)], verbose_name = 'Wholesale price')
+	price = models.FloatField(verbose_name = 'Price')
+	price_opt = models.FloatField(verbose_name = 'Wholesale price')
 	url_product = models.CharField(max_length = 300, verbose_name = 'Product url')
 	url_photo = models.CharField(max_length = 300, verbose_name = 'Photo url')
 	address = models.CharField(max_length = 300, verbose_name = 'Address')
 	provider_site = models.CharField(max_length = 300, verbose_name = 'MProvider')
-
-	done = models.BooleanField(null = True)
-	
-	organization = models.JSONField(verbose_name = 'Organization')
+	organization = models.JSONField(verbose_name = 'Organization')	
 
 	objects = models.DjongoManager()
 
@@ -65,13 +62,11 @@ class MProductForm(forms.ModelForm):
 class MBusket(MarketMainMixin):
 	_id = models.ObjectIdField()
 	count = models.IntegerField(verbose_name = 'Count')
-	price = models.DecimalField(max_digits = 10, decimal_places = 2, default = 0, validators=[MinValueValidator(0.0)], verbose_name = 'Price')
+	price = models.FloatField(verbose_name = 'Price')
 
 	products = models.JSONField(verbose_name = 'Products')
 	author = models.JSONField(verbose_name = 'Author')
-
 	providers = models.JSONField(verbose_name = 'Providers')
-
 	organization = models.JSONField(verbose_name = 'Organization')
 
 	objects = models.DjongoManager()
@@ -103,6 +98,7 @@ class MBusketForm(forms.ModelForm):
 	author = forms.JSONField()
 	organization = forms.JSONField()
 	providers = forms.JSONField()
+	products = forms.JSONField()
 
 	class Meta:
 		model = MBusket
@@ -145,7 +141,8 @@ class MCourierForm(forms.ModelForm):
 class MOrder(MarketMainMixin):
 	_id = models.ObjectIdField()
 	count = models.IntegerField(verbose_name = 'Count')
-	price = models.DecimalField(max_digits = 10, decimal_places = 2, verbose_name = 'Price')
+	count_success = models.IntegerField(default = 0, verbose_name = 'Count Success')
+	price = models.FloatField(verbose_name = 'Price')
 
 	address = models.CharField(max_length = 150, verbose_name = 'Address')
 	description = models.CharField(max_length = 5000, verbose_name = 'Description')
@@ -153,11 +150,11 @@ class MOrder(MarketMainMixin):
 
 	products = models.JSONField(verbose_name = 'Products')
 	courier = models.JSONField(verbose_name = 'Courier')
-
 	providers = models.JSONField(verbose_name = 'Providers')
-
 	author = models.JSONField(verbose_name = 'Author')
 	organization = models.JSONField(verbose_name = 'Organization')
+
+	done = models.BooleanField(default = False)
 
 	objects = models.DjongoManager()
 
@@ -175,7 +172,9 @@ class MOrder(MarketMainMixin):
 class MOrderForm(forms.ModelForm):
 	organization = forms.JSONField()
 	courier = forms.JSONField()
+	products = forms.JSONField()
+	author = forms.JSONField()
 
 	class Meta:
 		model = MOrder
-		fields = ['_id','price', 'address', 'description', 'comment', 'author', 'products', 'courier', 'organization', 'providers']
+		fields = ['_id','price', 'address', 'count', 'count_success', 'description', 'comment', 'author', 'products', 'courier', 'organization', 'providers', 'done']
