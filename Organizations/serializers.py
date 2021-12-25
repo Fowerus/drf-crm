@@ -61,11 +61,13 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 
+
 class PermissionSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = CustomPermission
 		fields = ['id', 'name', 'codename']
+
 
 
 
@@ -112,6 +114,8 @@ class RoleSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = Role
 			fields = ['name', 'permissions']
+
+
 
 
 class Organization_memberSerializer(serializers.ModelSerializer):
@@ -173,6 +177,7 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 
 
 
+
 class ServiceSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
 
@@ -199,6 +204,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = Service
 			fields = ['name', 'address', 'phone']
+
 
 
 

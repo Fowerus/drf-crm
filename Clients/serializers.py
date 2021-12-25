@@ -49,6 +49,7 @@ class ClientCardSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
 	client = ClientSerializer()
 
+
 	class ClientCardCSerializer(serializers.ModelSerializer):
 		password = serializers.CharField(max_length = 128, write_only = True)
 

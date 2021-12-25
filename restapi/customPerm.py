@@ -41,8 +41,8 @@ class CustomPermissionVerificationRole(BasePermission):
 
     def has_permission(self, requests, view):
 
-        view_name = get_viewName(view)
         organization = get_orgId(requests)
+        view_name = get_viewName(view)
         user_data = get_userData(requests)
 
         perms_map = {

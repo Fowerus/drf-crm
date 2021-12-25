@@ -27,6 +27,8 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 		fields = ['id', 'name', 'created_at', 'updated_at']
 
 
+
+
 class TransactionCSerializer(serializers.ModelSerializer):
 
 	@transaction.atomic
@@ -41,6 +43,7 @@ class TransactionCSerializer(serializers.ModelSerializer):
 
 
 
+
 class CashboxSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
 	service = ServiceSerializer()
@@ -48,6 +51,7 @@ class CashboxSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Cashbox
 		fields = ['id', 'name', 'cash', 'account_money', 'organization', 'service', 'created_at', 'updated_at']
+
 
 	class CashboxCSerializer(serializers.ModelSerializer):
 
@@ -59,6 +63,7 @@ class CashboxSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = Cashbox
 			fields = ['name', 'cash', 'account_money', 'organization', 'service']
+
 
 	class CashboxUSerializer(serializers.ModelSerializer):
 		prefix = serializers.CharField(max_length = 1, default = "0")
@@ -89,8 +94,6 @@ class CashboxSerializer(serializers.ModelSerializer):
 				data['account_money'] = f"{validated_data['prefix']}{ validated_data['account_money'] }"
 				validated_data.pop('account_money')
 				instance.account_money = expession
-
-
 
 			if len(data) > 1:
 				instance.save()
@@ -215,8 +218,6 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 				if instance.purchase_request.cashbox.calculate_min_money < 0:
 					instance.purchase_request.delete()
 					raise MyCustomError('Insufficient money at the buyer cashbox. The proposal deleted', 400)
-
-
 
 				product_data = {
 					"name":instance.purchase_request.product.name,
@@ -357,6 +358,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = ProductOrder
 			fields = ['name', 'price', 'service']
+
 
 
 

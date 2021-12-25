@@ -28,6 +28,12 @@ class MProductCreateAPIView(generics.CreateAPIView):
 	serializer_class = MProductSerializer.MProductCSerializer
 
 
+class MProductFileCreateAPIView(generics.CreateAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	serializer_class = MProductSerializer.MProductCFileSerializer
+	perm_view_name = 'MProduct'
+
+
 class MProductRetrieveAPIView(generics.RetrieveAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
