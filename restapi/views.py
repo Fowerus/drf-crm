@@ -113,9 +113,9 @@ def get_productsData(products, **kwargs):
         except:
             raise MyCustomError(f"The product with _id `{product.get('_id')}` does not exist", 400)
 
+        if product.get('count') > mproduct.count or product.get('count') < 0:
+            raise MyCustomError(f"The quantity of product with _id `{product.get('_id')}` is not enough", 400)
         try:
-            if product.get('count') > mproduct.count or product.get('count') < 0:
-                raise MyCustomError(f"The quantity of product with _id `{product.get('_id')}` is not enough", 400)
             item = {
                 "_id":mproduct._id,
                 "count":product.get('count'),
@@ -403,6 +403,25 @@ def check_orgMOrderForCourier(morder_id, org_id, **kwargs):
         return False
 
 
+#Checking an organization's mbusket and user's mbusket
+def check_orgUserMBusket(mbusket_id, org_id, **kwargs):
+    try:
+        user_id = get_userData(kwargs.get('requests'))['user_id']
+        member_id = Organization.objects.get(id = org_id).organization_members.all().filter(user__id = user_id)
+        return MBusket.objects.get(_id = ObjectId(mbusket_id)).organization.get('id') == org_id
+    except:
+        return False
+
+
+#Checking an organization's morder and user's morder
+def check_orgUserMOrder(morder_id, org_id, **kwargs):
+    try:
+        user_id = get_userData(kwargs.get('requests'))['user_id']
+        member_id = Organization.objects.get(id = org_id).organization_members.all().filter(user__id = user_id)
+        return MOrder.objects.get(_id = ObjectId(morder_id)).organization.get('id') == org_id
+    except:
+        return False
+
 
 
 #Get view name without prifex(like ListAPIView)
@@ -477,4 +496,6 @@ validate_func_map = {
     'mbusket':check_orgMBusket,
     'morder':check_orgMOrder,
     'morderforcourier':check_orgMOrderForCourier,
+    'mbusketcourier':check_orgUserMBusket,
+    'mordercourier':check_orgUserMOrder
 }   
