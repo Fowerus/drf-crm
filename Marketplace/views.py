@@ -15,7 +15,7 @@ from restapi.customPerm import *
 
 
 class MProductListAPIView(generics.ListAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionCheckSession]
 	queryset = MProduct.objects.all()
 	serializer_class = MProductSerializer
 
@@ -35,7 +35,7 @@ class MProductFileCreateAPIView(generics.CreateAPIView):
 
 
 class MProductRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper]
+	permission_classes = [CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
 	queryset = MProduct.objects.all()
 	serializer_class = MProductSerializer
@@ -57,6 +57,25 @@ class MBusketListAPIView(generics.ListAPIView):
 
 	def get_queryset(self):
 		return self.queryset.filter(organization = {'id':self.kwargs.get('organization')})
+
+
+class MBusketMCourierListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+	queryset = MBusket.objects.all()
+	serializer_class = MBusketSerializer
+
+	def get(self, requests, *args, **kwargs):
+		try:
+			instance = self.queryset.get(_id = self.kwargs.get('_id'))
+			self.queryset = MCourier.objects.all()
+			self.serializer_class = MCourierSerializer
+			data = list()
+			for item in list(set(instance.providers + [self.kwargs.get('organization')])):
+				data += self.serializer_class(self.queryset.filter(organization = {"id":self.kwargs.get('organization')}), many = True).data
+
+			return Response(data, status = status.HTTP_200_OK)
+		except:
+			return Response({'detail':"Serializer data error or does not exist"}, status = status.HTTP_400_BAD_REQUEST)
 
 
 class MBusketCreateAPIView(generics.CreateAPIView):
@@ -90,8 +109,21 @@ class MCourierListAPIView(generics.ListAPIView):
 
 
 class MCourierMOrderListAPIView(generics.ListAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionGetUser]
+	queryset = MOrder.objects.all()
+	serializer_class = MOrderSerializer
 
+	def get_queryset(self):
+		try:
+			member = Organization.objects.get(id = self.kwargs.get('organization')).organization_members.all().get(user__id = self.kwargs.get('id'))
+			mcourier = MCourier.objects.filter(courier = {"id":member.id}).get(organization = {'id':self.kwargs.get('organization')})
+
+			return self.queryset.filter(courier = {'_id':str(mcourier._id)})
+
+		except:
+			pass
+
+		return {}
 
 
 class MCourierCreateAPIView(generics.CreateAPIView):
@@ -114,9 +146,37 @@ class MOrderListAPIView(generics.ListAPIView):
 	serializer_class = MOrderSerializer
 
 	def get_queryset(self):
-		if 'provider' in self.request._request.path:
-			return self.queryset.filter(products = {'organization':{'id': self.kwargs.get('organization') } })
 		return self.queryset.filter(organization = {'id':self.kwargs.get('organization')})
+
+
+class MOrderForProviderListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
+	queryset = MOrder.objects.all()
+	serializer_class = MOrderSerializer
+	perm_view_name = 'MOrder'
+
+	def get_queryset(self):
+		
+		return self.queryset.filter(organization = {'id':self.kwargs.get('organization')})
+
+
+class MOrderMCourierListAPIView(generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+	queryset = MOrder.objects.all()
+	serializer_class = MOrderSerializer
+
+	def get(self, requests, *args, **kwargs):
+		try:
+			instance = self.queryset.get(_id = self.kwargs.get('_id'))
+			self.queryset = MCourier.objects.all()
+			self.serializer_class = MCourierSerializer
+			data = list()
+			for item in list(set(instance.providers + [self.kwargs.get('organization')])):
+				data += self.serializer_class(self.queryset.filter(organization = {"id":self.kwargs.get('organization')}), many = True).data
+
+			return Response(data, status = status.HTTP_200_OK)
+		except:
+			return Response({'detail':"Serializer data error or does not exist"}, status = status.HTTP_400_BAD_REQUEST)
 
 
 class MOrderCreateAPIView(generics.CreateAPIView):

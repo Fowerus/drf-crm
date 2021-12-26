@@ -226,6 +226,7 @@ class MOrderSerializer(serializers.ModelSerializer):
 	courier = MCourierSerializer()
 	author = Organization_memberSerializer.Organization_memberMarketplaceSerializer()
 	products = MProductSerializer.MProductMOrderSerializer(many = True)
+	address = serializers.JSONField()
 
 
 	class MOrderCSerializer(serializers.ModelSerializer):
