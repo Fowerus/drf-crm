@@ -29,7 +29,7 @@ class MProductCreateAPIView(generics.CreateAPIView):
 
 
 class MProductFileCreateAPIView(generics.CreateAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionMProviderAccess]
 	serializer_class = MProductSerializer.MProductCFileSerializer
 	perm_view_name = 'MProduct'
 

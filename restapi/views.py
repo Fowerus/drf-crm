@@ -65,6 +65,17 @@ def get_clientData(requests):
         raise MyCustomError('The `Token` header is required', 400)
 
 
+#Get information about mprovider from token
+def get_mproviderData(requests):
+    try:
+        access_token = requests.headers['Token'].split(' ')[1].strip()
+        access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms = [settings.SIMPLE_JWT['ALGORITHM']])
+
+        return access_token_decode
+    except:
+        raise MyCustomError('The `Token` header is required', 400)    
+
+
 #Get organization id
 def get_orgId(requests):
     try:
