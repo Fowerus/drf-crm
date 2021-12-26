@@ -32,8 +32,9 @@ class MProduct(MarketMainMixin):
 	price_opt = models.FloatField(verbose_name = 'Wholesale price')
 	url_product = models.CharField(max_length = 300, verbose_name = 'Product url')
 	url_photo = models.CharField(max_length = 300, verbose_name = 'Photo url')
-	address = models.CharField(max_length = 300, verbose_name = 'Address')
 	provider_site = models.CharField(max_length = 300, verbose_name = 'MProvider')
+
+	address = models.JSONField(verbose_name = 'Address')
 	organization = models.JSONField(verbose_name = 'Organization')	
 
 	objects = models.DjongoManager()
@@ -51,6 +52,7 @@ class MProduct(MarketMainMixin):
 
 class MProductForm(forms.ModelForm):
 	organization = forms.JSONField()
+	address = forms.JSONField()
 
 	class Meta:
 		model = MProduct
