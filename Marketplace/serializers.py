@@ -1,3 +1,5 @@
+import xmltodict
+
 from bson.objectid import ObjectId
 
 from rest_framework import serializers
@@ -5,12 +7,14 @@ from restapi.atomic_exception import MyCustomError
 
 from .models import *
 from Organizations.serializers import Organization_memberSerializer, OrganizationSerializer
-from restapi.views import get_userData, get_orgId, get_organizationData, get_authorData, \
+from restapi.views import get_userData, get_orgId, get_mproviderData, get_organizationData, get_authorData, \
 get_productsData, get_organization_memberData, get_courierData, accept_orderPoint, calculate_orderPriceAndCount
 
 
 
 class MProductSerializer(serializers.ModelSerializer):
+	_id = serializers.CharField()
+	organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 
 
 	class MProductCSerializer(serializers.ModelSerializer):
@@ -23,10 +27,42 @@ class MProductSerializer(serializers.ModelSerializer):
 
 	class MProductCFileSerializer(serializers.ModelSerializer):
 		file = serializers.FileField()
+		products = serializers.JSONField(read_only = True)
+
+		def create(self, validated_data):
+			mprovider_data = get_mproviderData(self.context['request'])
+			products = []
+			try:
+				file = xmltodict.parse(validated_data.get('file')).get('yml_catalog').get('shop')
+				provider_site = file.get('url', mprovider_data.get('data').get('provider_site', ''))
+
+				for item in file.get('offers').get('offer'):					
+					item_info = {
+						"name": item.get(mprovider_data.get('data').get('name'), 'Nameless'),
+						"price": item.get(mprovider_data.get('data').get('price'), 0),
+						"price_opt": item.get(mprovider_data.get('data').get('price_opt'), 0),
+						"count": item.get(mprovider_data.get('data').get('count'), 0),
+						"url_product":item.get(mprovider_data.get('data').get('url_product'), 'url'),
+						"url_photo":item.get(mprovider_data.get('data').get('url_photo'), 'url'),
+						"address":item.get(mprovider_data.get('data').get('address'), ''),
+						"provider_site":provider_site,
+						"organization": OrganizationSerializer.OrganizationMarketplaceSerializer(get_organizationData(mprovider_data.get('organization'))).data
+					}
+					mproduct = MProduct.objects.create(**item_info)
+					item_info['_id'] = mproduct._id
+
+					products.append(item_info)
+
+				validated_data['products'] = MProductSerializer(products, many = True).data
+
+				return validated_data
+				
+			except:
+				raise MyCustomError('XML file parse file error (Advise: First raw must contain `version="1.0" encoding="utf-8"`)', 400)
 
 		class Meta:
 			model = MProduct
-			fields = ['file']
+			fields = ['file', 'products']
 
 
 	class MProductUSerializer(serializers.ModelSerializer):
