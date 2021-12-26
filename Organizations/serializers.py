@@ -214,7 +214,7 @@ class MProviderSerializer(serializers.ModelSerializer):
 
 	class MProviderCSerializer(serializers.ModelSerializer):
 		token = serializers.CharField(max_length = 300, read_only = True)
-		data = serializers.JSONField(allow_null = True, initial = mprovider_initial_var)
+		data = serializers.JSONField(required = False, initial = mprovider_initial_var)
 
 		def create(self, validated_data):
 			mprovider = MProvider.objects.create(**validated_data)

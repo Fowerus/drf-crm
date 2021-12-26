@@ -1,5 +1,6 @@
 import jwt
 from django.db import models
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.core import validators
@@ -123,11 +124,8 @@ class MProvider(MainMixin):
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_mprovider', verbose_name = 'Organization')
 
-	data = models.JSONField(null = True, blank = True)
-
 	def __str__(self):
 		return f'id; {self.id} | site: {self.site}'
-
 
 	@property
 	def generate_token(self):
@@ -138,3 +136,10 @@ class MProvider(MainMixin):
 		}, settings.SECRET_KEY, algorithm='HS256')
 
 		return token_encode
+
+
+	class Meta:
+		db_table = 'mprovider'
+		verbose_name_plural = 'MProviders'
+		verbose_name = 'MProvider'
+		ordering = ['-updated_at']

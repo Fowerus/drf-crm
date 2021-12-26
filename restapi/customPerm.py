@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 from rest_framework.permissions import BasePermission
 from rest_framework import status
 from rest_framework.response import Response
-from .views import *
+from .views import get_userData, get_viewName, get_orgId, get_clientData, get_mproviderData, validate_func_map, is_valid_member
 from Sessions.models import Session_user, Session_client
 
 
@@ -184,4 +184,17 @@ class CustomPermissionMarketplaceHelper(BasePermission):
             return True
         except:
             return False
+
+
+
+class CustomPermissionMProviderAccess(BasePermission):
+
+    def has_permission(self, requests, view):
+        try:
+            mprovider = get_mproviderData(requests)
+            view.kwargs['organization'] = mprovider.get('organization')
+
+            return True
             
+        except:
+            return False
