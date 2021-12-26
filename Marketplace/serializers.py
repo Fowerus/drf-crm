@@ -91,11 +91,12 @@ class MProductSerializer(serializers.ModelSerializer):
 		_id = serializers.CharField()
 		price = serializers.FloatField(initial = 0)
 		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
+		address = serializers.JSONField()
 
 		class Meta:
 			model = MProduct
 			# fields = ['name', 'count', 'price', 'url_product', 'url_photo', 'address', 'provider_site', 'organization']
-			fields = ['_id', 'name', 'count', 'price', 'organization']
+			fields = ['_id', 'name', 'count', 'price', 'address', 'organization']
 
 	class Meta:
 		model = MProduct
