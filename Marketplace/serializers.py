@@ -15,6 +15,7 @@ get_productsData, get_organization_memberData, get_courierData, accept_orderPoin
 class MProductSerializer(serializers.ModelSerializer):
 	_id = serializers.CharField()
 	organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
+	address = serializers.JSONField()
 
 
 	class MProductCSerializer(serializers.ModelSerializer):
@@ -44,10 +45,10 @@ class MProductSerializer(serializers.ModelSerializer):
 						"count": item.get(mprovider_data.get('data').get('count'), 0),
 						"url_product":item.get(mprovider_data.get('data').get('url_product'), 'url'),
 						"url_photo":item.get(mprovider_data.get('data').get('url_photo'), 'url'),
-						"address":item.get(mprovider_data.get('data').get('address'), ''),
 						"provider_site":provider_site,
 						"organization": OrganizationSerializer.OrganizationMarketplaceSerializer(get_organizationData(mprovider_data.get('organization'))).data
 					}
+					item_info['address'] = [item.split('_')[1] for item in [i for i in item.keys() if item.get(mprovider_data.get('data').get('address'), '') in i] if len(item.split('_')) >= 2][1:]
 					mproduct = MProduct.objects.create(**item_info)
 					item_info['_id'] = mproduct._id
 
@@ -56,9 +57,10 @@ class MProductSerializer(serializers.ModelSerializer):
 				validated_data['products'] = MProductSerializer(products, many = True).data
 
 				return validated_data
-				
+
 			except:
-				raise MyCustomError('XML file parse file error (Advise: First raw must contain `version="1.0" encoding="utf-8"`)', 400)
+				raise MyCustomError('''XML file parse file error (Advise: First raw must contain `version="1.0" encoding="utf-8"`).
+					Or xml structure is not standart''', 400)
 
 		class Meta:
 			model = MProduct
@@ -74,6 +76,7 @@ class MProductSerializer(serializers.ModelSerializer):
 
 	class MProductMOrderSerializer(serializers.ModelSerializer):
 		_id = serializers.CharField()
+		address = serializers.JSONField()
 		price = serializers.FloatField(initial = 0)
 		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 		done = serializers.BooleanField(default = False)
@@ -81,7 +84,7 @@ class MProductSerializer(serializers.ModelSerializer):
 		class Meta:
 			model = MProduct
 			# fields = ['_id', 'name', 'count', 'price', 'price_opt', 'url_product', 'url_photo', 'address', 'provider_site', 'done', 'organization']
-			fields = ['_id', 'name', 'count', 'price', 'organization', 'done']
+			fields = ['_id', 'name', 'count', 'price', 'address', 'organization', 'done']
 
 
 	class MProductMBusketSerializer(serializers.ModelSerializer):

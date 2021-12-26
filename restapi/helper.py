@@ -21,5 +21,5 @@ def defaultMProviderData():
     "provider_site":"url",
     "url_product":"url",
     "url_photo":"picture",
-    "address":"address"
+    "address":"available"
     }
