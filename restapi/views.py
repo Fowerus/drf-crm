@@ -17,18 +17,6 @@ from restapi.atomic_exception import MyCustomError
 
 
 
-mprovider_initial_var = {
-    "name":"name",
-    "price":"price",
-    "count":"available_all",
-    "provider_site":"url",
-    "url_product":"url",
-    "url_photo":"picture",
-    "address":"address"
-    }
-
-
-
 def index_home(request):
     return render(request, 'base.html', {})
 
@@ -126,7 +114,7 @@ def get_productsData(products, **kwargs):
             raise MyCustomError(f"The product with _id `{product.get('_id')}` does not exist", 400)
 
         try:
-            if product.get('count') > mproduct.count:
+            if product.get('count') > mproduct.count or product.get('count') < 0:
                 raise MyCustomError(f"The quantity of product with _id `{product.get('_id')}` is not enough", 400)
             item = {
                 "_id":mproduct._id,

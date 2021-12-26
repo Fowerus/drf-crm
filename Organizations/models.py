@@ -7,7 +7,7 @@ from django.core import validators
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-from restapi.helper import MainMixin
+from restapi.helper import MainMixin, defaultMProviderData
 
 
 
@@ -124,6 +124,8 @@ class MProvider(MainMixin):
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_mprovider', verbose_name = 'Organization')
 
+	data = models.JSONField(default = defaultMProviderData, verbose_name = "Data")
+
 	def __str__(self):
 		return f'id; {self.id} | site: {self.site}'
 
@@ -132,7 +134,8 @@ class MProvider(MainMixin):
 		token_encode = jwt.encode({
 			'id': self.id,
 			'site': self.site,
-			'organization': self.organization.id
+			'organization': self.organization.id,
+			'data':self.data
 		}, settings.SECRET_KEY, algorithm='HS256')
 
 		return token_encode

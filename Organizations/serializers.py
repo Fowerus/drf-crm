@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from .models import *
 from Users.serializers import UserSerializer
-from restapi.views import get_userData, mprovider_initial_var
+from restapi.views import get_userData
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -214,7 +214,6 @@ class MProviderSerializer(serializers.ModelSerializer):
 
 	class MProviderCSerializer(serializers.ModelSerializer):
 		token = serializers.CharField(max_length = 300, read_only = True)
-		data = serializers.JSONField(required = False, initial = mprovider_initial_var)
 
 		def create(self, validated_data):
 			mprovider = MProvider.objects.create(**validated_data)
@@ -226,7 +225,7 @@ class MProviderSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = MProvider
-			fields = ['token', 'site', 'data', 'organization']
+			fields = ['token', 'site', 'organization']
 
 
 	class Meta:

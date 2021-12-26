@@ -10,3 +10,16 @@ class MainMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+
+def defaultMProviderData():
+    return {
+    "name":"name",
+    "price":"price",
+    "count":"available_all",
+    "provider_site":"url",
+    "url_product":"url",
+    "url_photo":"picture",
+    "address":"address"
+    }
