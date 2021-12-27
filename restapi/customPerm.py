@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 from rest_framework.permissions import BasePermission
 from rest_framework import status
 from rest_framework.response import Response
-from .views import get_userData, get_viewName, get_orgId, get_clientData, get_mproviderData, validate_func_map, is_valid_member
+from .views import get_userData, get_viewName, get_orgId, get_clientData, get_mproviderData, validate_func_map, is_valid_member, check_confirmed
 from Sessions.models import Session_user, Session_client
 
 

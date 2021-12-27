@@ -97,8 +97,8 @@ class Organization_member(MainMixin):
 	first_name = models.CharField(max_length = 150, null = True, blank = True, verbose_name = 'First name')
 	second_name = models.CharField(max_length = 150, null = True, blank = True, verbose_name = 'Second name')
 
-	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, unique = True, blank = True, null = True, verbose_name = 'Email')
-	phone = PhoneNumberField(unique = True, blank = True, null = True, verbose_name = 'Phone')
+	email = models.CharField(validators = [validators.EmailValidator], max_length = 100, blank = True, null = True, verbose_name = 'Email')
+	phone = PhoneNumberField(blank = True, null = True, verbose_name = 'Phone')
 	address = models.CharField(max_length = 200, null = True, blank = True, verbose_name = 'Address')
 
 	avatar = models.TextField(null = True, blank = True, verbose_name = 'Avatar')

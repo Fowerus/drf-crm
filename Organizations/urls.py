@@ -5,7 +5,7 @@ from . import views
 
 urlpatterns = [
     path('organization-lc/', views.OrganizationListCreateAPIView.as_view(), name = 'organization_lc'),
-    path('organization-creator-l/', views.OrganizationListCreateAPIView.as_view(), name = 'organization_creator_l'),
+    path('organization-creator-l/', views.OrganizationCreatorListAPIView.as_view(), name = 'organization_creator_l'),
     path('organization-rud/<int:id>/', views.OrganizationRetrieveUpdateDestroyAPIView.as_view(), name = 'organization_rud'),
 
 

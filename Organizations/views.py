@@ -22,14 +22,18 @@ class OrganizationListCreateAPIView(generics.ListCreateAPIView):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
 
-    def get_queryset(self):
-        if 'creator' in self.request._request.path:
-            return self.queryset.filter(creator__id = self.kwargs.get('id'))
-        return self.queryset
-
     def post(self, requests):
         self.serializer_class = OrganizationSerializer.OrganizationCSerializer
         return super().post(requests)
+
+
+class OrganizationCreatorListAPIView(generics.ListAPIView):
+    permission_classes = [CustomPermissionVerificationOrganization, CustomPermissionGetUser]
+    queryset = Organization.objects.all()
+    serializer_class = OrganizationSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(creator__id = self.kwargs.get('id'))
 
 
 class OrganizationRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
