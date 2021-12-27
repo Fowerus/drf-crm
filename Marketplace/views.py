@@ -62,16 +62,15 @@ class MBusketListAPIView(generics.ListAPIView):
 class MBusketMCourierListAPIView(generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
 	queryset = MBusket.objects.all()
-	serializer_class = MBusketSerializer
+	serializer_class = MCourierSerializer
 
 	def get(self, requests, *args, **kwargs):
 		try:
 			instance = self.queryset.get(_id = self.kwargs.get('_id'))
 			self.queryset = MCourier.objects.all()
-			self.serializer_class = MCourierSerializer
 			data = list()
 			for item in list(set(instance.providers + [self.kwargs.get('organization')])):
-				data += self.serializer_class(self.queryset.filter(organization = {"id":self.kwargs.get('organization')}), many = True).data
+				data += self.serializer_class(self.queryset.filter(organization = {"id":item}), many = True).data
 
 			return Response(data, status = status.HTTP_200_OK)
 		except:
@@ -150,29 +149,28 @@ class MOrderListAPIView(generics.ListAPIView):
 
 
 class MOrderForProviderListAPIView(generics.ListAPIView):
-	permission_classes = [CustomPermissionVerificationRole]
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper]
 	queryset = MOrder.objects.all()
-	serializer_class = MOrderSerializer
+	serializer_class = MOrderSerializer.MOrderForProviderSerializer
 	perm_view_name = 'MOrder'
 
 	def get_queryset(self):
 		
-		return self.queryset.filter(organization = {'id':self.kwargs.get('organization')})
+		return MOrder.objects.mongo_aggregate([{"$set":{"price":"$$REMOVE","products":{"$filter":{"input":"$products", "cond":{"$eq":["$$this.organization.id", 1]}}}}}])
 
 
 class MOrderMCourierListAPIView(generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
 	queryset = MOrder.objects.all()
-	serializer_class = MOrderSerializer
+	serializer_class = MCourierSerializer
 
 	def get(self, requests, *args, **kwargs):
 		try:
 			instance = self.queryset.get(_id = self.kwargs.get('_id'))
 			self.queryset = MCourier.objects.all()
-			self.serializer_class = MCourierSerializer
 			data = list()
 			for item in list(set(instance.providers + [self.kwargs.get('organization')])):
-				data += self.serializer_class(self.queryset.filter(organization = {"id":self.kwargs.get('organization')}), many = True).data
+				data += self.serializer_class(self.queryset.filter(organization = {"id":item}), many = True).data
 
 			return Response(data, status = status.HTTP_200_OK)
 		except:
@@ -194,12 +192,12 @@ class MOrderRetrieveAPIView(generics.RetrieveAPIView):
 class MOrderForCourierUpdateAPIView(generics.UpdateAPIView):
 	permission_classes = [CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
-	queryset = MOrder.objects.all()
+	queryset = MOrder.objects.filter(done = False)
 	serializer_class = MOrderSerializer.MOrderUForCourierSerializer
 
 
 class MOrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
-	queryset = MOrder.objects.all()
+	queryset = MOrder.objects.filter(done = False)
 	serializer_class = MOrderSerializer.MOrderUSerializer
