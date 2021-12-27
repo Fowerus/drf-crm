@@ -259,6 +259,7 @@ class MOrderSerializer(serializers.ModelSerializer):
 
 	class MOrderUSerializer(serializers.ModelSerializer):
 		courier = serializers.JSONField()
+		done = serializers.BooleanField(read_only = True)
 
 		def update(self, instance, validated_data):
 			if 'courier' in validated_data:

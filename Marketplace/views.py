@@ -192,12 +192,12 @@ class MOrderRetrieveAPIView(generics.RetrieveAPIView):
 class MOrderForCourierUpdateAPIView(generics.UpdateAPIView):
 	permission_classes = [CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
-	queryset = MOrder.objects.filter(done = False)
+	queryset = MOrder.objects.all()
 	serializer_class = MOrderSerializer.MOrderUForCourierSerializer
 
 
 class MOrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
 	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
 	lookup_field = '_id'
-	queryset = MOrder.objects.filter(done = False)
+	queryset = MOrder.objects.all()
 	serializer_class = MOrderSerializer.MOrderUSerializer
