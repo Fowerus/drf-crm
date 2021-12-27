@@ -156,7 +156,7 @@ class MOrderForProviderListAPIView(generics.ListAPIView):
 
 	def get_queryset(self):
 		
-		return MOrder.objects.mongo_aggregate([{"$set":{"price":"$$REMOVE","products":{"$filter":{"input":"$products", "cond":{"$eq":["$$this.organization.id", 1]}}}}}])
+		return MOrder.objects.mongo_aggregate([{"$set":{"price":"$$REMOVE","products":{"$filter":{"input":"$products", "cond":{"$eq":["$$this.organization.id", self.kwargs.get('organization')]}}}}}])
 
 
 class MOrderMCourierListAPIView(generics.ListAPIView):
