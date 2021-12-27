@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from rest_framework import serializers
 
 from .models import *
@@ -16,6 +17,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 	class OrganizationCSerializer(serializers.ModelSerializer):
 
+		@transaction.atomic
 		def create(self, validated_data):
 			creator = get_user_model().objects.get(id = get_userData(self.context['request'])['user_id'])
 			validated_data['creator'] = creator
