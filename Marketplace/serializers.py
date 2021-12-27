@@ -76,7 +76,7 @@ class MProductSerializer(serializers.ModelSerializer):
 
 	class MProductMOrderSerializer(serializers.ModelSerializer):
 		_id = serializers.CharField()
-		address = serializers.JSONField()
+		address = serializers.JSONField(allow_null = True)
 		price = serializers.FloatField(initial = 0)
 		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 		done = serializers.BooleanField(default = False)
@@ -91,7 +91,7 @@ class MProductSerializer(serializers.ModelSerializer):
 		_id = serializers.CharField()
 		price = serializers.FloatField(initial = 0)
 		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
-		address = serializers.JSONField()
+		address = serializers.JSONField(allow_null = True)
 
 		class Meta:
 			model = MProduct
@@ -106,6 +106,7 @@ class MProductSerializer(serializers.ModelSerializer):
 
 
 class MBusketSerializer(serializers.ModelSerializer):
+	_id = serializers.CharField()
 	organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 	products = MProductSerializer.MProductMBusketSerializer(many = True)
 	author = Organization_memberSerializer.Organization_memberMarketplaceSerializer()
@@ -222,11 +223,11 @@ class MCourierSerializer(serializers.ModelSerializer):
 
 
 class MOrderSerializer(serializers.ModelSerializer):
+	_id = serializers.CharField()
 	organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
 	courier = MCourierSerializer()
 	author = Organization_memberSerializer.Organization_memberMarketplaceSerializer()
 	products = MProductSerializer.MProductMOrderSerializer(many = True)
-	address = serializers.JSONField()
 
 
 	class MOrderCSerializer(serializers.ModelSerializer):
@@ -291,6 +292,17 @@ class MOrderSerializer(serializers.ModelSerializer):
 			fields = ['products']
 
 
+	class MOrderForProviderSerializer(serializers.ModelSerializer):
+		_id = serializers.CharField()
+		organization = OrganizationSerializer.OrganizationMarketplaceSerializer()
+		courier = MCourierSerializer()
+		products = MProductSerializer.MProductMOrderSerializer(many = True)
+
+		class Meta:
+			model = MOrder
+			fields = ['_id','products', 'courier', 'organization']
+
+
 	class Meta:
 		model = MOrder
-		fields = ['_id', 'price', 'count', 'count_success', 'address', 'description', 'comment', 'products', 'courier', 'author', 'done', 'organization']
+		fields = ['_id','price', 'count', 'count_success', 'address', 'description', 'comment', 'products', 'courier', 'author', 'done', 'organization']

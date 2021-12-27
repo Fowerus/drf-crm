@@ -497,5 +497,5 @@ validate_func_map = {
     'morder':check_orgMOrder,
     'morderforcourier':check_orgMOrderForCourier,
     'mbusketcourier':check_orgUserMBusket,
-    'mordercourier':check_orgUserMOrder
+    'mordermcourier':check_orgUserMOrder
 }   
