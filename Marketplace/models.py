@@ -80,7 +80,7 @@ class MBusket(MarketMainMixin):
 	def calculate_price(self):
 		self.price = 0
 		for product in self.products:
-			self.price += product.get('count') * eval(product.get('price'))
+			self.price += product.get('count') * product.get('price')
 
 
 	@property
