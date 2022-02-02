@@ -10,6 +10,7 @@
 * [Verify-Info API documentation](./verify_info.md)
 * [Handbook API documentation](./handbook.md)
 * [Market API documentation](./market.md)
+* [Marketplace API documentation](./marketplace.md)
 
 ## **Token error**
 If you inserted an incorrect token or an expired token in the header, it will give    

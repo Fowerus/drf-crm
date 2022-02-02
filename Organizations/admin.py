@@ -4,7 +4,6 @@ from Organizations.models import *
 from django.contrib.auth.models import Permission
 
 
-
 admin.site.register(Organization)
 admin.site.register(CustomPermission)
 admin.site.register(Permission)

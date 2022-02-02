@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 from Organizations.models import Service, Organization
 from Clients.models import Client
-from restapi.helper import MainMixin
+from core.utils.helper import MainMixin
 
 
 

@@ -2,7 +2,7 @@ from django.db import models
 
 from Organizations.models import Organization
 from Orders.models import Order
-from restapi.helper import MainMixin
+from core.utils.helper import MainMixin
 
 
 
