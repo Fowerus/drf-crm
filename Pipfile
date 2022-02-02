@@ -1,44 +1,33 @@
 [[source]]
-verify_ssl = true
-name = "pypi"
-url = "https://pypi.org/simple"
-
-[[source]]
 url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
-
-[requires]
-python_version = "3.9"
 
 [packages]
-asgiref = "==3.4.1"
-certifi = "==2021.5.30"
-charset-normalizer = "==2.0.4"
-dj-database-url = "==0.5.0"
-django-heroku = "==0.3.1"
+django = "==4.0.1"
+celery = "==.5.2.3"
+django-cors-headers = "==3.10.1"
 django-phonenumber-field = "==5.2.0"
 django-resized = "==0.3.11"
 djangorestframework = "==3.12.4"
 djangorestframework-simplejwt = "==4.8.0"
-gunicorn = "==20.1.0"
-idna = "==3.2"
-phonenumbers = "==8.12.31"
-psycopg2 = "==2.9.1"
-pytz = "==2021.1"
-requests = "==2.26.0"
-six = "==1.16.0"
-urllib3 = "==1.26.6"
-whitenoise = "==5.3.0"
-Pillow = "==8.3.1"
-PyJWT = "==2.1.0"
-pipenv = "*"
-django-cors-headers = "*"
-django = "*"
+pyjwt = "==2.1.0"
+psycopg2-binary = "==2.9.3"
+redis = "==3.5.3"
+sqlparse = "==0.2.4"
+xmltodict = "==0.12.0"
+django-cleanup = "==5.2.0"
+phonenumbers = "==8.12.41"
+pillow = "==9.0.0"
+django-filter = "==21.1"
+django-utils-six = "==2.0"
+pep8 = "==1.7.1"
+autopep8 = "==1.6.0"
+faker = "==11.3.0"
 djongo = "*"
 pymongo = "==3.12.1"
-bson = "*"
-xmltodict = "*"
 
 [dev-packages]
-yapf = "*"
+
+[requires]
+python_version = "3.9"

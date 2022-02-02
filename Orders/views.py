@@ -1,5 +1,5 @@
 from rest_framework import generics
-from restapi.customPerm import CustomPermissionVerificationRole, \
+from core.utils.customPerm import CustomPermissionVerificationRole, \
 CustomPermissionVerificationAffiliation, CustomPermissionGetUser, CustomPermissionCheckRelated
 from .models import Order
 from .serializers import OrderSerializer

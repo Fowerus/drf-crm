@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from .serializers import *
 
 from Handbook.models import *
-from restapi.customPerm import *
+from core.utils.customPerm import *
 
 
 
@@ -19,7 +19,7 @@ class DeviceTypeListAPIView(generics.ListAPIView):
 	serializer_class = DeviceTypeSerializer
 
 	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization'))
+		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
 
 
 class DeviceTypeCreateAPIView(generics.CreateAPIView):
@@ -49,7 +49,7 @@ class DeviceMakerListAPIView(generics.ListAPIView):
 	serializer_class = DeviceMakerSerializer
 
 	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization'))
+		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
 
 
 class DeviceMakerCreateAPIView(generics.CreateAPIView):
@@ -79,7 +79,7 @@ class DeviceModelListAPIView(generics.ListAPIView):
 	serializer_class = DeviceModelSerializer
 
 	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization'))
+		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
 
 
 class DeviceModelCreateAPIView(generics.CreateAPIView):
@@ -109,7 +109,7 @@ class DeviceKitListAPIView(generics.ListAPIView):
 	serializer_class = DeviceKitSerializer
 
 	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization'))
+		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
 
 
 class DeviceKitCreateAPIView(generics.CreateAPIView):
@@ -139,7 +139,7 @@ class DeviceAppearanceListAPIView(generics.ListAPIView):
 	serializer_class = DeviceAppearanceSerializer
 
 	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization'))
+		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
 
 
 class DeviceAppearanceCreateAPIView(generics.CreateAPIView):
@@ -169,7 +169,7 @@ class DeviceDefectListAPIView(generics.ListAPIView):
 	serializer_class = DeviceDefectSerializer
 
 	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization'))
+		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
 
 
 class DeviceDefectCreateAPIView(generics.CreateAPIView):
@@ -199,7 +199,7 @@ class ServicePriceListAPIView(generics.ListAPIView):
 	serializer_class = ServicePriceSerializer
 
 	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization'))
+		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
 
 
 class ServicePriceCreateAPIView(generics.CreateAPIView):

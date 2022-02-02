@@ -13,8 +13,7 @@ from .serializers import *
 from Users.serializers import UserSerializer
 
 from Organizations.models import *
-from restapi.customPerm import *
-
+from core.utils.customPerm import *
 
 
 class OrganizationListCreateAPIView(generics.ListCreateAPIView):
@@ -28,12 +27,13 @@ class OrganizationListCreateAPIView(generics.ListCreateAPIView):
 
 
 class OrganizationCreatorListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionVerificationOrganization, CustomPermissionGetUser]
+    permission_classes = [
+        CustomPermissionVerificationOrganization, CustomPermissionGetUser]
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(creator__id = self.kwargs.get('id'))
+        return self.queryset.select_related('creator').filter(creator__id=self.kwargs.get('id'))
 
 
 class OrganizationRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -51,8 +51,6 @@ class OrganizationRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPI
         return super().put(requests, kwargs)
 
 
-
-
 class PermListAPIView(generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = CustomPermission.objects.all()
@@ -65,7 +63,7 @@ class RoleListAPIView(generics.ListAPIView):
     queryset = Role.objects.all()
 
     def get_queryset(self):
-        return self.queryset.filter(organization=self.kwargs.get('organization'))
+        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
 
 
 class RoleCreateAPIView(generics.CreateAPIView):
@@ -90,15 +88,13 @@ class RoleUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
     serializer_class = RoleSerializer.RoleUSerializer
 
 
-
-
 class Organization_memberListAPIView(generics.ListAPIView):
     permission_classes = [CustomPermissionCheckSession]
     queryset = Organization_member.objects.all()
     serializer_class = Organization_memberSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(organization=self.kwargs.get('organization'))
+        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
 
 
 class Organization_memberCreateAPIView(generics.CreateAPIView):
@@ -122,15 +118,13 @@ class Organization_memberUpdateDestroyAPIView(generics.UpdateAPIView, generics.D
     serializer_class = Organization_memberSerializer.Organization_memberUSerializer
 
 
-
-
 class ServiceListAPIView(generics.ListAPIView):
     permission_classes = [CustomPermissionCheckSession]
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(organization=self.kwargs.get('organization'))
+        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
 
 
 class ServiceCreateAPIView(generics.CreateAPIView):
@@ -154,30 +148,32 @@ class ServiceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIVie
     serializer_class = ServiceSerializer.ServiceUSerializer
 
 
-
-
 class MProviderListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+    permission_classes = [CustomPermissionVerificationRole,
+                          CustomPermissionVerificationAffiliation]
     queryset = MProvider.objects.all()
     serializer_class = MProviderSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(organization=self.kwargs.get('organization'))
+        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
 
 
 class MProviderCreateAPIView(generics.CreateAPIView):
-    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+    permission_classes = [
+        CustomPermissionVerificationRole, CustomPermissionCheckRelated]
     serializer_class = MProviderSerializer.MProviderCSerializer
 
 
 class MProviderRetrieveAPIView(generics.RetrieveAPIView):
-    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+    permission_classes = [CustomPermissionVerificationRole,
+                          CustomPermissionVerificationAffiliation]
     queryset = MProvider.objects.all()
     lookup_field = 'id'
     serializer_class = MProviderSerializer
 
 
 class MProviderDestroyAPIView(generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+    permission_classes = [CustomPermissionVerificationRole,
+                          CustomPermissionVerificationAffiliation]
     queryset = MProvider.objects.all()
     lookup_field = 'id'

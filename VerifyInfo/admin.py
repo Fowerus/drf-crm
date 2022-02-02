@@ -4,4 +4,3 @@ from .models import *
 
 admin.site.register(VerifyInfoUser)
 admin.site.register(VerifyInfoClient)
-

@@ -4,18 +4,20 @@ from djongo import models
 from .models import *
 
 
-
 class MProductAdminForm(admin.ModelAdmin):
-	form = MProductForm
+    form = MProductForm
+
 
 class MBusketAdminForm(admin.ModelAdmin):
-	form = MBusketForm
+    form = MBusketForm
+
 
 class MCourierAdminForm(admin.ModelAdmin):
-	form = MCourierForm
+    form = MCourierForm
+
 
 class MOrderAdminForm(admin.ModelAdmin):
-	form = MOrderForm
+    form = MOrderForm
 
 
 admin.site.register(MProduct, MProductAdminForm)
