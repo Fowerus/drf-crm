@@ -20,7 +20,7 @@ class DataBaseRouter:
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
 
-        if app_label == 'Marketplace' or model_name == 'log' or db == 'mongo':
+        if app_label == 'Marketplace' or model_name == 'log':
             return db == 'mongo'
 
         else:

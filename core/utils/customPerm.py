@@ -62,8 +62,7 @@ class CustomPermissionVerificationAffiliation(BasePermission):
     def has_permission(self, requests, view):
 
         organization = get_orgId(requests)
-        id_obj = view.kwargs.get(
-            '_id') if '_id' in view.kwargs else view.kwargs.get('id')
+        id_obj = view.kwargs.get('_id') if '_id' in view.kwargs else view.kwargs.get('id')
         view_name = get_viewName(view)
         return validate_func_map[view_name](id_obj, organization, requests=requests)
 
