@@ -41,6 +41,7 @@ class DeviceMaker(MainMixin):
 
 
 
+
 class DeviceModel(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_model', verbose_name = 'Organization')

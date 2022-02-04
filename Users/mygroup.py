@@ -35,13 +35,10 @@ class MyGroup(models.Model):
                 raise setError(
                     f'The fields name, organization, service must make a unique set.', 400)
 
+        self.name += f'_{self.organization.id}_{self.service.id}' if self.service else f'_{self.organization.id}'
+        
         super().save(*args, **kwargs)
 
     def natural_key(self):
         return (self.name,)
-
-
-    @property
-    def calculateName(self):
-        self.name += f'_{self.organization.id}_{self.service.id}' if self.service else f'_{self.organization.id}'
     

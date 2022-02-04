@@ -2,7 +2,7 @@ from bson.objectid import ObjectId
 from rest_framework.permissions import BasePermission
 from rest_framework import status
 from rest_framework.response import Response
-from core.views import get_userData, get_viewName, get_orgId, get_clientData, get_mproviderData, validate_func_map, is_valid_member, check_confirmed
+from core.views import get_userData, get_viewName, get_orgId, get_clientData, get_mproviderData, validate_func_map, check_confirmed
 from Sessions.models import Session_user, Session_client
 
 
@@ -27,8 +27,6 @@ class CustomPermissionVerificationOrganization(BasePermission):
                 'delete': 'organization_delete'
             }
 
-            permissions = ['organization_creator',
-                           perms_map[str(requests.method).lower()]]
             return is_valid_member(user_data['user_id'], id_obj, permissions)
         except Exception as e:
             return False
@@ -44,12 +42,12 @@ class CustomPermissionVerificationRole(BasePermission):
 
         perms_map = {
             'creator': 'organization_creator',
-            'guru': f'{view_name}_guru',
-            'get': f'{view_name}_view',
-            'post': f'{view_name}_create',
-            'patch': f'{view_name}_change',
-            'put': f'{view_name}_change',
-            'delete': f'{view_name}_delete'
+            'guru': f'{view_name}',
+            'get': f'view_{view_name}',
+            'post': f'add_{view_name}',
+            'patch': f'change_{view_name}',
+            'put': f'change_{view_name}',
+            'delete': f'delete_{view_name}'
         }
         permissions = [perms_map[str(requests.method).lower(
         )], perms_map['guru'], perms_map['creator']]
