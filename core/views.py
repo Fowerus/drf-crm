@@ -232,31 +232,8 @@ def get_organization_memberData(member_id, org_id, **kwargs):
         raise MyCustomError('Organization_member does not exist', 400)
 
 
-# Checking the required permissions
-def check_ReqPerm(role, permissions: list):
-    for i in role.permissions.all():
-        for j in permissions:
-            return j == i.codename
-
-    return False
-
-
 def check_confirmed(user_id):
     return User.objects.get(id=user_id).confirmed
-
-
-# Member rule confirmation
-def is_valid_member(user_id, org_id, permissions: list):
-    try:
-        if check_confirmed(user_id):
-            current_org = Organization.objects.get(id=org_id)
-            if user_id == current_org.creator.id:
-                return True
-            member_role = current_org.organization_members.all().get(user=user_id).role
-            return check_ReqPerm(member_role, permissions)
-        return False
-    except Exception as e:
-        return False
 
 
 # <Organization>---------------------------------------------------------
