@@ -7,6 +7,9 @@ from django.core import validators
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from .mygroup import MyGroup
+from .mixins import GroupPermissionMixin
+
 
 class UserManager(BaseUserManager):
     def _create_user(self, surname=None, first_name=None, second_name=None, email=None, phone=None, address=None, password=None, **extra_fields):
@@ -32,7 +35,7 @@ class UserManager(BaseUserManager):
         return self._create_user(surname=surname, first_name=first_name, second_name=second_name, address=address, email=email, phone=phone, password=password, **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
     surname = models.CharField(
         max_length=150, null=True, verbose_name='Surname')
     first_name = models.CharField(
@@ -58,6 +61,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         auto_now_add=True, verbose_name='Created_at')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Updated_at')
 
+    current_org = models.IntegerField(null = True)
+    groups = models.ForeignKey(MyGroup, on_delete=models.CASCADE, null = True,
+        related_name = 'mygroups_users',
+        verbose_name = 'Groups')
+
     confirmed_email = models.BooleanField(default=False)
     confirmed_phone = models.BooleanField(default=False)
 
@@ -67,8 +75,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     data = models.JSONField(null=True, blank=True)
 
-    USERNAME_FIELD = "email"
+    sessions = models.JSONField(null = True, blank = True)
+    services = models.JSONField(null = True, blank = True)
 
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ('surname', 'first_name', 'second_name', 'address')
 
     objects = UserManager()
