@@ -440,7 +440,7 @@ def check_orgUserMOrder(morder_id, org_id, **kwargs):
 
 # Get view name without prifex(like ListAPIView)
 def get_viewName(view):
-    if 'perm_view_name' in dir(view):
+    if hasattr(view, 'perm_view_name'):
         return view.perm_view_name.lower()
     else:
         view_name = view.__class__.__name__

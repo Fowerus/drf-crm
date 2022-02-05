@@ -1,7 +1,7 @@
 class GroupPermissionMixin():
     def api_has_perm(self, perm: str) -> list:
         #Получаем все группы с пермом == perm
-        groups = self.groups.filter(organization=self.current_org_id , permissions__codename=perm)
+        groups = self.groups.all().filter(organization=self.current_org , permissions__codename=perm)
         
         services_id = list()
         if groups:
@@ -10,6 +10,6 @@ class GroupPermissionMixin():
                
         if None in services_id:
             # если есть None то отправляем список из изера добавив None
-            services_id = self.list_services_id
+            services_id = list(self.services) + [None]
                    
         return services_id

@@ -13,7 +13,7 @@ urlpatterns = [
          views.ClientCardListAPIView.as_view(), name='client_card_phone'),
     path('client-card-l/<int:organization>/f=<str:fio>/',
          views.ClientCardListAPIView.as_view(), name='client_card_fio'),
-    path('client-card-r/<int:id>/<int:organization>/',
+    path('client-card-r/<int:id>/',
          views.ClientCardRetrieveAPIView.as_view(), name='client_card_r'),
     path('client-card-c/', views.ClientCardCreateAPIView.as_view(),
          name='client_card_c'),
