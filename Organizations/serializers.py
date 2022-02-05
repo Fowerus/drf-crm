@@ -62,66 +62,13 @@ class OrganizationSerializer(serializers.ModelSerializer):
             fields = ['id', 'name', 'address', 'numbers', 'links', 'logo']
 
 
-class PermissionSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = CustomPermission
-        fields = ['id', 'name', 'codename']
-
-
-class RoleSerializer(serializers.ModelSerializer):
-    organization = OrganizationSerializer()
-    permissions = PermissionSerializer(many=True)
-
-    class Meta:
-        model = Role
-        fields = ['id', 'name', 'permissions',
-                  'organization', 'created_at', 'updated_at']
-
-    class RoleCSerializer(serializers.ModelSerializer):
-
-        def create(self, validated_data):
-            role = Role.objects.create(
-                name=validated_data['name'], organization=validated_data['organization'])
-            role.permissions.set(set(validated_data['permissions']))
-            role.save()
-
-            return role
-
-        class Meta:
-            model = Role
-            fields = ['name', 'permissions', 'organization']
-
-    class RoleUSerializer(serializers.ModelSerializer):
-
-        def update(self, instance, validated_data):
-            if 'permissions' in validated_data:
-                try:
-                    old_perms = set(instance.permissions.all())
-                    instance.permissions.set(
-                        set(validated_data['permissions']))
-                    add_remove_perms = set(instance.permissions.all())
-                    new_perms = old_perms ^ add_remove_perms
-                    instance.permissions.set(new_perms)
-                    validated_data.pop('permissions')
-                except Exception as e:
-                    pass
-
-            return super().update(instance, validated_data)
-
-        class Meta:
-            model = Role
-            fields = ['name', 'permissions']
-
-
 class Organization_memberSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    role = RoleSerializer()
     organization = OrganizationSerializer()
 
     class Meta:
         model = Organization_member
-        fields = ['id', 'user', 'role', 'first_name', 'surname', 'second_name',
+        fields = ['id', 'user', 'first_name', 'surname', 'second_name',
                   'address', 'phone', 'email', 'avatar', 'pass_series', 'pass_number', 'organization', 'created_at', 'updated_at']
 
     class Organization_memberCSerializer(serializers.ModelSerializer):
@@ -143,13 +90,13 @@ class Organization_memberSerializer(serializers.ModelSerializer):
 
         class Meta:
             model = Organization_member
-            fields = ['user', 'role', 'organization']
+            fields = ['user', 'organization']
 
     class Organization_memberUSerializer(serializers.ModelSerializer):
-
+        user = UserSerializer(read_only = True)
         class Meta:
             model = Organization_member
-            fields = ['role', 'first_name', 'surname', 'second_name', 'address',
+            fields = ['user', 'first_name', 'surname', 'second_name', 'address',
                       'phone', 'email', 'avatar', 'pass_series', 'pass_number']
 
     class Organization_memberMarketplaceSerializer(serializers.ModelSerializer):

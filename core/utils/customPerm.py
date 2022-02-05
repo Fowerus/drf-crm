@@ -16,16 +16,18 @@ class CustomPermissionVerificationOrganization(BasePermission):
             if requests.method == 'GET':
                 return True
 
-            id_obj = requests._request.resolver_match.kwargs.get('id')
+            id_obj = view.kwargs.get('id')
 
             if requests.method == 'POST':
-                return check_confirmed(user_data['user_id'])
+                return requests.user.confirmed
 
             perms_map = {
-                'patch': 'organization_change',
-                'put': 'organization_change',
-                'delete': 'organization_delete'
+                'patch': 'change_organization',
+                'put': 'change_organization',
+                'delete': 'delete_organization'
             }
+            requests.POST._mutable = True
+            requests.data.update({'organization':requests.user.current_org})
 
             return is_valid_member(user_data['user_id'], id_obj, permissions)
         except Exception as e:
@@ -36,23 +38,22 @@ class CustomPermissionVerificationRole(BasePermission):
 
     def has_permission(self, requests, view):
 
-        organization = get_orgId(requests)
         view_name = get_viewName(view)
-        user_data = get_userData(requests)
 
         perms_map = {
-            'creator': 'organization_creator',
-            'guru': f'{view_name}',
             'get': f'view_{view_name}',
             'post': f'add_{view_name}',
             'patch': f'change_{view_name}',
             'put': f'change_{view_name}',
             'delete': f'delete_{view_name}'
         }
-        permissions = [perms_map[str(requests.method).lower(
-        )], perms_map['guru'], perms_map['creator']]
+        requests.POST._mutable = True
+        requests.data.update({'organization': requests.user.current_org})
 
-        return is_valid_member(user_data['user_id'], organization,  permissions)
+        view.service_id_list = requests.user.api_has_perm(perms_map[requests.method.lower()])
+        view.organization = requests.user.current_org
+
+        return bool(requests.user.confirmed and len(view.service_id_list) > 0)
 
 
 class CustomPermissionVerificationAffiliation(BasePermission):
@@ -71,12 +72,11 @@ class CustomPermissionCheckRelated(BasePermission):
         if requests.method != "DELETE":
             global validate_func_map
 
-            organization = get_orgId(requests)
             view_name = get_viewName(view)
             result = set()
 
             if 'user' in requests.data:
-                result.add(check_confirmed(requests.data['user']))
+                result.add(requests.user.confirmed)
 
             elif view_name == 'order':
                 validate_func_map.pop('devicedefect', 'devicetype')
@@ -89,7 +89,7 @@ class CustomPermissionCheckRelated(BasePermission):
             for valid_key in requests.data.keys():
                 if valid_key in validate_func_map:
                     result.add(validate_func_map[valid_key](
-                        requests.data[valid_key], organization))
+                        requests.data[valid_key], requests.user.current_org))
             return not (False in result)
 
         return True

@@ -13,6 +13,8 @@ from core.utils.customPerm import CustomPermissionGetUser
 from Orders.serializers import OrderSerializer
 from Users.serializers import UserSerializer
 
+from core.utils.customGet_object import *
+
 
 class ClientLoginAPIView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -57,23 +59,20 @@ class ClientCardListAPIView(generics.ListAPIView):
 
 
 class ClientCardCreateAPIView(generics.CreateAPIView):
-    permission_classes = [
-        CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
     queryset = ClientCard.objects.all()
     serializer_class = ClientCardSerializer.ClientCardCSerializer
 
 
-class ClientCardRetrieveAPIView(generics.RetrieveAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation]
+class ClientCardRetrieveAPIView(CustomGetObject, generics.RetrieveAPIView):
+    permission_classes = [CustomPermissionVerificationRole]
     lookup_field = 'id'
     queryset = ClientCard.objects.all()
     serializer_class = ClientCardSerializer
 
 
-class ClientCardUpdateAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
+class ClientCardUpdateAPIView(CustomGetObject, generics.UpdateAPIView, generics.DestroyAPIView):
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
     lookup_field = 'id'
     queryset = ClientCard.objects.all()
     serializer_class = ClientCardSerializer.ClientCardUSerializer

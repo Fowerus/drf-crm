@@ -7,7 +7,7 @@ from rest_framework.views import exception_handler, set_rollback
 
 
 class MyCustomError(Exception):
-    def __init__(self, message, status_code:int):
+    def __init__(self, message:str, status_code:int):
         self.message = message
         self.status_code = status_code
 

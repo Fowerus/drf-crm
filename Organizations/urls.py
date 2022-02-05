@@ -14,23 +14,12 @@ urlpatterns = [
 
     path('member-l/<int:organization>/',
          views.Organization_memberListAPIView.as_view(), name='organization_member_l'),
-    path('member-r/<int:id>/<int:organization>/',
+    path('member-r/<int:id>/',
          views.Organization_memberRetrieveAPIView.as_view(), name='organization_member_r'),
     path('member-c/', views.Organization_memberCreateAPIView.as_view(),
          name='organization_member_c'),
     path('member-ud/<int:id>/', views.Organization_memberUpdateDestroyAPIView.as_view(),
          name='organization_member_ud'),
-
-
-    path('role-l/<int:organization>/',
-         views.RoleListAPIView.as_view(), name='organization_role_l'),
-    path('role-r/<int:id>/<int:organization>/',
-         views.RoleRetrieveAPIView.as_view(), name='organization_role_r'),
-    path('role-c/', views.RoleCreateAPIView.as_view(), name='organization_role_c'),
-    path('role-ud/<int:id>/', views.RoleUpdateDestroyAPIView.as_view(),
-         name='organization_role_ud'),
-
-    path('perm-l/', views.PermListAPIView.as_view(), name='organization_perm_l'),
 
 
     path('service-l/<int:organization>/',
