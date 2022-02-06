@@ -1,6 +1,7 @@
 import jwt
 
 from django.contrib.auth import get_user_model
+from django.db import transaction
 
 from rest_framework import status, permissions
 from rest_framework import generics
@@ -108,6 +109,18 @@ class ServiceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIVie
     lookup_field = 'id'
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer.ServiceUSerializer
+
+    @transaction.atomic
+    def destroy(self, requests, *args, **kwargs):
+        instance = self.get_object()
+
+        members = Organization.objects.get(id = instance.organization.id).organization_members.all()
+
+        for m in members:
+            m.user.services.pop(m.user.services.index(instance.id))
+            m.user.save()
+
+        return super().destroy(requests, *args, **kwargs)
 
 
 class MProviderListAPIView(generics.ListAPIView):
