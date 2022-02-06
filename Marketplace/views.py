@@ -41,8 +41,7 @@ class MProductRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class MProductUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper]
     lookup_field = '_id'
     queryset = MProduct.objects.all()
     serializer_class = MProductSerializer.MProductUSerializer
@@ -58,8 +57,7 @@ class MBusketListAPIView(generics.ListAPIView):
 
 
 class MBusketMCourierListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+    permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper]
     queryset = MBusket.objects.all()
     serializer_class = MCourierSerializer
 
@@ -91,8 +89,7 @@ class MBusketRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class MBusketUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+    permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper]
     lookup_field = '_id'
     queryset = MBusket.objects.all()
     serializer_class = MBusketSerializer.MBusketUSerializer
@@ -133,8 +130,7 @@ class MCourierCreateAPIView(generics.CreateAPIView):
 
 
 class MCourierUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+    permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper]
     lookup_field = '_id'
     queryset = MCourier.objects.all()
     serializer_class = MCourierSerializer.MCourierUSerializer
@@ -163,8 +159,7 @@ class MOrderForProviderListAPIView(generics.ListAPIView):
 
 
 class MOrderMCourierListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+    permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper]
     queryset = MOrder.objects.all()
     serializer_class = MCourierSerializer
 
@@ -196,16 +191,14 @@ class MOrderRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class MOrderForCourierUpdateAPIView(generics.UpdateAPIView):
-    permission_classes = [
-        CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+    permissions = [CustomPermissionMarketplaceHelper]
     lookup_field = '_id'
     queryset = MOrder.objects.all()
     serializer_class = MOrderSerializer.MOrderUForCourierSerializer
 
 
 class MOrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation, CustomPermissionMarketplaceHelper]
+    permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper]
     lookup_field = '_id'
     queryset = MOrder.objects.all()
     serializer_class = MOrderSerializer.MOrderUSerializer

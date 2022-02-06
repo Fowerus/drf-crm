@@ -61,7 +61,7 @@ class ClientCardSerializer(serializers.ModelSerializer):
             except Exception as e:
                 password = validated_data['password']
                 client = Client.objects.create(
-                    **validated_data, phone=validated_data('phone'))
+                    **validated_data)
                 client.set_password(password)
                 client.organization.add(organization)
                 client.save()
@@ -80,7 +80,7 @@ class ClientCardSerializer(serializers.ModelSerializer):
         class Meta:
             model = ClientCard
             fields = ['surname', 'first_name', 'second_name',
-                      'phone', 'address', 'organization']
+                      'phone', 'address', 'organization', 'password']
 
     class ClientCardUSerializer(serializers.ModelSerializer):
 

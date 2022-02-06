@@ -104,16 +104,14 @@ class ServiceRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class ServiceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
     lookup_field = 'id'
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer.ServiceUSerializer
 
 
 class MProviderListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation]
+    permission_classes = [CustomPermissionVerificationRole]
     queryset = MProvider.objects.all()
     serializer_class = MProviderSerializer
 
@@ -127,9 +125,8 @@ class MProviderCreateAPIView(generics.CreateAPIView):
     serializer_class = MProviderSerializer.MProviderCSerializer
 
 
-class MProviderRetrieveAPIView(generics.RetrieveAPIView):
-    permission_classes = [CustomPermissionVerificationRole,
-                          CustomPermissionVerificationAffiliation]
+class MProviderRetrieveAPIView(CustomGetObject, generics.RetrieveAPIView):
+    permission_classes = [CustomPermissionVerificationRole]
     queryset = MProvider.objects.all()
     lookup_field = 'id'
     serializer_class = MProviderSerializer

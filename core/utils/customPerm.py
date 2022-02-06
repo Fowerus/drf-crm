@@ -29,10 +29,16 @@ class CustomPermissionVerificationOrganization(BasePermission):
             requests.POST._mutable = True
             requests.data.update({'organization':requests.user.current_org})
 
-            return is_valid_member(user_data['user_id'], id_obj, permissions)
+            return bool(requests.user.confirmed and len(requests.user.api_has_perm(perms_map[requests.method])) > 0)
+
         except Exception as e:
             return False
 
+
+class CustomPermissionForList(BasePermission):
+    def has_permission(self, requests, view):
+        pass
+        
 
 class CustomPermissionVerificationRole(BasePermission):
 
@@ -51,19 +57,10 @@ class CustomPermissionVerificationRole(BasePermission):
         requests.data.update({'organization': requests.user.current_org})
 
         view.service_id_list = requests.user.api_has_perm(perms_map[requests.method.lower()])
-        view.organization = requests.user.current_org
 
+        view.view_name = view_name
+        
         return bool(requests.user.confirmed and len(view.service_id_list) > 0)
-
-
-class CustomPermissionVerificationAffiliation(BasePermission):
-
-    def has_permission(self, requests, view):
-
-        organization = get_orgId(requests)
-        id_obj = view.kwargs.get('_id') if '_id' in view.kwargs else view.kwargs.get('id')
-        view_name = get_viewName(view)
-        return validate_func_map[view_name](id_obj, organization, requests=requests)
 
 
 class CustomPermissionCheckRelated(BasePermission):
@@ -90,6 +87,7 @@ class CustomPermissionCheckRelated(BasePermission):
                 if valid_key in validate_func_map:
                     result.add(validate_func_map[valid_key](
                         requests.data[valid_key], requests.user.current_org))
+
             return not (False in result)
 
         return True

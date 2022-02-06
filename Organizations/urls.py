@@ -24,7 +24,7 @@ urlpatterns = [
 
     path('service-l/<int:organization>/',
          views.ServiceListAPIView.as_view(), name='organization_service_l'),
-    path('service-r/<int:id>/<int:organization>/',
+    path('service-r/<int:id>/',
          views.ServiceRetrieveAPIView.as_view(), name='organization_service_r'),
     path('service-c/', views.ServiceCreateAPIView.as_view(),
          name='organization_service_c'),
@@ -34,7 +34,7 @@ urlpatterns = [
 
     path('mprovider-l/int:organization/',
          views.MProviderListAPIView.as_view(), name='mprovider_l'),
-    path('mprovider-r/<int:id>/int:organization/',
+    path('mprovider-r/<int:id/',
          views.MProviderRetrieveAPIView.as_view(), name='mprovider_r'),
     path('mprovider-c/', views.MProviderCreateAPIView.as_view(), name='mprovider_c'),
     path('mprovider-d/int:id/',

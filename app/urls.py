@@ -34,6 +34,7 @@ urlpatterns = [
     path('verify-info/', include('VerifyInfo.urls')),
     path('market/', include('Market.urls')),
     path('marketplace/', include('Marketplace.urls')),
+    path('handbook/', include('Handbook.urls')),
     url(r'^media/(?P<path>.*)$', serve,
         {'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve,
