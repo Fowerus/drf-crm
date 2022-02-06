@@ -1,8 +1,10 @@
 from rest_framework import generics
 from core.utils.customPerm import CustomPermissionVerificationRole, \
-CustomPermissionVerificationAffiliation, CustomPermissionGetUser, CustomPermissionCheckRelated
+CustomPermissionGetUser, CustomPermissionCheckRelated
 from .models import Order
 from .serializers import OrderSerializer
+
+from core.utils.customGet_object import *
 
 
 
@@ -41,15 +43,15 @@ class OrderCreateAPIView(generics.CreateAPIView):
 	serializer_class = OrderSerializer.OrderCSerializer
 
 
-class OrderRetrieveAPIView(generics.RetrieveAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation]
+class OrderRetrieveAPIView(CustomGetObject, generics.RetrieveAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
 	lookup_field = 'id'
 	queryset = Order.objects.all()
 	serializer_class = OrderSerializer
 
 
-class OrderUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-	permission_classes = [CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated]
+class OrderUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, generics.DestroyAPIView):
+	permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
 	lookup_field = 'id'
 	queryset = Order.objects.all()
 	serializer_class = OrderSerializer.OrderUSerializer

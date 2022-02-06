@@ -30,13 +30,19 @@ class CustomGetObject:
 		# May raise a permission denied
 		self.check_object_permissions(self.request, obj)
 
-		if hasattr(obj, 'service'):
-			try:
-				if obj.service.id in self.service_id_list:
+		try:
+			if hasattr(obj, 'service'):
+				if obj.service in self.service_id_list or obj.service.id in self.service_id_list:
 					
 					return obj
-			except:
-				pass
+
+			elif self.view_name == 'service' and (None in self.service_id_list or obj.id in self.service_id_list):
+				return obj
+
+		except:
+			pass
+
+
 
 		raise MyCustomError("You do not have permission to perform this action.", 403)
 			

@@ -6,7 +6,7 @@ from rest_framework import permissions
 
 from .serializers import *
 from .models import Client
-from core.utils.customPerm import CustomPermissionVerificationRole, CustomPermissionVerificationAffiliation, CustomPermissionCheckRelated
+from core.utils.customPerm import CustomPermissionVerificationRole, CustomPermissionCheckRelated
 
 from core.views import *
 from core.utils.customPerm import CustomPermissionGetUser
