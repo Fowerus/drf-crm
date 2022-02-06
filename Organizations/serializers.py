@@ -127,8 +127,15 @@ class ServiceSerializer(serializers.ModelSerializer):
 
     class ServiceCSerializer(serializers.ModelSerializer):
 
+        @transaction.atomic
         def create(self, validated_data):
             service = Service.objects.create(**validated_data)
+            members = Organization.objects.get(id = validated_data.get('organization').id).organization_members.all()
+
+            for m in members:
+
+                m.user.services = list(set(m.user.services + [service.id]))
+                m.user.save()
 
             return service
 

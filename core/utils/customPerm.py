@@ -54,7 +54,11 @@ class CustomPermissionVerificationRole(BasePermission):
             'delete': f'delete_{view_name}'
         }
         requests.POST._mutable = True
-        requests.data.update({'organization': requests.user.current_org})
+
+        if view_name in ['morder', 'mproduct', 'mbusket', 'mcourier']:
+            requests.data.update({'organization': {"id":requests.user.current_org}})
+        else:
+            requests.data.update({'organization': requests.user.current_org})
 
         view.service_id_list = requests.user.api_has_perm(perms_map[requests.method.lower()])
 

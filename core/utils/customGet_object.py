@@ -39,6 +39,9 @@ class CustomGetObject:
 			elif self.view_name == 'service' and (None in self.service_id_list or obj.id in self.service_id_list):
 				return obj
 
+			else:
+				return obj
+
 		except:
 			pass
 
