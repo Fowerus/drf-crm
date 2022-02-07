@@ -13,7 +13,7 @@ from django.conf import settings
 from django.shortcuts import render
 
 from Users.models import User
-from Organizations.models import Organization, Organization_member
+from Organizations.models import Organization, Organization_member, Service
 from Sessions.models import Session_user, Session_client
 from Handbook.models import OrderHistory, ActionHistory
 from Marketplace.models import MCourier, MProduct, MBusket, MOrder
@@ -128,6 +128,16 @@ def get_organizationData(org_id):
     raise MyCustomError('Organization does not exist', 400)
 
 
+# Get service data
+def get_serviceData(service_id):
+    service = Service.objects.filter(id = service_id)
+
+    if service.exists():
+        return service.values()[0]
+
+    raise MyCustomError('Service does not exist', 400)
+
+
 # Get products data
 def get_productsData(products, **kwargs):
     new_product = []
@@ -153,7 +163,8 @@ def get_productsData(products, **kwargs):
                 "url_photo": mproduct.url_photo,
                 "address": mproduct.address,
                 "provider_site": mproduct.provider_site,
-                "organization": mproduct.organization
+                "organization": mproduct.organization,
+                "service": mproduct.service
             }
             if kwargs.get('is_order'):
                 item['done'] = False
@@ -178,7 +189,8 @@ def get_courierData(mcourier_data, providers, org_id, **kwargs):
         return {
             "_id": mcourier.first()._id,
             "organization": mcourier.first().organization,
-            "courier": mcourier.first().courier
+            "member": mcourier.first().member,
+            "service": mcourier.first().service
         }
 
     raise MyCustomError('Courier does not exist', 400)
@@ -222,7 +234,7 @@ def calculate_orderPriceAndCount(products):
 def get_organization_memberData(member_id, org_id, **kwargs):
     try:
         member = Organization.objects.get(
-            id=org_id).organization_members.all().filter(id=member_id.get('id'))
+            id=org_id).organization_members.all().filter(id=member_id)
     except Exception as e:
         raise MyCustomError(
             'Member id field not supplied or Organization does not exist', 400)
@@ -250,7 +262,7 @@ def check_orgRole(role_id, org_id, **kwargs):
 
 # Checking the service of organizaion
 def check_orgService(service_id, org_id, **kwargs):
-    return Organization.objects.get(id=org_id).organization_services.all().filter(id=service_id).exists()
+    return service_id in kwargs.get('requests').user.services
 
 
 # Checking an organization's mprovider
@@ -408,7 +420,7 @@ def check_orgMOrder(morder_id, org_id, **kwargs):
 # Checking an organization's MOrder for courier
 def check_orgMOrderForCourier(morder_id, org_id, **kwargs):
     try:
-        user_id = get_userData(kwargs.get('requests'))['user_id']
+        user_id = kwargs.get('requests').user.id
         member_id = MOrder.objects.get(_id=ObjectId(
             morder_id)).courier.get('courier').get('id')
         return Organization_member.objects.filter(id=member_id).filter(user__id=user_id).exists()
@@ -419,7 +431,7 @@ def check_orgMOrderForCourier(morder_id, org_id, **kwargs):
 # Checking an organization's mbusket and user's mbusket
 def check_orgUserMBusket(mbusket_id, org_id, **kwargs):
     try:
-        user_id = get_userData(kwargs.get('requests'))['user_id']
+        user_id = kwargs.get('requests').user.id
         member_id = Organization.objects.get(
             id=org_id).organization_members.all().filter(user__id=user_id)
         return MBusket.objects.get(_id=ObjectId(mbusket_id)).organization.get('id') == org_id
@@ -430,7 +442,7 @@ def check_orgUserMBusket(mbusket_id, org_id, **kwargs):
 # Checking an organization's morder and user's morder
 def check_orgUserMOrder(morder_id, org_id, **kwargs):
     try:
-        user_id = get_userData(kwargs.get('requests'))['user_id']
+        user_id = kwargs.get('requests').user.id
         member_id = Organization.objects.get(
             id=org_id).organization_members.all().filter(user__id=user_id)
         return MOrder.objects.get(_id=ObjectId(morder_id)).organization.get('id') == org_id
@@ -503,11 +515,12 @@ validate_func_map = {
     'deviceappearance': check_orgDeviceAppearance,
     'devicedefect': check_orgDeviceDefect,
     'mprovider': check_orgMProvider,
-    'mcourier': check_orgMCourier,
+    'courier': check_orgMCourier,
     'mproduct': check_orgMProduct,
     'mbusket': check_orgMBusket,
     'morder': check_orgMOrder,
     'morderforcourier': check_orgMOrderForCourier,
     'mbusketcourier': check_orgUserMBusket,
-    'mordermcourier': check_orgUserMOrder
+    'mordermcourier': check_orgUserMOrder,
+    'member': check_orgMember
 }

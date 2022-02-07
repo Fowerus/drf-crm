@@ -32,6 +32,7 @@ class MProduct(MarketMainMixin):
 
     address = models.JSONField(verbose_name='Address')
     organization = models.JSONField(verbose_name='Organization')
+    service = models.JSONField(verbose_name='Service')
 
     objects = models.DjongoManager()
 
@@ -48,6 +49,7 @@ class MProduct(MarketMainMixin):
 
 class MProductForm(forms.ModelForm):
     organization = forms.JSONField()
+    service = forms.JSONField()
     address = forms.JSONField()
 
     class Meta:
@@ -65,6 +67,7 @@ class MBusket(MarketMainMixin):
     author = models.JSONField(verbose_name='Author')
     providers = models.JSONField(verbose_name='Providers')
     organization = models.JSONField(verbose_name='Organization')
+    service = models.JSONField(verbose_name='Service')
 
     objects = models.DjongoManager()
 
@@ -92,20 +95,22 @@ class MBusket(MarketMainMixin):
 class MBusketForm(forms.ModelForm):
     author = forms.JSONField()
     organization = forms.JSONField()
+    service = forms.JSONField()
     providers = forms.JSONField()
     products = forms.JSONField()
 
     class Meta:
         model = MBusket
         fields = ['count', 'price', 'products',
-                  'author', 'organization', 'providers']
+                  'author', 'organization', 'providers', 'service']
 
 
 class MCourier(MarketMainMixin):
     _id = models.ObjectIdField()
 
-    courier = models.JSONField(verbose_name='Courier')
+    member = models.JSONField(verbose_name='Courier')
     organization = models.JSONField(verbose_name='Organization')
+    service = models.JSONField(verbose_name='Service')
 
     objects = models.DjongoManager()
 
@@ -122,13 +127,14 @@ class MCourier(MarketMainMixin):
 
 class MCourierForm(forms.ModelForm):
     _id = ObjectId()
-    courier = forms.JSONField()
+    member = forms.JSONField()
     organization = forms.JSONField()
+    service = forms.JSONField()
 
     class Meta:
         model = MCourier
         _use_db = 'mongo'
-        fields = ['_id', 'courier', 'organization']
+        fields = ['_id', 'member', 'organization', 'service']
 
 
 class MOrder(MarketMainMixin):
@@ -147,6 +153,7 @@ class MOrder(MarketMainMixin):
     providers = models.JSONField(verbose_name='Providers')
     author = models.JSONField(verbose_name='Author')
     organization = models.JSONField(verbose_name='Organization')
+    service = models.JSONField(verbose_name='Service')
 
     done = models.BooleanField(default=False)
 
@@ -165,6 +172,7 @@ class MOrder(MarketMainMixin):
 
 class MOrderForm(forms.ModelForm):
     organization = forms.JSONField()
+    service = forms.JSONField()
     courier = forms.JSONField()
     products = forms.JSONField()
     author = forms.JSONField()
@@ -173,4 +181,4 @@ class MOrderForm(forms.ModelForm):
 
         model = MOrder
         fields = ['_id', 'price', 'address', 'count', 'count_success', 'description',
-                  'comment', 'author', 'products', 'courier', 'organization', 'providers', 'done']
+                  'comment', 'author', 'products', 'courier', 'organization','service', 'providers', 'done']

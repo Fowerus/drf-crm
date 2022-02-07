@@ -6,7 +6,7 @@ class GroupPermissionMixin():
         services_id = list()
         if groups:
             # если список не пуст создаем список id сервисов
-            services_id = list(map(lambda g: g.service, groups))
+            services_id = list(map(lambda g: g.getService(), groups))
                
         if None in services_id:
             # если есть None то отправляем список из изера добавив None

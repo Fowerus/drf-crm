@@ -32,16 +32,16 @@ class CustomGetObject:
 
 		try:
 			if hasattr(obj, 'service'):
-				if obj.service in self.service_id_list or obj.service.id in self.service_id_list:
-					
+				if self.view_name in ['morder', 'mproduct', 'mbusket', 'mcourier']:
+					if obj.service.get('id', None) in self.service_id_list:
+						return obj
+
+				elif self.view_name == 'service' and (None in self.service_id_list or obj.id in self.service_id_list):
 					return obj
-
-			elif self.view_name == 'service' and (None in self.service_id_list or obj.id in self.service_id_list):
-				return obj
-
-			else:
-				return obj
-
+				
+				elif obj.service in self.service_id_list or obj.service.id in self.service_id_list:
+						
+						return obj
 		except:
 			pass
 
