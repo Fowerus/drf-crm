@@ -150,6 +150,17 @@ class ServiceSerializer(serializers.ModelSerializer):
             fields = ['name', 'address', 'phone']
 
 
+    class ServiceMarketplaceSerializer(serializers.ModelSerializer):
+        id = serializers.IntegerField()
+        name = serializers.CharField(allow_null=True)
+        address = serializers.CharField(allow_null=True)
+        phone = serializers.CharField(allow_null = True)
+
+        class Meta:
+            model = Service
+            fields = ['id', 'name', 'address', 'phone']
+
+
 class MProviderSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer()
 

@@ -1,7 +1,9 @@
 from bson.objectid import ObjectId
+
 from rest_framework.permissions import BasePermission
 from rest_framework import status
 from rest_framework.response import Response
+
 from core.views import get_userData, get_viewName, get_orgId, get_clientData, get_mproviderData, validate_func_map, check_confirmed
 from Sessions.models import Session_user, Session_client
 
@@ -44,26 +46,25 @@ class CustomPermissionVerificationRole(BasePermission):
 
     def has_permission(self, requests, view):
 
-        view_name = get_viewName(view)
+        view.view_name = get_viewName(view)
+        view.user = requests.user
 
         perms_map = {
-            'get': f'view_{view_name}',
-            'post': f'add_{view_name}',
-            'patch': f'change_{view_name}',
-            'put': f'change_{view_name}',
-            'delete': f'delete_{view_name}'
+            'get': f'view_{view.view_name}',
+            'post': f'add_{view.view_name}',
+            'patch': f'change_{view.view_name}',
+            'put': f'change_{view.view_name}',
+            'delete': f'delete_{view.view_name}'
         }
         requests.POST._mutable = True
 
-        if view_name in ['morder', 'mproduct', 'mbusket', 'mcourier']:
+        if view.view_name in ['morder', 'mproduct', 'mbusket', 'mcourier']:
             requests.data.update({'organization': {"id":requests.user.current_org}})
         else:
             requests.data.update({'organization': requests.user.current_org})
 
         view.service_id_list = requests.user.api_has_perm(perms_map[requests.method.lower()])
 
-        view.view_name = view_name
-        
         return bool(requests.user.confirmed and len(view.service_id_list) > 0)
 
 
@@ -75,26 +76,60 @@ class CustomPermissionCheckRelated(BasePermission):
 
             view_name = get_viewName(view)
             result = set()
+            blocklist = list()
 
             if 'user' in requests.data:
                 result.add(requests.user.confirmed)
 
             elif view_name == 'order':
-                validate_func_map.pop('devicedefect', 'devicetype')
-                validate_func_map.pop('devicemaker', 'devicemodel')
-                validate_func_map.pop('devicekit', 'deviceappearance')
+                blocklist.append('devicedefect')
+                blocklist.append('devicetype')
+                blocklist.append('devicemaker')
+                blocklist.append('devicemodel')
+                blocklist.append('devicekit')
+                blocklist.append('deviceappearance')
 
             elif view_name == 'purchaserequest':
                 validate_func_map.pop('product')
 
-            for valid_key in requests.data.keys():
-                if valid_key in validate_func_map:
+            for valid_key, value in requests.data.items():
+                if valid_key in validate_func_map and valid_key not in blocklist:
                     result.add(validate_func_map[valid_key](
-                        requests.data[valid_key], requests.user.current_org))
+                        value, requests.user.current_org, requests = requests))
 
             return not (False in result)
 
         return True
+
+
+class CustomPermissionCheckRelatedMarketplace(BasePermission):
+
+    def has_permission(self, requests, view):
+        if requests.method != "DELETE":
+            try:
+                global validate_func_map
+
+                result = set()
+                blocklist = list()
+
+                for i in ['member', 'author']:
+                    if i in requests.data:
+                        result.add(validate_func_map['member'](
+                            requests.data[i].get('id', None), requests.user.current_org, requests = requests))
+
+                blocklist.append('member')
+
+                for valid_key, value in requests.data.items():
+                    if valid_key in validate_func_map and valid_key not in blocklist:
+                        result.add(validate_func_map[valid_key](
+                            value.get('id'), requests.user.current_org, requests = requests))
+
+                return not (False in result)
+
+            except:
+                return False
+        return True
+
 
 
 class CustomPermissionGetUser(BasePermission):
@@ -175,6 +210,11 @@ class CustomPermissionMarketplaceHelper(BasePermission):
             return True
         except Exception as e:
             return False
+
+
+def CustomPermissionMarketplaceDataHelper(BasePermission):
+    def has_permission(self, requests, view):
+        pass
 
 
 class CustomPermissionMProviderAccess(BasePermission):

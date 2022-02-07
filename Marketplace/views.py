@@ -2,15 +2,17 @@ import jwt
 from bson.objectid import ObjectId
 
 from django.contrib.auth import get_user_model
+from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import status, permissions,  filters
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
+
 from .models import *
 from .serializers import *
 from core.utils.customPerm import *
+from core.utils.customGet_object import *
 
 
 class MProductListAPIView(generics.ListAPIView):
@@ -23,7 +25,7 @@ class MProductListAPIView(generics.ListAPIView):
 
 
 class MProductCreateAPIView(generics.CreateAPIView):
-    permission_classes = [CustomPermissionVerificationRole]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
     serializer_class = MProductSerializer.MProductCSerializer
 
 
@@ -34,14 +36,14 @@ class MProductFileCreateAPIView(generics.CreateAPIView):
 
 
 class MProductRetrieveAPIView(generics.RetrieveAPIView):
-    permission_classes = [CustomPermissionMarketplaceHelper]
     lookup_field = '_id'
     queryset = MProduct.objects.all()
     serializer_class = MProductSerializer
 
 
-class MProductUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper]
+class MProductUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, generics.DestroyAPIView):
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper, 
+        CustomPermissionCheckRelated]
     lookup_field = '_id'
     queryset = MProduct.objects.all()
     serializer_class = MProductSerializer.MProductUSerializer
@@ -76,11 +78,11 @@ class MBusketMCourierListAPIView(generics.ListAPIView):
 
 
 class MBusketCreateAPIView(generics.CreateAPIView):
-    permission_classes = [CustomPermissionVerificationRole]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelatedMarketplace]
     serializer_class = MBusketSerializer.MBusketCSerializer
 
 
-class MBusketRetrieveAPIView(generics.RetrieveAPIView):
+class MBusketRetrieveAPIView(CustomGetObject, generics.RetrieveAPIView):
     permission_classes = [CustomPermissionVerificationRole,
                           CustomPermissionMarketplaceHelper]
     lookup_field = '_id'
@@ -88,8 +90,9 @@ class MBusketRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = MBusketSerializer
 
 
-class MBusketUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper]
+class MBusketUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, generics.DestroyAPIView):
+    permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper,
+        CustomPermissionCheckRelatedMarketplace]
     lookup_field = '_id'
     queryset = MBusket.objects.all()
     serializer_class = MBusketSerializer.MBusketUSerializer
@@ -125,12 +128,13 @@ class MCourierMOrderListAPIView(generics.ListAPIView):
 
 
 class MCourierCreateAPIView(generics.CreateAPIView):
-    permission_classes = [CustomPermissionVerificationRole]
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelatedMarketplace]
     serializer_class = MCourierSerializer.MCourierCSerializer
 
 
-class MCourierUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper]
+class MCourierUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, generics.DestroyAPIView):
+    permission_classes = [CustomPermissionVerificationRole,CustomPermissionCheckRelatedMarketplace, 
+        CustomPermissionMarketplaceHelper]
     lookup_field = '_id'
     queryset = MCourier.objects.all()
     serializer_class = MCourierSerializer.MCourierUSerializer
@@ -154,12 +158,13 @@ class MOrderForProviderListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
 
-        return MOrder.objects.mongo_aggregate([{"$set": {"price": "$$REMOVE", "products": {"$filter": {"input": "$products", "cond": {"$eq": ["$$this.organization.id", self.kwargs.get('organization')]
-                                                                                                                                      }}}}}])
+        return MOrder.objects.mongo_aggregate([{"$set": {"price": "$$REMOVE", 
+            "products": {"$filter": {"input": "$products", 
+            "cond": {"$eq": ["$$this.organization.id", self.user.current_org]}}}}}])
 
 
 class MOrderMCourierListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper]
+    permission_classes = [CustomPermissionMarketplaceHelper]
     queryset = MOrder.objects.all()
     serializer_class = MCourierSerializer
 

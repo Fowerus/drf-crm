@@ -48,11 +48,18 @@ class MyGroup(models.Model):
         
         super().save(*args, **kwargs)
 
+
     def natural_key(self):
         return (self.name,)
 
+
     def calculateName(self):
         self.name += f'_{self.organization.id}_{self.service.id}' if self.service else f'_{self.organization.id}'
+
+    def getService(self):
+        if self.service is None:
+            return self.service
+        return self.service.id
 
 
 class UserManager(BaseUserManager):
