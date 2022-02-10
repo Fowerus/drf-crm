@@ -9,7 +9,7 @@ from .serializers import *
 
 from Handbook.models import *
 from core.utils.customPerm import *
-from core.utils.customGet_object import *
+from core.utils.customViewMethods import *
 
 
 class ProductCategoryListAPIView(generics.ListAPIView):

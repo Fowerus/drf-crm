@@ -46,5 +46,5 @@ urlpatterns = [
     path('morder-ud/<str:_id>/',
          views.MOrderUpdateDestroyAPIView.as_view(), name='morder_ud'),
     path('morder-mcourier-u/<str:_id>/',
-         views.MOrderForCourierUpdateAPIView.as_view(), name='morder_courier_u'),
+         views.MOrderForCourierUpdateAPIView.as_view(), name='morder_courier_u')
 ]

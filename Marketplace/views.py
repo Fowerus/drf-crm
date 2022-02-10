@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from core.utils.customPerm import *
-from core.utils.customGet_object import *
+from core.utils.customViewMethods import *
 
 
 class MProductListAPIView(generics.ListAPIView):
