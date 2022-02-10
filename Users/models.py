@@ -1,11 +1,14 @@
 import uuid
+from datetime import datetime
 
+from django.core.mail import send_mail
+from django.core import validators
+from django.conf import settings
 from django.contrib.auth.models import GroupManager, Permission
 
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
-from django.core import validators
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -62,6 +65,7 @@ class MyGroup(models.Model):
         return self.service.id
 
 
+
 class UserManager(BaseUserManager):
     def _create_user(self, surname=None, first_name=None, second_name=None, email=None, phone=None, address=None, password=None, **extra_fields):
         if email is not None:
@@ -84,6 +88,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
 
         return self._create_user(surname=surname, first_name=first_name, second_name=second_name, address=address, email=email, phone=phone, password=password, **extra_fields)
+
 
 
 class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
@@ -137,8 +142,30 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
 
     objects = UserManager()
 
+
     def __str__(self):
         return f'id: {self.id} | email: {self.email} | phone: {self.phone}'
+
+
+    def _check_confirmed(self):
+        return bool(self.confirmed_phone or self.confirmed_email)
+
+
+    def _send_to_email(self):
+        self.generate_code
+
+        send_mail(
+            'Test app',
+            settings.SEND_MESSAGE % self.code,
+            settings.EMAIL_HOST_USER,
+            [self.email],
+            fail_silently=False
+        )
+
+
+    def _send_to_phone(self):
+        pass
+
 
     @property
     def confirmed(self):
@@ -147,8 +174,28 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
 
         return self._check_confirmed
 
-    def _check_confirmed(self):
-        return bool(self.confirmed_phone or self.confirmed_email)
+
+    @property
+    def generate_code(self):
+        code = int(str(uuid.uuid1().int)[:6])
+        self.code = code
+        self.code_expired_at = datetime.now() + settings.CODE_LIFETIME    
+
+        self.save()
+
+
+    @property
+    def check_code_time(self):
+        return (datetime.now() - self.code_expired_at) <= settings.CODE_LIFETIME
+
+
+    def send_code(self, field:str = 'email'):
+        try:
+            data = {'email':self._send_to_email, 'phone': self._send_to_phone}
+            return data[field]()
+        except:
+            raise MyCustomError('Code send error', 500)
+
 
     class Meta:
         db_table = 'User'.lower()
