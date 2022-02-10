@@ -22,7 +22,7 @@ urlpatterns = [
          name='organization_member_ud'),
 
 
-    path('service-l/<int:organization>/',
+    path('service-l/',
          views.ServiceListAPIView.as_view(), name='organization_service_l'),
     path('service-r/<int:id>/',
          views.ServiceRetrieveAPIView.as_view(), name='organization_service_r'),

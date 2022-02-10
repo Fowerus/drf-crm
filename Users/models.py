@@ -113,7 +113,7 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Updated_at')
 
     current_org = models.IntegerField(null = True)
-    groups = models.ManyToManyField(MyGroup, null = True,
+    groups = models.ManyToManyField(MyGroup, blank = True,
         related_name = 'mygroups_users',
         verbose_name = 'Groups')
 
@@ -126,8 +126,11 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
 
     data = models.JSONField(null=True, blank=True)
 
-    sessions = models.JSONField(blank = True, default = list())
-    services = models.JSONField(blank = True, default = list())
+    sessions = models.JSONField(blank = True, default = list)
+    services = models.JSONField(blank = True, default = list)
+
+    code = models.IntegerField(null = True, verbose_name = 'Code')
+    code_expired_at = models.DateTimeField(null = True, verbose_name = 'Code expired time')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ('surname', 'first_name', 'second_name', 'address')

@@ -4,7 +4,7 @@ CustomPermissionGetUser, CustomPermissionCheckRelated
 from .models import Order
 from .serializers import OrderSerializer
 
-from core.utils.customGet_object import *
+from core.utils.customViewMethods import *
 
 
 

@@ -13,7 +13,7 @@ from core.utils.customPerm import CustomPermissionGetUser
 from Orders.serializers import OrderSerializer
 from Users.serializers import UserSerializer
 
-from core.utils.customGet_object import *
+from core.utils.customViewMethods import *
 
 
 class ClientLoginAPIView(APIView):

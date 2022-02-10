@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
 from pathlib import Path
-from datetime import timedelta
+from datetime import timedelta, datetime
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -212,11 +212,11 @@ APPEND_SLASH = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 
-# EMAIL_HOST = 'smtp.yandex.ru'
-# EMAIL_HOST_USER = 'verify@api-test.go-best.ru'
-# EMAIL_HOST_PASSWORD = 'Gobest2021'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_HOST_USER = 'verify@api-test.go-best.ru'
+EMAIL_HOST_PASSWORD = 'Gobest2021'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 # CSRF_COOKIE_DOMAIN = None
 # CORS_ALLOW_ALL_ORIGINS = True
@@ -226,8 +226,9 @@ APPEND_SLASH = True
 
 
 ACCESS_TOKEN_LIFETIME = 365*24*3600
-SMC_CODE_LIFETIME = 60
+SMC_CODE_LIFETIME = timedelta(seconds = 60)
 RESEND_SMS_AFTER = 90
+SEND_MESSAGE = "Authentication code\n%s"
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(seconds=ACCESS_TOKEN_LIFETIME),

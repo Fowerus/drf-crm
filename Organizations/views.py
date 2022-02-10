@@ -15,7 +15,7 @@ from Users.serializers import UserSerializer
 
 from Organizations.models import *
 from core.utils.customPerm import *
-from core.utils.customGet_object import *
+from core.utils.customViewMethods import *
 
 
 class OrganizationListCreateAPIView(generics.ListCreateAPIView):
@@ -82,8 +82,8 @@ class Organization_memberUpdateDestroyAPIView(CustomGetObject, generics.UpdateAP
     serializer_class = Organization_memberSerializer.Organization_memberUSerializer
 
 
-class ServiceListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionCheckSession]
+class ServiceListAPIView(CustomFilterQueryset, generics.ListAPIView):
+    permission_classes = []
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
 

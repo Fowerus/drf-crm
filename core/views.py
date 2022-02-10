@@ -3,10 +3,12 @@ from django.http.response import JsonResponse
 from django.db.models import Count
 
 
+import uuid
 import jwt
 from bson.objectid import ObjectId
 
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from django.utils.translation import gettext_lazy as _
 
 from django.conf import settings
@@ -448,6 +450,31 @@ def check_orgUserMOrder(morder_id, org_id, **kwargs):
         return MOrder.objects.get(_id=ObjectId(morder_id)).organization.get('id') == org_id
     except Exception as e:
         return False
+
+
+
+#Send a code to user
+def mySendCode(user):
+    if user.email is not None and user.confirmed_email == False:
+        try:
+            code = int(str(uuid.uuid1().int)[:6])
+            user.code = code
+            
+            send_mail(
+                'Test app',
+                settings.SEND_MESSAGE % code,
+                settings.EMAIL_HOST_USER,
+                [user.email],
+                fail_silently=False
+            )
+            current_info.save()
+        except Exception as err:
+            return Response({'detail': f'Cannot send the mail, ERR_MESSAGE: {err}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    elif user.phone is not None and user.confirmed_phone == False:
+        pass
+
+    return True
 
 
 # Get view name without prifex(like ListAPIView)
