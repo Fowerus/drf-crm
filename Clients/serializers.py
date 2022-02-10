@@ -10,7 +10,7 @@ from rest_framework_simplejwt import exceptions
 
 from .models import Client, ClientCard
 from Users.serializers import UserSerializer, UserRegistrationSerializer
-from Organizations.serializers import OrganizationSerializer
+from Organizations.serializers import OrganizationSerializer, ServiceSerializer
 from Sessions.models import Session_client
 
 from core.utils.atomic_exception import MyCustomError
@@ -45,6 +45,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
 class ClientCardSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer()
+    service = ServiceSerializer()
     client = ClientSerializer()
 
     class ClientCardCSerializer(serializers.ModelSerializer):
@@ -79,19 +80,19 @@ class ClientCardSerializer(serializers.ModelSerializer):
 
         class Meta:
             model = ClientCard
-            fields = ['surname', 'first_name', 'second_name',
+            fields = ['surname', 'first_name', 'second_name', 'service'
                       'phone', 'address', 'organization', 'password']
 
     class ClientCardUSerializer(serializers.ModelSerializer):
 
         class Meta:
             model = ClientCard
-            fields = ['surname', 'first_name',
+            fields = ['surname', 'first_name', 'service'
                       'second_name', 'phone', 'address', 'links']
 
     class Meta:
         model = ClientCard
-        fields = ['id', 'surname', 'first_name', 'second_name', 'phone',
+        fields = ['id', 'surname', 'first_name', 'second_name', 'phone', 'service',
                   'address', 'organization', 'client', 'created_at', 'updated_at']
 
 

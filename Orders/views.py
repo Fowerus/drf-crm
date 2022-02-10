@@ -8,33 +8,27 @@ from core.utils.customViewMethods import *
 
 
 
-class OrderListAPIView(generics.ListAPIView):
+class OrderListAPIView(CustomFilterQueryset, generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	queryset = Order.objects.all()
 	serializer_class = OrderSerializer
-
-	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization'))
+	filterset_fields = ['service__id']
 
 
 
-class OrderCreatorListAPIView(generics.ListAPIView):
-	permission_classes = [CustomPermissionGetUser, CustomPermissionVerificationRole]
+class OrderCreatorListAPIView(CustomFilterQueryset, generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
 	queryset = Order.objects.all()
 	serializer_class = OrderSerializer
-
-	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization')).filter(creator = self.kwargs.get('id'))
+	filterset_fields = ['service__id']
 
 
 
-class OrderExecutorListAPIView(generics.ListAPIView):
-	permission_classes = [CustomPermissionGetUser, CustomPermissionVerificationRole]
+class OrderExecutorListAPIView(CustomFilterQueryset, generics.ListAPIView):
+	permission_classes = [CustomPermissionVerificationRole]
 	queryset = Order.objects.all()
 	serializer_class = OrderSerializer
-
-	def get_queryset(self):
-		return self.queryset.filter(organization = self.kwargs.get('organization')).filter(creator = self.kwargs.get('id'))
+	filterset_fields = ['service__id']
 
 
 

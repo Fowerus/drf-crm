@@ -2,6 +2,8 @@ from django.shortcuts import get_object_or_404
 
 from .atomic_exception import MyCustomError
 
+from Marketplace.models import *
+
 
 class CustomGetObject:
 	def get_object(self):
@@ -55,12 +57,20 @@ class CustomGetObject:
 
 class CustomFilterQueryset:
 	def filter_queryset(self, queryset):
-		
 		try:
+			marketplace_data = {
+				"mproduct": MProduct,
+				"mbusket": MBusket,
+				"morder":MOrder,
+				"mcourier":MCourier
+			}
+
+			self.request.GET._mutable =  True
 			if self.view_name == 'service':
 
 				organization = self.request.query_params.get('organization', None)
 				if organization is not None:
+					del self.request.query_params['organization']
 					self.request.query_params['organization__id'] = organization
 
 				return super().filter_queryset(queryset)
@@ -71,29 +81,33 @@ class CustomFilterQueryset:
 				
 				if service is not None:
 
-					if service in self.service_id_list:
+					if int(service) in self.service_id_list:
+						if self.view_name in marketplace_data:
 
-						if self.view_name in ['mproduct', 'morder', 'mbusket', 'mcourier']:
-							queryset = queryset.filter(service={'id':service})
+							return super().filter_queryset(queryset.filter(service={"id":int(service)}))
 						else:
+							del self.request.query_params['service']
 							self.request.query_params['service__id'] = service
+					else:
+						raise MyCustomError('You do not have permission to perform this action.', 403)
 
 				else:
-					if self.view_name in ['mproduct', 'morder', 'mbusket', 'mcourier']:
-						queryset = queryset.mongo_aggregate([{
-							"$match":{
-          						"service.id": {
-            						"$in": self.service_id_list
-          						}
-          					}
-        				}])
-					else:
-						queryset = queryset.filter(service__id__in=self.service_id_list)
 
-				return self.filter_queryset(queryset)
-			
+					if self.view_name in marketplace_data:
+						return super().filter_queryset(marketplace_data[self.view_name].objects.mongo_aggregate([{
+							"$match":{
+	      						"service.id": {
+	        						"$in": self.service_id_list
+	      						}
+	      					}
+	    				}]))
+					else:
+						return super().filter_queryset(queryset.filter(service__id__in=self.service_id_list))
+						
+				return super().filter_queryset(queryset)
 		except:
 			pass
+
 
 		raise MyCustomError('You do not have permission to perform this action.', 403)
 			

@@ -20,8 +20,6 @@ class MProductListAPIView(generics.ListAPIView):
     serializer_class = MProductSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['name']
-    # def get_queryset(self):
-    #     return self.queryset.filter(organization={'id': self.kwargs.get('organization')})
 
 
 class MProductCreateAPIView(generics.CreateAPIView):
@@ -54,14 +52,12 @@ class MBusketListAPIView(generics.ListAPIView):
     queryset = MBusket.objects.all()
     serializer_class = MBusketSerializer
 
-    def get_queryset(self):
-        return self.queryset.filter(organization={'id': self.kwargs.get('organization')})
 
-
-class MBusketMCourierListAPIView(generics.ListAPIView):
+class MBusketMCourierListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole,CustomPermissionMarketplaceHelper]
     queryset = MBusket.objects.all()
     serializer_class = MCourierSerializer
+    perm_view_name = 'mbusket'
 
     def get(self, requests, *args, **kwargs):
         try:
@@ -98,13 +94,10 @@ class MBusketUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, gener
     serializer_class = MBusketSerializer.MBusketUSerializer
 
 
-class MCourierListAPIView(generics.ListAPIView):
+class MCourierListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = MCourier.objects.all()
     serializer_class = MCourierSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(organization={'id': self.kwargs.get('organization')})
 
 
 class MCourierMOrderListAPIView(generics.ListAPIView):
@@ -140,16 +133,13 @@ class MCourierUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, gene
     serializer_class = MCourierSerializer.MCourierUSerializer
 
 
-class MOrderListAPIView(generics.ListAPIView):
+class MOrderListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = MOrder.objects.all()
     serializer_class = MOrderSerializer
 
-    def get_queryset(self):
-        return self.queryset.filter(organization={'id': self.kwargs.get('organization')})
 
-
-class MOrderForProviderListAPIView(generics.ListAPIView):
+class MOrderForProviderListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole,
                           CustomPermissionMarketplaceHelper]
     queryset = MOrder.objects.all()

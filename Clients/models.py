@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-from Organizations.models import Organization
+from Organizations.models import Organization, Service
 from core.utils.helper import MainMixin
 
 
@@ -67,6 +67,8 @@ class ClientCard(MainMixin):
 
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
                                      related_name='organization_client_card', verbose_name='Organization')
+    service = models.ForeignKey(Service, on_delete = models.SET_NULL, null = True, blank = True,
+        related_name = 'service_clientcard', verbose_name = 'Service')
 
     def __str__(self):
         return f"id: {self.id} | client: {self.client} | organization : {self.organization.id}"

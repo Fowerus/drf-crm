@@ -193,6 +193,7 @@ class CustomPermissionCheckSession(BasePermission):
         try:
             try:
                 data = get_userData(requests)
+
             except Exception as e:
                 data = get_clientData(requests)
 

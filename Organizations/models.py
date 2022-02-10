@@ -58,7 +58,7 @@ class Organization_member(MainMixin):
 
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
                                      related_name='organization_members', verbose_name='Organization')
-    service = models.ForeignKey(Service, on_delete = models.SET_NULL, null = True,
+    service = models.ForeignKey(Service, on_delete = models.SET_NULL, null = True, blank = True,
         related_name = 'service_members', verbose_name = 'Service')
 
     surname = models.CharField(
@@ -97,11 +97,13 @@ class MProvider(MainMixin):
 
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
                                      related_name='organization_mprovider', verbose_name='Organization')
+    service = models.ForeignKey(Service, on_delete = models.SET_NULL, null = True, blank = True,
+        related_name = 'service_mprovider', verbose_name = 'Service')
 
     data = models.JSONField(default=defaultMProviderData, verbose_name="Data")
 
     def __str__(self):
-        return f'id; {self.id} | site: {self.site}'
+        return f'id: {self.id} | site: {self.site}'
 
     @property
     def generate_token(self):

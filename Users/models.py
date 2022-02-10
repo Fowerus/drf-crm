@@ -129,8 +129,8 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
     sessions = models.JSONField(blank = True, default = list)
     services = models.JSONField(blank = True, default = list)
 
-    code = models.IntegerField(null = True, verbose_name = 'Code')
-    code_expired_at = models.DateTimeField(null = True, verbose_name = 'Code expired time')
+    code = models.IntegerField(null = True, blank = True, verbose_name = 'Code')
+    code_expired_at = models.DateTimeField(null = True, blank = True, verbose_name = 'Code expired time')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ('surname', 'first_name', 'second_name', 'address')

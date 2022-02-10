@@ -14,13 +14,11 @@ from core.utils.customViewMethods import *
 
 
 
-class DeviceTypeListAPIView(generics.ListAPIView):
+class DeviceTypeListAPIView(CustomFilterQueryset, generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	queryset = DeviceType.objects.all()
 	serializer_class = DeviceTypeSerializer
-
-	def get_queryset(self):
-		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
+	filterset_fields = ['service__id']
 
 
 class DeviceTypeCreateAPIView(generics.CreateAPIView):
@@ -44,13 +42,11 @@ class DeviceTypeUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, ge
 
 
 
-class DeviceMakerListAPIView(generics.ListAPIView):
+class DeviceMakerListAPIView(CustomFilterQueryset, generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	queryset = DeviceMaker.objects.all()
 	serializer_class = DeviceMakerSerializer
-
-	def get_queryset(self):
-		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
+	filterset_fields = ['service__id']
 
 
 class DeviceMakerCreateAPIView(generics.CreateAPIView):
@@ -74,13 +70,11 @@ class DeviceMakerUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, g
 
 
 
-class DeviceModelListAPIView(generics.ListAPIView):
+class DeviceModelListAPIView(CustomFilterQueryset, generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	queryset = DeviceModel.objects.all()
 	serializer_class = DeviceModelSerializer
-
-	def get_queryset(self):
-		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
+	filterset_fields = ['service__id']
 
 
 class DeviceModelCreateAPIView(generics.CreateAPIView):
@@ -104,13 +98,11 @@ class DeviceModelUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, g
 
 
 
-class DeviceKitListAPIView(generics.ListAPIView):
+class DeviceKitListAPIView(CustomFilterQueryset, generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	queryset = DeviceKit.objects.all()
 	serializer_class = DeviceKitSerializer
-
-	def get_queryset(self):
-		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
+	filterset_fields = ['service__id']
 
 
 class DeviceKitCreateAPIView(generics.CreateAPIView):
@@ -134,13 +126,11 @@ class DeviceKitUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, gen
 
 
 
-class DeviceAppearanceListAPIView(generics.ListAPIView):
+class DeviceAppearanceListAPIView(CustomFilterQueryset, generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	queryset = DeviceAppearance.objects.all()
 	serializer_class = DeviceAppearanceSerializer
-
-	def get_queryset(self):
-		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
+	filterset_fields = ['service__id']
 
 
 class DeviceAppearanceCreateAPIView(generics.CreateAPIView):
@@ -164,13 +154,11 @@ class DeviceAppearanceUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIVi
 
 
 
-class DeviceDefectListAPIView(generics.ListAPIView):
+class DeviceDefectListAPIView(CustomFilterQueryset, generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	queryset = DeviceDefect.objects.all()
 	serializer_class = DeviceDefectSerializer
-
-	def get_queryset(self):
-		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
+	filterset_fields = ['service__id']
 
 
 class DeviceDefectCreateAPIView(generics.CreateAPIView):
@@ -194,13 +182,11 @@ class DeviceDefectUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, 
 
 
 
-class ServicePriceListAPIView(generics.ListAPIView):
+class ServicePriceListAPIView(CustomFilterQueryset, generics.ListAPIView):
 	permission_classes = [CustomPermissionVerificationRole]
 	queryset = ServicePrice.objects.all()
 	serializer_class = ServicePriceSerializer
-
-	def get_queryset(self):
-		return self.queryset.select_related('organization').filter(organization = self.kwargs.get('organization'))
+	filterset_fields = ['service__id']
 
 
 class ServicePriceCreateAPIView(generics.CreateAPIView):

@@ -37,7 +37,7 @@ class TransactionCSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = ['cashbox', 'purchase', 'sale_product',
-                  'sale_order', 'organization', "data"]
+                  'sale_order', 'organization', 'service', 'data']
 
 
 class CashboxSerializer(serializers.ModelSerializer):
@@ -186,12 +186,15 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
 
 class PurchaseAcceptSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer()
+    service = ServiceSerializer()
     purchase_request = PurchaseRequestSerializer()
 
     class PurchaseAcceptUSerializer(serializers.ModelSerializer):
 
         @transaction.atomic
         def update(self, instance, validated_data):
+            if 'service' in validated_data:
+                instance.service = validated_data['service']
 
             if not instance.accept:
 
@@ -254,7 +257,7 @@ class PurchaseAcceptSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PurchaseAccept
-        fields = ['id', 'purchase_request', 'organization',
+        fields = ['id', 'purchase_request', 'organization', 'service'
                   'is_cash', 'accept', 'updated_at', 'created_at']
 
 
@@ -457,6 +460,7 @@ class SaleOrderSerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer()
+    service = OrganizationSerializer()
     cashbox = CashboxSerializer()
     sale_product = SaleProductSerializer()
     sale_order = SaleOrderSerializer()
@@ -465,4 +469,4 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = ['id', 'cashbox', 'purchase',
-                  'sale_product', 'sale_order', 'organization']
+                  'sale_product', 'sale_order', 'organization', 'service']

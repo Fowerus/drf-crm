@@ -3,17 +3,18 @@ from django.db import transaction
 
 from .models import *
 from core.utils.atomic_exception import MyCustomError
-from Organizations.serializers import OrganizationSerializer
+from Organizations.serializers import OrganizationSerializer, ServiceSerializer
 from Orders.serializers import OrderSerializer
 
 
 
 class DeviceTypeSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
+	service = ServiceSerializer()
 
 	class Meta:
 		model = DeviceType
-		fields = ['id','name','organization','description', 'created_at', 'updated_at']
+		fields = ['id','name','organization', 'service', 'description', 'created_at', 'updated_at']
 
 
 	class DeviceTypeCSerializer(serializers.ModelSerializer):
@@ -26,23 +27,24 @@ class DeviceTypeSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceType
-			fields = ['name','description', 'organization']
+			fields = ['name','description', 'organization', 'service'] 
 
 
 	class DeviceTypeUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceType
-			fields = ['name','description']
+			fields = ['name','description', 'service']
 
 
 
 class DeviceMakerSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
+	service = ServiceSerializer()
 
 	class Meta:
 		model = DeviceMaker
-		fields = ['id','name','organization', 'created_at', 'updated_at']
+		fields = ['id','name','organization', 'service',  'created_at', 'updated_at']
 
 
 	class DeviceMakerCSerializer(serializers.ModelSerializer):
@@ -55,24 +57,25 @@ class DeviceMakerSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceMaker
-			fields = ['name', 'organization']
+			fields = ['name', 'organization', 'service'] 
 
 
 	class DeviceMakerUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceMaker
-			fields = ['name']
+			fields = ['name', 'service']
 
 
 
 
 class DeviceModelSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
+	service = ServiceSerializer()
 
 	class Meta:
 		model = DeviceModel
-		fields = ['id','name','organization', 'created_at', 'updated_at']
+		fields = ['id','name','organization', 'service',  'created_at', 'updated_at']
 
 
 	class DeviceModelCSerializer(serializers.ModelSerializer):
@@ -85,25 +88,26 @@ class DeviceModelSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceModel
-			fields = ['name', 'organization']
+			fields = ['name', 'organization', 'service'] 
 
 
 	class DeviceModelUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceModel
-			fields = ['name']
+			fields = ['name', 'service']
 
 
 
 
 class DeviceKitSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
+	service = ServiceSerializer()
 	devicetype = DeviceTypeSerializer()
 
 	class Meta:
 		model = DeviceKit
-		fields = ['id','name','organization', 'devicetype', 'created_at', 'updated_at']
+		fields = ['id','name','organization', 'service',  'devicetype', 'created_at', 'updated_at']
 
 
 	class DeviceKitCSerializer(serializers.ModelSerializer):
@@ -116,24 +120,25 @@ class DeviceKitSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceKit
-			fields = ['name', 'organization', 'devicetype']
+			fields = ['name', 'organization', 'service',  'devicetype']
 
 
 	class DeviceKitUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceKit
-			fields = ['name', 'devicetype']
+			fields = ['name', 'devicetype', 'service']
 
 
 
 
 class DeviceAppearanceSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
+	service = ServiceSerializer()
 
 	class Meta:
 		model = DeviceAppearance
-		fields = ['id','name','organization', 'created_at', 'updated_at']
+		fields = ['id','name','organization', 'service',  'created_at', 'updated_at']
 
 
 	class DeviceAppearanceCSerializer(serializers.ModelSerializer):
@@ -146,24 +151,25 @@ class DeviceAppearanceSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceAppearance
-			fields = ['name', 'organization']
+			fields = ['name', 'organization', 'service'] 
 
 
 	class DeviceAppearanceUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceAppearance
-			fields = ['name']
+			fields = ['name', 'service']
 
 
 
 
 class DeviceDefectSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
+	service = ServiceSerializer()
 
 	class Meta:
 		model = DeviceDefect
-		fields = ['id','name','organization', 'created_at', 'updated_at']
+		fields = ['id','name','organization', 'service',  'created_at', 'updated_at']
 
 
 	class DeviceDefectCSerializer(serializers.ModelSerializer):
@@ -176,24 +182,25 @@ class DeviceDefectSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceDefect
-			fields = ['name', 'organization']
+			fields = ['name', 'organization', 'service'] 
 
 
 	class DeviceDefectUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = DeviceDefect
-			fields = ['name']
+			fields = ['name', 'service']
 
 
 
 
 class ServicePriceSerializer(serializers.ModelSerializer):
 	organization = OrganizationSerializer()
+	service = ServiceSerializer()
 
 	class Meta:
 		model = ServicePrice
-		fields = ['id','name','organization','price', 'created_at', 'updated_at']
+		fields = ['id','name','organization', 'service', 'price', 'created_at', 'updated_at']
 
 
 	class ServicePriceCSerializer(serializers.ModelSerializer):
@@ -206,14 +213,14 @@ class ServicePriceSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = ServicePrice
-			fields = ['name', 'organization', 'price']
+			fields = ['name', 'organization', 'service',  'price']
 
 
 	class ServicePriceUSerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = ServicePrice
-			fields = ['name', 'price']
+			fields = ['name', 'price', 'service']
 
 
 
@@ -228,6 +235,7 @@ class ActionHistorySerializer(serializers.ModelSerializer):
 class OrderHistorySerializer(serializers.ModelSerializer):
 	order = OrderSerializer()
 	organization = OrganizationSerializer()
+	service = ServiceSerializer()
 	action_history = ActionHistorySerializer(many = True)
 
 
@@ -238,7 +246,7 @@ class OrderHistorySerializer(serializers.ModelSerializer):
 		def create(self, validated_data):
 			action_history = ActionHistory.objects.filter(model = '4').get(method = 'create-comment')
 			order_history_data = {
-				'organization':validated_data['organization'],
+				'organization': validated_data['organization'],
 				'action_history':action_history,
 				'comment':validated_data['comment'],
 				'order':validated_data['order']
@@ -249,9 +257,9 @@ class OrderHistorySerializer(serializers.ModelSerializer):
 
 		class Meta:
 			model = OrderHistory
-			fields = ['order', 'comment', 'organization']
+			fields = ['order', 'comment', 'organization', 'service'] 
 
 
 	class Meta:
 		model = OrderHistory
-		fields = ['id', 'order', 'comment', 'action_history', 'body', 'organization']
+		fields = ['id', 'order', 'comment', 'action_history', 'body', 'organization', 'service' ]
