@@ -153,10 +153,11 @@ class MOrderForProviderListAPIView(CustomFilterQueryset, generics.ListAPIView):
             "cond": {"$eq": ["$$this.organization.id", self.user.current_org]}}}}}])
 
 
-class MOrderMCourierListAPIView(generics.ListAPIView):
-    permission_classes = [CustomPermissionMarketplaceHelper]
+class MOrderMCourierListAPIView(CustomGetObject, generics.ListAPIView):
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionMarketplaceHelper]
     queryset = MOrder.objects.all()
     serializer_class = MCourierSerializer
+    perm_view_name = 'morder'
 
     def get(self, requests, *args, **kwargs):
         try:

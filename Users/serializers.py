@@ -192,6 +192,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         def create(self, validated_data):
             user = User.objects.create_user(**validated_data)
 
+            user.send_code('phone')
+
             return user
 
         class Meta:
@@ -206,6 +208,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         def create(self, validated_data):
             user = User.objects.create_user(**validated_data)
+
+            user.send_code('email')
 
             return user
 

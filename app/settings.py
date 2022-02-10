@@ -229,7 +229,7 @@ EMAIL_USE_TLS = True
 
 
 ACCESS_TOKEN_LIFETIME = 365*24*3600
-SMC_CODE_LIFETIME = timedelta(seconds = 60)
+CODE_LIFETIME = timedelta(seconds = 60)
 RESEND_SMS_AFTER = 90
 SEND_MESSAGE = "Authentication code\n%s"
 

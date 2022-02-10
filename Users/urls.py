@@ -6,10 +6,10 @@ from . import views
 
 
 urlpatterns = [
-    path('auth/registration/',
+    path('signup/',
          views.UserRegistrationAPIView.as_view(), name='registration'),
 
-    path('auth/token/', views.MyTokenObtainPairView.as_view(),
+    path('singin/', views.MyTokenObtainPairView.as_view(),
          name='token_obtain_pair'),
     path('auth/token/refresh/',
          views.MyTokenRefreshView.as_view(), name='token_refresh'),
