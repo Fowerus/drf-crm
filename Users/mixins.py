@@ -11,5 +11,5 @@ class GroupPermissionMixin():
         if None in services_id:
             # если есть None то отправляем список из изера добавив None
             services_id = list(self.services) + [None]
-                   
+            
         return services_id

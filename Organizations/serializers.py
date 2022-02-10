@@ -163,6 +163,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 class MProviderSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer()
+    service = ServiceSerializer()
 
     class MProviderCSerializer(serializers.ModelSerializer):
         token = serializers.CharField(max_length=300, read_only=True)
@@ -176,9 +177,9 @@ class MProviderSerializer(serializers.ModelSerializer):
 
         class Meta:
             model = MProvider
-            fields = ['token', 'site', 'organization']
+            fields = ['token', 'site', 'service', 'organization']
 
     class Meta:
         model = MProvider
-        fields = ['id', 'token', 'site',
+        fields = ['id', 'site', 'service',
                   'organization', 'created_at', 'updated_at']

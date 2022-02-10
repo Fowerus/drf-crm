@@ -41,21 +41,11 @@ class ClientUpdateAPIView(generics.UpdateAPIView):
     serializer_class = ClientSerializer.ClientUSerializer
 
 
-class ClientCardListAPIView(generics.ListAPIView):
+class ClientCardListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = ClientCard.objects.all()
     serializer_class = ClientCardSerializer
-
-    def get_queryset(self):
-        if 'phone' in self.kwargs:
-            return self.queryset.select_related('organization').filter(organization=self.kwargs.get(
-                'organization')).filter(phone=self.kwargs.get('phone'))
-
-        elif 'fio' in self.kwargs:
-            return self.queryset.select_related('organization').filter(organization=self.kwargs.get(
-                'organization')).filter(name=self.kwargs.get('fio'))
-        else:
-            return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['phone', 'email', 'service__id']
 
 
 class ClientCardCreateAPIView(generics.CreateAPIView):

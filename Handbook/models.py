@@ -1,6 +1,6 @@
 from django.db import models
 
-from Organizations.models import Organization
+from Organizations.models import Organization, Service
 from Orders.models import Order
 from core.utils.helper import MainMixin
 
@@ -8,8 +8,11 @@ from core.utils.helper import MainMixin
 
 class DeviceType(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_type', verbose_name = 'Organization')
 	description = models.TextField(verbose_name = 'Description')
+
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_type', verbose_name = 'Organization')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
+                                related_name='service_devicetype', verbose_name='Service')
 
 
 	def __str__(self):
@@ -26,8 +29,10 @@ class DeviceType(MainMixin):
 
 class DeviceMaker(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_maker', verbose_name = 'Organization')
 
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_maker', verbose_name = 'Organization')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
+                                related_name='service_devicemaker', verbose_name='Service')
 
 	def __str__(self):
 		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id}'
@@ -44,8 +49,10 @@ class DeviceMaker(MainMixin):
 
 class DeviceModel(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_model', verbose_name = 'Organization')
 
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_model', verbose_name = 'Organization')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
+                                related_name='service_devicemodel', verbose_name='Service')
 
 	def __str__(self):
 		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id}'
@@ -61,9 +68,11 @@ class DeviceModel(MainMixin):
 
 class DeviceKit(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_kit', verbose_name = 'Organization')
 	devicetype = models.ForeignKey(DeviceType, on_delete = models.CASCADE, related_name = 'device_type_device_kit', verbose_name = 'DeviceType')
 
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_kit', verbose_name = 'Organization')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
+                                related_name='service_devicekit', verbose_name='Service')
 
 	def __str__(self):
 		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id} | device type: {self.devicetype}'
@@ -79,8 +88,10 @@ class DeviceKit(MainMixin):
 
 class DeviceAppearance(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_appearance', verbose_name = 'Organization')
 
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_appearance', verbose_name = 'Organization')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
+                                related_name='service_deviceappearance', verbose_name='Service')
 
 	def __str__(self):
 		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id}'
@@ -96,8 +107,10 @@ class DeviceAppearance(MainMixin):
 
 class DeviceDefect(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_defect', verbose_name = 'Organization')
 
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_device_defect', verbose_name = 'Organization')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
+                                related_name='service_devicedefect', verbose_name='Service')
 
 	def __str__(self):
 		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id}'
@@ -113,9 +126,11 @@ class DeviceDefect(MainMixin):
 
 class ServicePrice(MainMixin):
 	name = models.CharField(max_length = 150, verbose_name = 'Name')
-	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_service_price', verbose_name = 'Organization')
 	price = models.FloatField()
 
+	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_service_price', verbose_name = 'Organization')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
+                                related_name='service_deviceprice', verbose_name='Service')
 
 	def __str__(self):
 		return f'id: {self.id} | name: {self.name} | organization: {self.organization.id}'
@@ -160,7 +175,10 @@ class OrderHistory(MainMixin):
 	comment = models.TextField(null = True, verbose_name = 'Comment')
 	body = models.JSONField(null = True),
 	action_history = models.ForeignKey(ActionHistory, on_delete = models.PROTECT, related_name = 'action_history_order_history', verbose_name = 'Action history')
+
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_order_history', verbose_name = 'Organization')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
+                                related_name='service_devicehistory', verbose_name='Service')
 
 	def __str__(self):
 		return f'id: {self.id} | organization: {self.organization} | action_history: {self.action_history.process}'

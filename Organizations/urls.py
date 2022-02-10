@@ -12,7 +12,7 @@ urlpatterns = [
          views.OrganizationRetrieveUpdateDestroyAPIView.as_view(), name='organization_rud'),
 
 
-    path('member-l/<int:organization>/',
+    path('member-l/',
          views.Organization_memberListAPIView.as_view(), name='organization_member_l'),
     path('member-r/<int:id>/',
          views.Organization_memberRetrieveAPIView.as_view(), name='organization_member_r'),
@@ -32,7 +32,7 @@ urlpatterns = [
          name='organization_service_ud'),
 
 
-    path('mprovider-l/int:organization/',
+    path('mprovider-l/',
          views.MProviderListAPIView.as_view(), name='mprovider_l'),
     path('mprovider-r/<int:id/',
          views.MProviderRetrieveAPIView.as_view(), name='mprovider_r'),

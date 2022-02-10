@@ -22,6 +22,7 @@ class OrderStatus(MainMixin):
 	type = models.CharField(max_length = 150, null = True, choices = TYPES, verbose_name = 'Type')
 
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name = 'organization_order_status', verbose_name = 'Organization')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True,  related_name = 'service_orderstatuses', verbose_name = 'Service')
 
 	is_default = models.BooleanField(default = True)
 	is_payment_required = models.BooleanField(default = False)
@@ -46,7 +47,7 @@ class Order(MainMixin):
 	executor = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'user_executor', verbose_name = 'Executor')
 	creator = models.ForeignKey(get_user_model(), on_delete = models.PROTECT, related_name = 'user_creator', verbose_name = 'Creator')
 
-	service = models.ForeignKey(Service, on_delete = models.PROTECT, related_name = 'service_orders', verbose_name = 'Service')
+	service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True,  related_name = 'service_orders', verbose_name = 'Service')
 	organization = models.ForeignKey(Organization, on_delete = models.CASCADE, related_name='organization_orders', verbose_name = 'Organization')
 	order_status = models.ForeignKey(OrderStatus, null = True, on_delete = models.PROTECT, related_name = 'order_status_order', verbose_name = 'OrderStatus')
 

@@ -16,24 +16,21 @@ class ProductCategoryListAPIView(generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
+    perm_view_name = 'product'
 
 
-class TransactionListAPIView(generics.ListAPIView):
+class TransactionListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-
-    def get_queryset(self):
-        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['service__id']
 
 
-class ProductListAPIView(generics.ListAPIView):
+class ProductListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
-    def get_queryset(self):
-        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['service__id']
 
 
 class ProductCreateAPIView(generics.CreateAPIView):
@@ -49,9 +46,6 @@ class ProductRetrieveAPIView(CustomGetObject, generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    def get_queryset(self):
-        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
-
 
 class ProductUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, generics.DestroyAPIView):
     permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
@@ -60,13 +54,11 @@ class ProductUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, gener
     serializer_class = ProductSerializer.ProductUSerializer
 
 
-class CashboxListAPIView(generics.ListAPIView):
+class CashboxListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = Cashbox.objects.all()
     serializer_class = CashboxSerializer
-
-    def get_queryset(self):
-        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['service__id']
 
 
 class CashboxCreateAPIView(generics.CreateAPIView):
@@ -90,13 +82,11 @@ class CashboxUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, gener
     serializer_class = CashboxSerializer.CashboxUSerializer
 
 
-class PurchaseRequestListAPIView(generics.ListAPIView):
+class PurchaseRequestListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = PurchaseRequest.objects.all()
     serializer_class = PurchaseRequestSerializer
-
-    def get_queryset(self):
-        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['service__id']
 
 
 class PurchaseRequestCreateAPIView(generics.CreateAPIView):
@@ -120,13 +110,11 @@ class PurchaseRequestDestroyAPIView(CustomGetObject, generics.DestroyAPIView):
     serializer_class = PurchaseRequestSerializer
 
 
-class PurchaseAcceptListAPIView(generics.ListAPIView):
+class PurchaseAcceptListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = PurchaseAccept.objects.all()
     serializer_class = PurchaseAcceptSerializer
-
-    def get_queryset(self):
-        return self.queryset.select_related('organization').filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['service__id']
 
 
 class PurchaseAcceptRetrieveAPIView(CustomGetObject, generics.RetrieveAPIView):
@@ -143,13 +131,11 @@ class PurchaseAcceptUpdateAPIView(CustomGetObject, generics.UpdateAPIView):
     serializer_class = PurchaseAcceptSerializer.PurchaseAcceptUSerializer
 
 
-class SaleProductListAPIView(generics.ListAPIView):
+class SaleProductListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = SaleProduct.objects.all()
     serializer_class = SaleProductSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['service__id']
 
 
 class SaleProductCreateAPIView(generics.CreateAPIView):
@@ -173,13 +159,11 @@ class SaleProductUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, g
     serializer_class = SaleProductSerializer.SaleProductUSerializer
 
 
-class SaleOrderListAPIView(generics.ListAPIView):
+class SaleOrderListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = SaleOrder.objects.all()
     serializer_class = SaleOrderSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['service__id']
 
 
 class SaleOrderCreateAPIView(generics.CreateAPIView):
@@ -203,13 +187,11 @@ class SaleOrderUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, gen
     serializer_class = SaleOrderSerializer.SaleOrderUSerializer
 
 
-class WorkDoneListAPIView(generics.ListAPIView):
+class WorkDoneListAPIView(CustomFilterQueryset, generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = WorkDone.objects.all()
     serializer_class = WorkDoneSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['service__id']
 
 
 class WorkDoneCreateAPIView(generics.CreateAPIView):
@@ -241,13 +223,11 @@ class WorkDoneUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, gene
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ProductOrderListAPIView(generics.ListAPIView):
+class ProductOrderListAPIView(CustomFilterQueryset,generics.ListAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = ProductOrder.objects.all()
     serializer_class = ProductOrderSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(organization=self.kwargs.get('organization'))
+    filterset_fields = ['service__id']
 
 
 class ProductOrderCreateAPIView(generics.CreateAPIView):

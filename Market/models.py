@@ -40,7 +40,7 @@ class Product(MainMixin):
                                      related_name='organization_product', verbose_name='Organization')
     category = models.ForeignKey(ProductCategory, on_delete=models.SET_NULL,
                                  related_name='category_product', null=True, verbose_name='Category')
-    service = models.ForeignKey(Service, on_delete=models.PROTECT,
+    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
                                 related_name='service_product', verbose_name='Service')
 
     def __str__(self):
@@ -62,7 +62,7 @@ class Cashbox(MainMixin):
 
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
                                      related_name='organization_cashbox', verbose_name='Organization')
-    service = models.ForeignKey(Service, on_delete=models.PROTECT,
+    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
                                 related_name='service_cashbox', verbose_name='Service')
 
     def __str__(self):
@@ -88,7 +88,7 @@ class PurchaseRequest(MainMixin):
                                      related_name='organization_purchase_request', verbose_name='Organization')
     cashbox = models.ForeignKey(Cashbox, on_delete=models.CASCADE,
                                 related_name='cashbox_purchase_request', verbose_name='Cashbox')
-    service = models.ForeignKey(Service, on_delete=models.PROTECT,
+    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
                                 related_name='service_purchase_request', verbose_name='Service')
     product = models.ForeignKey(Product, on_delete=models.PROTECT,
                                 related_name='product_purchase_request', verbose_name='Product')
@@ -115,6 +115,7 @@ class PurchaseAccept(MainMixin):
         PurchaseRequest, on_delete=models.CASCADE, related_name='purchase_purchase_accept', verbose_name='PurchaseRequest')
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
                                      related_name='organization_purchase_accept', verbose_name='Organization')
+    service = models.ForeignKey(Service, on_delete = models.SET_NULL, null = True, blank = True, verbose_name = 'Service')
 
     is_cash = models.BooleanField(default=False)
     accept = models.BooleanField(default=False)
@@ -145,7 +146,7 @@ class SaleProduct(MainMixin):
                                      related_name='organization_sale_product', verbose_name='Organization')
     cashbox = models.ForeignKey(Cashbox, on_delete=models.CASCADE,
                                 related_name='cashbox_sale_product', verbose_name='Cashbox')
-    service = models.ForeignKey(Service, on_delete=models.PROTECT,
+    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
                                 related_name='service_sale_product', verbose_name='Service')
     product = models.ForeignKey(Product, on_delete=models.PROTECT,
                                 related_name='product_sale_product', verbose_name='Product')
@@ -176,7 +177,7 @@ class SaleOrder(MainMixin):
                                      related_name='organization_sale_order', verbose_name='Organization')
     cashbox = models.ForeignKey(Cashbox, on_delete=models.CASCADE,
                                 related_name='cashbox_sale_order', verbose_name='Cashbox')
-    service = models.ForeignKey(Service, on_delete=models.PROTECT,
+    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
                                 related_name='service_sale_order', verbose_name='Service')
     product_order = models.ForeignKey('ProductOrder', on_delete=models.PROTECT,
                                       related_name='product_sale_order', verbose_name='ProductOrder')
@@ -204,7 +205,7 @@ class WorkDone(MainMixin):
     ), on_delete=models.PROTECT, related_name='user_work_done', verbose_name='User')
     order = models.ForeignKey(Order, on_delete=models.PROTECT,
                               related_name='order_work_done', verbose_name='Order')
-    service = models.ForeignKey(Service, on_delete=models.PROTECT,
+    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
                                 related_name='service_work_done', verbose_name='Service')
 
     def __str__(self):
@@ -228,7 +229,7 @@ class ProductOrder(MainMixin):
                                 related_name='product_product_order', null=True, verbose_name='Product')
     order = models.OneToOneField(Order, on_delete=models.PROTECT,
                                  related_name='order_product_order', verbose_name='Order')
-    service = models.ForeignKey(Service, on_delete=models.PROTECT,
+    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
                                 related_name='service_product_order', verbose_name='Service')
 
     def __str__(self):
@@ -252,6 +253,8 @@ class Transaction(MainMixin):
                                    related_name='cashbox_sale', null=True, verbose_name='SaleOrder')
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
                                      related_name='organization_transaction', verbose_name='Organization')
+    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null = True, blank = True, 
+                                related_name='service_transaction', verbose_name='Service')
 
     def __str__(self):
         sale = ''
