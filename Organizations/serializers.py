@@ -187,9 +187,18 @@ class MProviderSerializer(serializers.ModelSerializer):
 
 
 
+class PermissionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Permission
+        fields = ['id', 'name', 'content_type', 'codename']
+
+
+
 class MyGroupSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer()
     service = ServiceSerializer()
+    permissions = PermissionSerializer(many = True)
 
     class Meta:
         model = MyGroup

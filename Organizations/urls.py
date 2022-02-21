@@ -31,6 +31,8 @@ urlpatterns = [
     path('service-ud/<int:id>/', views.ServiceUpdateDestroyAPIView.as_view(),
          name='organization_service_ud'),
 
+    path('permission-l/', views.PermissionListAPIView.as_view(), name = 'permission_l'),
+
 
     path('mygroup-l/',
          views.MyGroupListAPIView.as_view(), name='mygroup_l'),
