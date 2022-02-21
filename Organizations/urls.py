@@ -32,6 +32,16 @@ urlpatterns = [
          name='organization_service_ud'),
 
 
+    path('mygroup-l/',
+         views.MyGroupListAPIView.as_view(), name='mygroup_l'),
+    path('mygroup-r/<int:id>/',
+         views.MyGroupRetrieveAPIView.as_view(), name='mygroup_r'),
+    path('mygroup-c/', views.MyGroupCreateAPIView.as_view(),
+         name='mygroup_c'),
+    path('mygroup-ud/<int:id>/', views.MyGroupUpdateDestroyAPIView.as_view(),
+         name='mygroup_ud'),
+
+
     path('mprovider-l/',
          views.MProviderListAPIView.as_view(), name='mprovider_l'),
     path('mprovider-r/<int:id/',

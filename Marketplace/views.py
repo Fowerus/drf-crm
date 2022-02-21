@@ -59,7 +59,7 @@ class MBusketMCourierListAPIView(CustomFilterQueryset, generics.ListAPIView):
     serializer_class = MCourierSerializer
     perm_view_name = 'mbusket'
 
-    def get(self, requests, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         try:
             instance = self.queryset.get(_id=self.kwargs.get('_id'))
             self.queryset = MCourier.objects.all()
@@ -159,7 +159,7 @@ class MOrderMCourierListAPIView(CustomGetObject, generics.ListAPIView):
     serializer_class = MCourierSerializer
     perm_view_name = 'morder'
 
-    def get(self, requests, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         try:
             instance = self.queryset.get(_id=self.kwargs.get('_id'))
             self.queryset = MCourier.objects.all()

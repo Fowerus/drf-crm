@@ -19,20 +19,22 @@ from core.views import *
 from core.utils.customPerm import *
 
 
-class MyCustomToken(TokenViewBase):
+class MyTokenObtainPairView(TokenViewBase):
 
-    def post(self, requests, *args, **kwargs):
-        data = requests.data.copy()
-        headers = requests.headers.copy()
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        headers = request.headers.copy()
         data['device'] = headers['user-agent']
 
-        if 'phone' in requests.data and 'email' not in requests.data:
+        if 'code' in request.data:
+            data['password'] = '#'
+
+        if 'phone' in request.data:
             data['email'] = '@'
-            serializer = MyTokenObtainPairPhoneSerializer(data=data)
-        elif 'email' in requests.data and 'phone' not in requests.data:
-            serializer = MyTokenObtainPairEmailSerializer(data=data)
-        else:
-            serializer = MyTokenObtainPairAllSerializer(data=data)
+        elif 'email' in request.data:
+            data['phone'] = '+'
+
+        serializer = MyTokenObtainPairSerializer(data=data)
 
         try:
             serializer.is_valid(raise_exception=True)
@@ -46,12 +48,12 @@ class MyCustomToken(TokenViewBase):
 
 class MyCustomTokenForRefresh(TokenViewBase):
 
-    def post(self, requests, *args, **kwargs):
-        data = requests.data.copy()
-        headers = requests.headers.copy()
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        headers = request.headers.copy()
         data['device'] = headers['user-agent']
 
-        serializer = self.get_serializer(data=data)
+        serializer = MyTokenRefreshSerializer(data=data)
 
         try:
             serializer.is_valid(raise_exception=True)
@@ -63,9 +65,6 @@ class MyCustomTokenForRefresh(TokenViewBase):
         return Response(serializer.validated_data | {'expired_at': settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].seconds}, status=status.HTTP_200_OK)
 
 
-class MyTokenObtainPairView(MyCustomToken):
-    pass
-
 
 class MyTokenRefreshView(MyCustomTokenForRefresh):
     serializer_class = MyTokenRefreshSerializer
@@ -74,15 +73,15 @@ class MyTokenRefreshView(MyCustomTokenForRefresh):
 class UserRegistrationAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, requests):
-        if 'phone' in requests.data and 'email' not in requests.data:
+    def post(self, request):
+        if 'phone' in request.data and 'email' not in request.data:
             serializer = UserRegistrationSerializer.UserRegistrationForPhone(
-                data=requests.data)
-        elif 'email' in requests.data and 'phone' not in requests.data:
+                data=request.data)
+        elif 'email' in request.data and 'phone' not in request.data:
             serializer = UserRegistrationSerializer.UserRegistrationForEmail(
-                data=requests.data)
+                data=request.data)
         else:
-            serializer = UserRegistrationSerializer(data=requests.data)
+            serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -103,13 +102,13 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def patch(self, requests, **kwargs):
+    def patch(self, request, **kwargs):
         self.serializer_class = UserSerializer.UserUSerializer
-        return super().patch(requests, kwargs)
+        return super().patch(request, kwargs)
 
-    def put(self, requests, **kwargs):
+    def put(self, request, **kwargs):
         self.serializer_class = UserSerializer.UserUSerializer
-        return super().put(requests, kwargs)
+        return super().put(request, kwargs)
 
 
 class TestSendEmail(APIView):

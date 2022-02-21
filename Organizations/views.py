@@ -27,9 +27,9 @@ class OrganizationListCreateAPIView(generics.ListCreateAPIView):
     filterset_fields = ['id', 'name']
 
 
-    def post(self, requests):
+    def post(self, request):
         self.serializer_class = OrganizationSerializer.OrganizationCSerializer
-        return super().post(requests)
+        return super().post(request)
 
 
 class OrganizationCreatorListAPIView(generics.ListAPIView):
@@ -48,13 +48,13 @@ class OrganizationRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPI
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
 
-    def patch(self, requests, **kwargs):
+    def patch(self, request, **kwargs):
         self.serializer_class = OrganizationSerializer.OrganizationUSerializer
-        return super().patch(requests, kwargs)
+        return super().patch(request, kwargs)
 
-    def put(self, requests, **kwargs):
+    def put(self, request, **kwargs):
         self.serializer_class = OrganizationSerializer.OrganizationUSerializer
-        return super().put(requests, kwargs)
+        return super().put(request, kwargs)
 
 
 class Organization_memberListAPIView(generics.ListAPIView):
@@ -111,7 +111,7 @@ class ServiceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIVie
     serializer_class = ServiceSerializer.ServiceUSerializer
 
     @transaction.atomic
-    def destroy(self, requests, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
         members = Organization.objects.get(id = instance.organization.id).organization_members.all()
@@ -120,7 +120,7 @@ class ServiceUpdateDestroyAPIView(generics.UpdateAPIView, generics.DestroyAPIVie
             m.user.services.pop(m.user.services.index(instance.id))
             m.user.save()
 
-        return super().destroy(requests, *args, **kwargs)
+        return super().destroy(request, *args, **kwargs)
 
 
 class MProviderListAPIView(CustomFilterQueryset, generics.ListAPIView):
@@ -147,3 +147,30 @@ class MProviderDestroyAPIView(CustomGetObject, generics.DestroyAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = MProvider.objects.all()
     lookup_field = 'id'
+
+
+class MyGroupListAPIView(CustomFilterQueryset, generics.ListAPIView):
+    permission_classes = [CustomPermissionVerificationRole]
+    queryset = MyGroup.objects.all()
+    serializer_class = MyGroupSerializer
+    filterset_fields = ['service__id']
+
+
+class MyGroupCreateAPIView(generics.CreateAPIView):
+    permission_classes = [
+        CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+    serializer_class = MyGroupSerializer.MyGroupCSerializer
+
+
+class MyGroupRetrieveAPIView(generics.RetrieveAPIView):
+    permission_classes = [CustomPermissionCheckSession]
+    queryset = MyGroup.objects.all()
+    lookup_field = 'id'
+    serializer_class = MyGroupSerializer
+
+
+class MyGroupUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, generics.DestroyAPIView):
+    permission_classes = [CustomPermissionVerificationRole, CustomPermissionCheckRelated]
+    lookup_field = 'id'
+    queryset = MyGroup.objects.all()
+    serializer_class = MyGroupSerializer.MyGroupUSerializer
