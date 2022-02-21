@@ -1,21 +1,22 @@
 import jwt
-from datetime import datetime, timedelta
 
 from django.contrib.auth import authenticate, get_user_model
+from django.utils import timezone
+from django.db import transaction
 from django.conf import settings
 
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.serializers import TokenObtainSerializer, PasswordField
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from rest_framework_simplejwt.authentication import JWTAuthentication as JWTBack
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt import exceptions
 
 from core.utils.atomic_exception import MyCustomError
+from core.views import extend_tokenFields, user_code_verification
 from .models import User
-from Sessions.models import Session_user
+
 
 
 class MyTokenObtainSerializer(TokenObtainSerializer):
@@ -24,34 +25,33 @@ class MyTokenObtainSerializer(TokenObtainSerializer):
     access = serializers.ReadOnlyField()
     device = serializers.CharField(write_only=True)
 
+
     @classmethod
     def get_token(cls, user):
         return RefreshToken.for_user(user)
 
     def validate(self, attrs):
         authenticate_kwargs = {
-            self.username_field: attrs.get(self.username_field, "@"),
+            self.username_field: attrs.get(self.username_field, None),
             'password': attrs['password'],
+            'code': attrs.get('code', None),
             'phone': attrs.get('phone', None)
         }
 
-        if authenticate_kwargs.get('phone') is not None:
-            try:
-                self.user = get_user_model().objects.get(
-                    phone=authenticate_kwargs['phone'])
-                if not self.user.check_password(authenticate_kwargs['password']):
-                    raise MyCustomError(
-                        "No active account found with the given credentials", 400)
-            except Exception as e:
-                raise MyCustomError(
-                    "No active account found with the given credentials", 400)
-        else:
-            self.user = authenticate(
-                email=authenticate_kwargs[self.username_field], password=authenticate_kwargs['password'])
+        if authenticate_kwargs.get(self.username_field) != '@':
+            self.user = get_user_model().objects.get(
+                email=authenticate_kwargs[self.username_field])
+            field = 'email'
 
-        if self.user is None:
-            raise MyCustomError(
-                "No active account found with the given credentials", 400)
+        elif authenticate_kwargs.get('phone') != '+':
+            self.user = get_user_model().objects.get(
+                phone=authenticate_kwargs['phone'])
+            field = 'phone'
+
+
+        user_code_verification(self.user, field, authenticate_kwargs.get('code'), 
+            authenticate_kwargs.get('password'))
+
 
         if not api_settings.USER_AUTHENTICATION_RULE(self.user):
             raise exceptions.AuthenticationFailed(
@@ -59,66 +59,32 @@ class MyTokenObtainSerializer(TokenObtainSerializer):
                 'no_active_account',
             )
 
-        device = attrs.pop('device')
 
+        device = attrs.pop('device')
+        session = {'date':timezone.now().__str__(), 'user-agent':device}
         data = {}
 
-        try:
-            session = Session_user.objects.select_related(
-                'user').filter(user=self.user.id).get(device=device)
-            session.delete()
-            session = Session_user.objects.create(
-                user=self.user, device=device)
-        except Exception as e:
-            session = Session_user.objects.create(
-                user=self.user, device=device)
+        self.user.set_session(device, session)
 
         refresh = self.get_token(self.user)
-
-        refresh['first_name'] = self.user.first_name
-        refresh['surname'] = self.user.surname
-        refresh['second_name'] = self.user.second_name
-
-        refresh['email'] = self.user.email
-        refresh['phone'] = self.user.phone
-        if self.user.phone is not None:
-            refresh['phone'] = self.user.phone.raw_input
-
-        refresh['session'] = session.id
+        refresh = extend_tokenFields(refresh, self.user, device, session)
 
         data['refresh'] = str(refresh)
         data['access'] = str(refresh.access_token)
 
         if api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, self.user)
+
         return data
 
 
-class MyTokenObtainPairAllSerializer(MyTokenObtainSerializer):
+class MyTokenObtainPairSerializer(MyTokenObtainSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['email'] = serializers.CharField(write_only=True)
         self.fields['phone'] = serializers.CharField(write_only=True)
-        self.fields['password'] = PasswordField()
-
-
-class MyTokenObtainPairPhoneSerializer(MyTokenObtainSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields[self.username_field] = serializers.CharField(
-            write_only=True)
-        self.fields['phone'] = serializers.CharField(write_only=True)
-        self.fields['password'] = PasswordField()
-
-
-class MyTokenObtainPairEmailSerializer(MyTokenObtainSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields[self.username_field] = serializers.CharField(
-            write_only=True)
+        self.fields['code'] = serializers.IntegerField(write_only=True, required = False)
         self.fields['password'] = PasswordField()
 
 
@@ -143,23 +109,16 @@ class MyTokenRefreshSerializer(serializers.Serializer):
                                         settings.SIMPLE_JWT['ALGORITHM']])
             user = get_user_model().objects.get(id=refresh_decode['user_id'])
         except Exception as e:
-            return {'detail': 'Refresh token expired or not exist'}
+            raise MyCustomError('Refresh token expired or not exist', 400)
+
 
         try:
-            current_session = Session_user.objects.select_related(
-                'user').filter(user=user.id).get(device=device)
+            for item in user.sessions:
+                if item['user-agent'] == device:
+                    session = item
+
             refresh = self.get_token(user)
-
-            refresh['first_name'] = user.first_name
-            refresh['surname'] = user.surname
-            refresh['second_name'] = user.second_name
-
-            refresh['email'] = user.email
-            refresh['phone'] = self.user.phone
-            if self.user.phone is not None:
-                refresh['phone'] = self.user.phone.raw_input
-
-            refresh['session'] = current_session.id
+            refresh = extend_tokenFields(refresh, user, device, session)
 
             data['refresh'] = str(refresh)
             data['access'] = str(refresh.access_token)
@@ -170,7 +129,7 @@ class MyTokenRefreshSerializer(serializers.Serializer):
             return data
 
         except Exception as e:
-            return {'detail': 'Unauthorized'}
+            raise MyCustomError('Unauthorized or session does not exist', 400)
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -181,6 +140,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
+        user.send_code('email')
 
         return user
 
@@ -191,7 +151,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         def create(self, validated_data):
             user = User.objects.create_user(**validated_data)
-
             user.send_code('phone')
 
             return user
@@ -208,7 +167,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         def create(self, validated_data):
             user = User.objects.create_user(**validated_data)
-
             user.send_code('email')
 
             return user

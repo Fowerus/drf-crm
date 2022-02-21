@@ -20,10 +20,10 @@ class ClientLoginAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = ClientLoginSerializer
 
-    def post(self, requests):
+    def post(self, request):
         try:
-            data = dict(requests.data)
-            data['device'] = requests.headers['User-Agent']
+            data = dict(request.data)
+            data['device'] = request.headers['User-Agent']
 
             serializer = self.serializer_class(data=data)
             if serializer.is_valid():

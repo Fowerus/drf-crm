@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.db import transaction
 from rest_framework import serializers
 
@@ -183,3 +184,33 @@ class MProviderSerializer(serializers.ModelSerializer):
         model = MProvider
         fields = ['id', 'site', 'service',
                   'organization', 'created_at', 'updated_at']
+
+
+
+class MyGroupSerializer(serializers.ModelSerializer):
+    organization = OrganizationSerializer()
+    service = ServiceSerializer()
+
+    class Meta:
+        model = MyGroup
+        fields = ['id', 'name', 'permissions',
+                  'organization', 'service']
+
+    class MyGroupCSerializer(serializers.ModelSerializer):
+
+        def create(self, validated_data):
+            mygroup = MyGroup.objects.create(**validated_data)
+
+            return mygroup
+
+        class Meta:
+            model = MyGroup
+            fields = ['id', 'name', 'permissions',
+                  'organization', 'service']
+
+    class MyGroupUSerializer(serializers.ModelSerializer):
+
+        class Meta:
+            model = MyGroup
+            fields = ['id', 'name', 'permissions',
+                  'organization', 'service']

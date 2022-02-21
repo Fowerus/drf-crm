@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.http.response import JsonResponse
 from django.db.models import Count
 
@@ -450,6 +448,54 @@ def check_orgUserMOrder(morder_id:int, org_id:int, **kwargs):
         return MOrder.objects.get(_id=ObjectId(morder_id)).organization.get('id') == org_id
     except Exception as e:
         return False
+
+
+#Extend the token with necessary fields
+def extend_tokenFields(token, user, device:str, session:dict):
+    try:
+        token['first_name'] = user.first_name
+        token['surname'] = user.surname
+        token['second_name'] = user.second_name
+
+        token['email'] = user.email
+        token['phone'] = user.phone
+        if user.phone is not None:
+            token['phone'] = user.phone.raw_input
+
+        token['session'] = session
+
+        return token
+    except:
+        raise MyCustomError('Token extenstion error', 400)
+
+
+#User code verification
+def user_code_verification(user, field:str, code:int, password:str):
+    confirmed_fields = {'email': user.confirmed_email, 'phone': user.confirmed_phone}
+
+    if not confirmed_fields[field]:
+        if code is not None:
+            if not user.code_is_expired:
+
+                if field == 'email':
+                    user.confirmed_email = True
+                elif field == 'phone':
+                    user.confirmed_phone = True
+
+                if user.code != int(code):
+                    raise MyCustomError('Code is incorrect', 400)
+                user.code = None
+                user.code_expired_at = None
+                user.save()
+                return True
+
+        user.send_code(field)
+        raise MyCustomError('The account is not confirmed. Code sent', 400)
+        
+    if not user.check_password(password):
+        raise MyCustomError('No active account found with the given credentials', 400)
+
+    return True
 
 
 # Get view name without prifex(like ListAPIView)

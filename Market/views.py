@@ -215,7 +215,7 @@ class WorkDoneUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, gene
     serializer_class = WorkDoneSerializer.WorkDoneUSerializer
 
     @transaction.atomic
-    def delete(self, requests, **kwargs):
+    def delete(self, request, **kwargs):
         instance = self.get_object()
         create_orderHistory(order=instance.order, model='1', organization=instance.order.organization, method='delete',
                             body={"id": instance.id, "name": instance.name})
@@ -251,7 +251,7 @@ class ProductOrderUpdateDestroyAPIView(CustomGetObject, generics.UpdateAPIView, 
     serializer_class = ProductOrderSerializer.ProductOrderUSerializer
 
     @transaction.atomic
-    def delete(self, requests, **kwargs):
+    def delete(self, request, **kwargs):
         instance = self.get_object()
         create_orderHistory(order=instance.order, model='0',
                             organization=instance.order.organization, method='delete')

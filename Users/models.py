@@ -1,10 +1,9 @@
 import uuid
-from datetime import datetime
 
 from django.core.mail import send_mail
+from django.utils import timezone
 from django.core import validators
 from django.conf import settings
-from django.contrib.auth.models import GroupManager, Permission
 
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
@@ -15,54 +14,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 from .mixins import GroupPermissionMixin
 
 from core.utils.atomic_exception import MyCustomError
-
-
-class MyGroup(models.Model):
-
-    name = models.CharField('name', max_length=150)
-    permissions = models.ManyToManyField(
-        Permission,
-        verbose_name='permissions',
-        related_name="mygroup_permissions",
-        blank=True,
-    )
-    organization = models.ForeignKey(
-        'Organizations.Organization', on_delete=models.CASCADE, related_name='mygroup_organizations')
-    service = models.ForeignKey(
-        'Organizations.Service', blank=True, on_delete=models.CASCADE,  null=True, related_name='mygroup_services')
-
-    objects = GroupManager()
-
-    class Meta:
-        unique_together = ('name', 'organization', 'service')
-        db_table = 'mygroup'
-        verbose_name = 'MyGroup'
-        verbose_name_plural = 'MyGroups'
-        permissions = [('change_user_group', 'Can change user group')]
-
-    def __str__(self):
-        return f'id: {self.id} | name {self.name} | {self.organization} | service {self.service}'
-
-    def save(self, *args, **kwargs):
-        if self.service == None:
-            if self.__class__.objects.filter(~models.Q(id=self.id)).filter(name=self.name, organization=self.organization, service=None):
-                raise MyCustomError(
-                    'The fields name, organization, service must make a unique set.', 400)
-        
-        super().save(*args, **kwargs)
-
-
-    def natural_key(self):
-        return (self.name,)
-
-
-    def calculateName(self):
-        self.name += f'_{self.organization.id}_{self.service.id}' if self.service else f'_{self.organization.id}'
-
-    def getService(self):
-        if self.service is None:
-            return self.service
-        return self.service.id
 
 
 
@@ -118,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Updated_at')
 
     current_org = models.IntegerField(null = True)
-    groups = models.ManyToManyField(MyGroup, blank = True,
+    groups = models.ManyToManyField('Organizations.MyGroup', blank = True,
         related_name = 'mygroups_users',
         verbose_name = 'Groups')
 
@@ -134,8 +85,10 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
     sessions = models.JSONField(blank = True, default = list)
     services = models.JSONField(blank = True, default = list)
 
-    code = models.IntegerField(null = True, blank = True, verbose_name = 'Code')
-    code_expired_at = models.DateTimeField(null = True, blank = True, verbose_name = 'Code expired time')
+    code = models.IntegerField(null = True, blank = True,
+        verbose_name = 'Code')
+    code_expired_at = models.DateTimeField(null = True, blank = True,
+        verbose_name = 'Code expired time')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ('surname', 'first_name', 'second_name', 'address')
@@ -147,12 +100,12 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
         return f'id: {self.id} | email: {self.email} | phone: {self.phone}'
 
 
-    def _check_confirmed(self):
+    def __check_confirmed(self):
         return bool(self.confirmed_phone or self.confirmed_email)
 
 
-    def _send_to_email(self):
-        self.generate_code
+    def __send_to_email(self):
+        self.generate_code()
 
         send_mail(
             'Test app',
@@ -163,38 +116,46 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
         )
 
 
-    def _send_to_phone(self):
+    def __send_to_phone(self):
         pass
 
 
     @property
     def confirmed(self):
-        if self._check_confirmed() == False: 
+        if self.__check_confirmed() == False: 
             raise MyCustomError('Account not confirmed', 403)
 
         return self._check_confirmed
 
 
     @property
+    def code_is_expired(self):
+        return timezone.now() > self.code_expired_at
+
+
     def generate_code(self):
         code = int(str(uuid.uuid1().int)[:6])
         self.code = code
-        self.code_expired_at = datetime.now() + settings.CODE_LIFETIME    
+        self.code_expired_at = timezone.now() + settings.CODE_LIFETIME
 
-        self.save()
-
-
-    @property
-    def check_code_time(self):
-        return (datetime.now() - self.code_expired_at) <= settings.CODE_LIFETIME
+        self.save() 
 
 
-    def send_code(self, field:str = 'email'):
+    def send_code(self, field:str):
         try:
-            data = {'email':self._send_to_email, 'phone': self._send_to_phone}
+            data = {'email':self.__send_to_email, 'phone':self.__send_to_phone}
+
             return data[field]()
         except:
             raise MyCustomError('Code send error', 500)
+
+
+    def set_session(self, device, session):
+        try:
+            self.sessions.append(session)
+            self.save()
+        except Exception as e:
+            raise MyCustomError('Set session error', 500)
 
 
     class Meta:

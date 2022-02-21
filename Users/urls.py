@@ -11,7 +11,7 @@ urlpatterns = [
 
     path('singin/', views.MyTokenObtainPairView.as_view(),
          name='token_obtain_pair'),
-    path('auth/token/refresh/',
+    path('refresh/',
          views.MyTokenRefreshView.as_view(), name='token_refresh'),
 
 
