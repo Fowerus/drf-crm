@@ -1,9 +1,10 @@
 import jwt
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.db import transaction
 
-from rest_framework import status, permissions
+from rest_framework import status, permissions, filters
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
@@ -147,6 +148,15 @@ class MProviderDestroyAPIView(CustomGetObject, generics.DestroyAPIView):
     permission_classes = [CustomPermissionVerificationRole]
     queryset = MProvider.objects.all()
     lookup_field = 'id'
+
+
+class PermissionListAPIView(CustomFilterQueryset, generics.ListAPIView):
+    permission_classes = [CustomPermissionVerificationRole]
+    queryset = Permission.objects.filter(id__gt=24)
+    filter_backends = [filters.SearchFilter]
+    serializer_class = PermissionSerializer
+    search_fields = ['name']
+    perm_view_name = 'mygroup'
 
 
 class MyGroupListAPIView(CustomFilterQueryset, generics.ListAPIView):
