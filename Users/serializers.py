@@ -38,15 +38,20 @@ class MyTokenObtainSerializer(TokenObtainSerializer):
             'phone': attrs.get('phone', None)
         }
 
-        if authenticate_kwargs.get(self.username_field) != '@':
-            self.user = get_user_model().objects.get(
-                email=authenticate_kwargs[self.username_field])
-            field = 'email'
+        try:
 
-        elif authenticate_kwargs.get('phone') != '+':
-            self.user = get_user_model().objects.get(
-                phone=authenticate_kwargs['phone'])
-            field = 'phone'
+            if authenticate_kwargs.get(self.username_field) != '@':
+                self.user = get_user_model().objects.get(
+                    email=authenticate_kwargs[self.username_field])
+                field = 'email'
+
+            elif authenticate_kwargs.get('phone') != '+':
+                self.user = get_user_model().objects.get(
+                    phone=authenticate_kwargs['phone'])
+                field = 'phone'
+
+        except:
+            raise MyCustomError('No active account found with the given credentials', 400)
 
 
         user_code_verification(self.user, field, authenticate_kwargs.get('code'), 
