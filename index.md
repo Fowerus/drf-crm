@@ -2,15 +2,13 @@
 
 
 ## **Main chapters**
-* [User API documentation](./users.md)
-* [Organization API documentation](./organizations.md)
-* [Session API documentation](./sessions.md)
-* [Order API documentation](./orders.md)
-* [Client API documentation](./clients.md)
-* [Verify-Info API documentation](./verify_info.md)
-* [Handbook API documentation](./handbook.md)
-* [Market API documentation](./market.md)
-* [Marketplace API documentation](./marketplace.md)
+* [User API documentation](/docs/users.md)
+* [Organization API documentation](/docs/organizations.md)
+* [Order API documentation](/docs/orders.md)
+* [Client API documentation](/docs/clients.md)
+* [Handbook API documentation](/docs/handbook.md)
+* [Market API documentation](/docs/market.md)
+* [Marketplace API documentation](/docs/marketplace.md)
 
 ## **Token error**
 If you inserted an incorrect token or an expired token in the header, it will give    
