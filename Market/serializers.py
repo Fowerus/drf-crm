@@ -1,20 +1,16 @@
 import uuid
 
-
-from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import transaction
 from rest_framework import serializers
 
+from .models import *
 
 from Users.serializers import UserSerializer
 from Organizations.serializers import ServiceSerializer, OrganizationSerializer
 from Clients.serializers import ClientSerializer
 from Handbook.serializers import ServicePriceSerializer, OrderHistorySerializer
 from Orders.serializers import OrderSerializer
-from .models import *
 from Handbook.models import OrderHistory
-
 from core.utils.atomic_exception import MyCustomError
 from core.views import get_viewName, create_orderHistory, get_userData
 

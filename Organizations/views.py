@@ -1,4 +1,5 @@
 import jwt
+import django_filters
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
@@ -6,11 +7,8 @@ from django.db import transaction
 
 from rest_framework import status, permissions, filters
 from rest_framework import generics
-from rest_framework.views import APIView
-from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 
-import django_filters
 
 from .serializers import *
 

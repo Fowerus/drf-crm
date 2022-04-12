@@ -4,8 +4,7 @@ from rest_framework.permissions import BasePermission
 from rest_framework import status
 from rest_framework.response import Response
 
-from core.views import get_userData, get_viewName, get_orgId, get_clientData, get_mproviderData, validate_func_map, check_confirmed
-from Sessions.models import Session_user, Session_client
+from core.views import get_userData, get_viewName, get_orgId, get_mproviderData, validate_func_map, check_confirmed
 
 
 class CustomPermissionVerificationOrganization(BasePermission):
@@ -141,56 +140,20 @@ class CustomPermissionGetUser(BasePermission):
 
                 return True
             else:
-                client_data = get_clientData(request)
 
-                view.kwargs['id'] = client_data['client_id']
                 return True
 
             return False
         except Exception as e:
             return False
 
-
-class CustomPermissionSession(BasePermission):
-
-    def has_permission(self, request, view):
-        try:
-            view_name = get_viewName(view)
-
-            sessions_validate_map = {
-                'session_user': get_userData,
-                'session_client': get_clientData
-            }
-
-            sessions_map = {
-                'session_user': Session_user,
-                'session_client': Session_client
-            }
-
-            data = sessions_validate_map[view_name](request)
-            key = view_name.split('_')[1]+'_id'
-            if 'id' in view.kwargs:
-                sessions_map[view_name](
-                    session_map[view_name], data['session'], data[key], is_client='client' in view_name)
-                return True
-
-            view.kwargs['id'] = data[key]
-
-            return True
-
-        except Exception as e:
-            return False
 
 
 class CustomPermissionCheckSession(BasePermission):
 
     def has_permission(self, request, view):
         try:
-            try:
-                data = get_userData(request)
-
-            except Exception as e:
-                data = get_clientData(request)
+            data = get_userData(request)
 
             return True
 

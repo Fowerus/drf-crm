@@ -1,7 +1,3 @@
-from django.http.response import JsonResponse
-from django.db.models import Count
-
-
 import uuid
 import jwt
 from bson.objectid import ObjectId
@@ -14,37 +10,11 @@ from django.shortcuts import render
 
 from Users.models import User
 from Organizations.models import Organization, Organization_member, Service
-from Sessions.models import Session_user, Session_client
 from Handbook.models import OrderHistory, ActionHistory
 from Marketplace.models import MCourier, MProduct, MBusket, MOrder
 
 from core.utils.atomic_exception import MyCustomError
-from .models.postgres_models import Post
-from .tasks import create_random_posts
 
-
-def post_generator(request):
-    v = create_random_posts.delay()
-    print(v)
-    return JsonResponse({"success": f'{v}'})
-
-
-def post_test(request):
-    v = Post.objects.all().aggregate(Count('id'))
-    print(v)
-    return JsonResponse({"success": f'{v}'})
-######################################
-
-
-def index_home(request):
-    return render(request, 'base.html', {})
-
-
-# #Blocking injections
-# def script_injection(value):
-#     if value.find('<script>') != -1:
-#         raise ValidationError(_('Script injection in %(value)s'),
-#                               params={'value': value})
 
 
 # Get information about user from access token
@@ -53,27 +23,28 @@ def get_userData(requests):
         access_token = requests.headers['Authorization'].split(' ')[1].strip()
         access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms=[
                                          settings.SIMPLE_JWT['ALGORITHM']])
+        if requests.headers['user-agent'] in requests.user.sessions:
 
-        Session_user.objects.select_related('user').filter(
-            user=access_token_decode['user_id']).get(device=requests.headers['user-agent'])
-        return access_token_decode
+            return access_token_decode
+
+        raise MyCustomError('User session does not exist', 400)
     except Exception as e:
         raise MyCustomError('The `Authorization` header is required', 400)
 
 
 # Get information about client from token
-def get_clientData(requests):
-    try:
-        access_token = requests.headers['Token'].split(' ')[1].strip()
-        access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms=[
-                                         settings.SIMPLE_JWT['ALGORITHM']])
+# def get_clientData(requests):
+#     try:
+#         access_token = requests.headers['Token'].split(' ')[1].strip()
+#         access_token_decode = jwt.decode(access_token, settings.SECRET_KEY, algorithms=[
+#                                          settings.SIMPLE_JWT['ALGORITHM']])
 
-        Session_client.objects.select_related('client').filter(
-            client=access_token_decode['client_id']).get(device=requests.headers['user-agent'])
+#         Session_client.objects.select_related('client').filter(
+#             client=access_token_decode['client_id']).get(device=requests.headers['user-agent'])
 
-        return access_token_decode
-    except Exception as e:
-        raise MyCustomError('The `Token` header is required', 400)
+#         return access_token_decode
+#     except Exception as e:
+#         raise MyCustomError('The `Token` header is required', 400)
 
 
 # Get information about mprovider from token
