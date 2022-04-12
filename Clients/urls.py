@@ -4,8 +4,8 @@ from . import views
 
 
 urlpatterns = [
-    path('auth/token/', views.ClientLoginAPIView.as_view(), name='client_login'),
-    path('client-u/<int:id>/', views.ClientUpdateAPIView.as_view(), name='client_u'),
+    # path('auth/token/', views.ClientLoginAPIView.as_view(), name='client_login'),
+    # path('client-u/<int:id>/', views.ClientUpdateAPIView.as_view(), name='client_u'),
 
     path('client-card-l/<int:organization>/',
          views.ClientCardListAPIView.as_view(), name='client_card_l'),

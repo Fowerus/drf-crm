@@ -16,22 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path as url
 from django.views.static import serve
-from core.views import post_generator, post_test
-from core.views import post_generator
 from . import settings
-from core.views import index_home
 
 urlpatterns = [
-    path('', index_home),
-    path('test-generate-posts/', post_generator),
-
     path('admin/', admin.site.urls),
     path('users/', include('Users.urls')),
     path('organizations/', include('Organizations.urls')),
-    path('sessions/', include('Sessions.urls')),
     path('clients/', include('Clients.urls')),
     path('orders/', include('Orders.urls')),
-    path('verify-info/', include('VerifyInfo.urls')),
     path('market/', include('Market.urls')),
     path('marketplace/', include('Marketplace.urls')),
     path('handbook/', include('Handbook.urls')),

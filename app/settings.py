@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = '!!!django-insecure-yo3a4$pt-thta@^b&mpmyk^37)74#(nvgs#q$u5sm!^s5(l1l('
 DEBUG = True
-ALLOWED_HOSTS = ['62.109.11.4', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 REST_FRAMEWORK = {
@@ -68,8 +68,6 @@ INSTALLED_APPS = [
     'Users',
     'Clients',
     'Orders',
-    'Sessions',
-    'VerifyInfo',
     'Market',
     'Handbook',
     'Marketplace',
@@ -119,27 +117,6 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'HOST': os.environ.get('POSTGRES_HOST'),
-    #     'NAME': os.environ.get('POSTGRES_DB'),
-    #     'USER': os.environ.get('POSTGRES_USER'),
-    #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-    #     'PORT': int(os.environ.get('POSTGRES_PORT')),
-    # },
-    # "mongo": {
-    #     "ENGINE": "djongo",
-    #     "NAME": os.environ.get('MONGO_DB_NAME'),
-    #     "CLIENT": {
-    #         "host":  os.environ.get('MONGO_DB_HOST'),
-    #         "port": int(os.environ.get('MONGO_DB_PORT')),
-    #         "username": os.environ.get('MONGO_DB_USERNAME'),
-    #         "password": os.environ.get('MONGO_DB_PASSWORD'),
-    #     },
-    #     'TEST': {
-    #         'MIRROR': 'default',
-    #     },
-    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': '',
@@ -180,52 +157,25 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "Users.User"
 
-# CELERY_TASK_TRACK_STARTED = True
-# CELERY_TASK_TIME_LIMIT = 30 * 60
-# CELERY_IGNORE_RESULT = True
-# CELERY_BROKER_URL = os.environ.get('CELERY_URL')
-# CELERY_RESULT_BACKEND = os.environ.get('CELERY_URL')
-# CELERYD_HIJACK_ROOT_LOGGER = False
-# REDIS_CHANNEL_URL = os.environ.get('REDIS_CHANNEL_URL')
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-
-STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-APPEND_SLASH = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_HOST_USER = 'verify@api-test.go-best.ru'
-EMAIL_HOST_PASSWORD = 'Gobest2021'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-# CSRF_COOKIE_DOMAIN = None
-# CORS_ALLOW_ALL_ORIGINS = True
-# CSRF_COOKIE_DOMAIN = None
-# CSRF_TRUSTED_ORIGINS = os.environ.get(
-#     "DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+APPEND_SLASH = True
 
 
 ACCESS_TOKEN_LIFETIME = 365*24*3600
@@ -236,33 +186,7 @@ SEND_MESSAGE = "Authentication code\n%s"
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(seconds=ACCESS_TOKEN_LIFETIME),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
-    # 'ROTATE_REFRESH_TOKENS': False,
-    # 'BLACKLIST_AFTER_ROTATION': False,
-    # 'UPDATE_LAST_LOGIN': False,
-
     'ALGORITHM': 'HS256',
-    # 'SIGNING_KEY': SECRET_KEY,
-    # 'VERIFYING_KEY': None,
-    # 'AUDIENCE': None,
-    # 'ISSUER': None,
-    # 'JWK_URL': None,
-    # 'LEEWAY': 0,
-
-    # 'AUTH_HEADER_TYPES': ('Bearer',),
-    # 'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    # 'USER_ID_FIELD': 'id',
-    # 'USER_ID_CLAIM': 'user_id',
-    # 'USER_AUTHENTICATION_RULE':
-    #     'rest_framework_simplejwt.authentication.default_user_authentication_rule',
-
-    # 'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    # 'TOKEN_TYPE_CLAIM': 'token_type',
-
-    # 'JTI_CLAIM': 'jti',
-
-    # 'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    # 'SLIDING_TOKEN_LIFETIME': timedelta(minutes=15),
-    # 'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
 

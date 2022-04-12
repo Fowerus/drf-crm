@@ -16,29 +16,29 @@ from Users.serializers import UserSerializer
 from core.utils.customViewMethods import *
 
 
-class ClientLoginAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
-    serializer_class = ClientLoginSerializer
+# class ClientLoginAPIView(APIView):
+#     permission_classes = [permissions.AllowAny]
+#     serializer_class = ClientLoginSerializer
 
-    def post(self, request):
-        try:
-            data = dict(request.data)
-            data['device'] = request.headers['User-Agent']
+#     def post(self, request):
+#         try:
+#             data = dict(request.data)
+#             data['device'] = request.headers['User-Agent']
 
-            serializer = self.serializer_class(data=data)
-            if serializer.is_valid():
-                return Response(serializer.data, status=status.HTTP_200_OK)
+#             serializer = self.serializer_class(data=data)
+#             if serializer.is_valid():
+#                 return Response(serializer.data, status=status.HTTP_200_OK)
 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         except Exception as e:
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class ClientUpdateAPIView(generics.UpdateAPIView):
-    permission_classes = [CustomPermissionGetUser]
-    queryset = Client.objects.all()
-    lookup_field = 'id'
-    serializer_class = ClientSerializer.ClientUSerializer
+# class ClientUpdateAPIView(generics.UpdateAPIView):
+#     permission_classes = [CustomPermissionGetUser]
+#     queryset = Client.objects.all()
+#     lookup_field = 'id'
+#     serializer_class = ClientSerializer.ClientUSerializer
 
 
 class ClientCardListAPIView(CustomFilterQueryset, generics.ListAPIView):

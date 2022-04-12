@@ -1,6 +1,6 @@
 from rest_framework import generics
 from core.utils.customPerm import CustomPermissionVerificationRole, \
-CustomPermissionGetUser, CustomPermissionCheckRelated
+CustomPermissionCheckRelated
 from .models import Order
 from .serializers import OrderSerializer
 
