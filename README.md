@@ -46,7 +46,7 @@ Path-end ratio with necessary variables in path:
 **Exception:**  
 ``user``: *int:object_id*  
 
-## **In work**
+## **Need to do**
 * Change the logic of client login to the account  
 * Add notification channels with celery    
 * Rewrite documentation(Maybe using Swager UI)  
