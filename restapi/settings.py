@@ -147,9 +147,9 @@ DATABASES = {
 
 DATABASE_ROUTERS = ['restapi.customDbRouter.AuthRouter']
 
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_HOST_USER = 'verify@api-test.go-best.ru'
-EMAIL_HOST_PASSWORD = 'Gobest2021'
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
