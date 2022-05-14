@@ -101,7 +101,7 @@ class PurchaseRequest(MainMixin):
 
     @property
     def calculate_quantity(self):
-        return (product.count - count) > 0
+        return (product.count - count) >= 0
 
     class Meta:
         db_table = 'PurchaseRequest'.lower()
