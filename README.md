@@ -47,7 +47,7 @@ Path-end ratio with necessary variables in path:
 ``user``: *int:object_id*  
 
 ## **Need to do**
-* Fix views, serializers, models related with mongo db   
+* Fixing views, serializerы and logic related to mongo db    
 * Change the logic of client login to the account    
 * Add notification channels with celery    
 * Rewrite documentation(Maybe using Swager UI)  
