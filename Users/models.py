@@ -68,7 +68,7 @@ class User(AbstractBaseUser, PermissionsMixin, GroupPermissionMixin):
         auto_now_add=True, verbose_name='Created_at')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Updated_at')
 
-    current_org = models.IntegerField(null = True)
+    current_org = models.IntegerField(null = True, blank=True, verbose_name='Current organization')
     groups = models.ManyToManyField('Organizations.MyGroup', blank = True,
         related_name = 'mygroups_users',
         verbose_name = 'Groups')
